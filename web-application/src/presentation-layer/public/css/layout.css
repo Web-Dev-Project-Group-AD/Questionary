@@ -1,0 +1,17 @@
+html{
+	height: 100%;
+}
+
+body{
+	background-color: rgb(225, 225, 225);
+	min-height: 100%;
+}
+
+#entire-page{
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+main{
+	padding: 8px;
+}

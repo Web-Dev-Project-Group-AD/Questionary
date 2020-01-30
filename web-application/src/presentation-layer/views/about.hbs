@@ -1,0 +1,13 @@
+<div class="content">
+	<h1>About</h1>
+	<p><i>The Community</i> a the skeleton of a website where users can create their own accounts and then login to them. After that they should be able to do something more. What that is remains to figure out.</p>
+	
+	<h2>Docker</h2>
+	<p>The website is built using 2 Docker containers. One container runs a MySQL database that is used to store all the resources on the websites (at the moment only user accounts). The other container runs the website, which is implemented as a Node.js application making use of the Express framework with Handlebars as the rendering engine and Bulma as the CSS framework.</p>
+	
+	<h2>Layered architecture</h2>
+	<p>The website is implemented with a three-layered architecture consisting of the Presentation Layer, Business Logic Layer and the Data Access Layer. The Data Access Layer is responsible for providing access to the database. The Business Logic Layer makes use of the Data Access Layer but also adds some business logic rules, such as validation and authorization. The Presentation Layer in turn is responsible for receiving and carry out HTTP requests, and to generate and send back HTTP responses to clients (web browsers). To carry out the requests, it will simply tell the Business Logic Layer what to do.</p>
+	<p>Each layer has its own folder, and all source code belonging to that layer is in the layer's owwn folder. In the folder <span class="tag">data-access-layer</span> you find primarilly files representing repositories, such as <span class="tag is-family-monospace">account-repository.js</span>, which exports functions one can use to insert/retrieve/update/delete accounts from the database.</p>
+	<p>In the folder <span class="tag">business-logic-layer</span> you find primarilly files representing managers, such as <span class="tag is-family-monospace">account-manager.js</span>, which exports functions one can use to insert/retrieve/update/delete accounts from the database, but with some business logic rules added (such as not accepting accounts with too short usernames). The managers primarilly use repositories from the Data Access Layer to carry out their job.</p>
+	<p>In the folder <span class="tag">presentation-layer</span> you find primarilly files representing routers, such as <span class="tag is-family-monospace">account-router.js</span>, which is responsible  for receiving and carry out HTTP requests and then generate and send back HTTP responses. To carry out the requests, they will primarilly use managers from the Business Logic Layer.</p>
+</div>

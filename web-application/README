@@ -1,0 +1,5 @@
+To build this image run the following command in this folder:
+docker build --tag=imagename .
+
+To run the image:
+docker run -p 8080:8080 -v //c/path/to/folder/web-application/src:/web-application/src imagename
