@@ -15,3 +15,7 @@ body{
 main{
 	padding: 8px;
 }
+
+.sticky.is-at-top.is-stuck {
+    width: 100%;
+}
