@@ -19,3 +19,9 @@ main{
 .sticky.is-at-top.is-stuck {
     width: 100%;
 }
+
+
+.main-content {
+	margin-top: 50px;
+	
+}
