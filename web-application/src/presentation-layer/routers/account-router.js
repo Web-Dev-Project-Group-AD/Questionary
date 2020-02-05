@@ -1,17 +1,30 @@
 const express = require('express')
+
 const accountManager = require('../../business-logic-layer/account-manager')
+
 
 const router = express.Router()
 
-router.get("/sign-up", function(request, response){
+router.get("/sign-up", function(request, response) {
 	response.render("accounts-sign-up.hbs")
 })
 
-router.post("/sign-up", function(request, response){
+router.post("/sign-up", function(request, response) {
+	
+	const username = request.body.username
+
+	//const { username, password, passwordRepeated } = request.body
+	//const account = { username, password, passwordRepeated }
+
+	console.log(username)
+
+	// accountManager.createAccount(account, function(errors){
+
+	// })
 	response.render("home.hbs")
 })
 
-router.get("/sign-in", function(request, response){
+router.get("/sign-in", function(request, response) {
 	response.render("accounts-sign-in.hbs")
 })
 
