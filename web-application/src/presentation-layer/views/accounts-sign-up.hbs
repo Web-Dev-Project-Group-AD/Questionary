@@ -3,8 +3,59 @@
 	<p>Create a new account using the form below.</p>
 </div>
 
-<form action="">
-	
-	TODO
-	
+<form method="POST" action="/accounts/sign-up">
+
+	<p1>Username:</p1>
+	<br>
+	<input type="text" id="username" value="{{username}}" />
+	<br>
+	<p1>Password:</p1>
+	<br>
+	<input type="password" id="password1" />
+	<p1>Repeat password:</p1>
+	<br>
+	<input type="password" id="password2" />
+	<br><br>
+	<input type="submit" class="btn" value="Register" />
+
 </form>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		
+		const form = document.querySelector("form")
+
+		form.addEventListener("submit", validateRegisterForm)
+
+		function validateRegisterForm(event) {
+
+			const username = document.getElementById("username").value
+			const password1 = document.getElementById("password1").value
+			const password2 = document.getElementById("password2").value
+
+			
+
+			let errorMessage = ""
+			const errorField = document.createElement("div")
+			errorField.innerText = ""
+			form.appendChild(errorField)
+
+			if (username.length < 8) {
+				errorMessage = "Username needs to be atleast 8 characters long."
+			} else if (username.length > 20) {
+				errorMessage = "Username can not be longer than 20 characters."
+			} else if (password1.length < 8) {
+				errorMessage = "Password needs to be atleast 8 characters long."
+			} else if (password1.length > 20) {
+				errorMessage = "Password can not be longer than 20 characters."
+			} else if (password1 != password2) {
+				errorMessage = "Passwords dont match."
+			} else {
+				return true
+			}
+			errorField.innerText = errorMessage
+			event.preventDefault()
+		}
+
+	})
+</script>
