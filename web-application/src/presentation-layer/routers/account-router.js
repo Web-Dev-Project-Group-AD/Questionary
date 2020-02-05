@@ -5,33 +5,34 @@ const accountManager = require('../../business-logic-layer/account-manager')
 
 const router = express.Router()
 
-router.get("/sign-up", function(request, response) {
+router.get("/sign-up", function (request, response) {
 	response.render("accounts-sign-up.hbs")
 })
 
-router.post("/sign-up", function(request, response) {
+router.post("/sign-up", function (request, response) {
+
+	const { username, password, passwordRepeated } = request.body
+	const account = { username, password, passwordRepeated }
+
+	accountManager.createAccount(account, function (errors) {
+		if (errors) {
+			console.log(errors)
+			// TODO: Handle errors
+		} else {
+			response.render("home.hbs")
+		}
+	})
 	
-	const username = request.body.username
-
-	//const { username, password, passwordRepeated } = request.body
-	//const account = { username, password, passwordRepeated }
-
-	console.log(username)
-
-	// accountManager.createAccount(account, function(errors){
-
-	// })
-	response.render("home.hbs")
 })
 
-router.get("/sign-in", function(request, response) {
+router.get("/sign-in", function (request, response) {
 	response.render("accounts-sign-in.hbs")
 })
 
 
 
-router.get("/", function(request, response){
-	accountManager.getAllAccounts(function(errors, accounts){
+router.get("/", function (request, response) {
+	accountManager.getAllAccounts(function (errors, accounts) {
 		console.log(errors, accounts)
 		const model = {
 			errors: errors,
@@ -41,18 +42,18 @@ router.get("/", function(request, response){
 	})
 })
 
-router.get('/:username', function(request, response){
-	
+router.get('/:username', function (request, response) {
+
 	const username = request.params.username
-	
-	accountManager.getAccountByUsername(username, function(errors, account){
+
+	accountManager.getAccountByUsername(username, function (errors, account) {
 		const model = {
 			errors: errors,
 			account: account
 		}
 		response.render("accounts-show-one.hbs", model)
 	})
-	
+
 })
 
 module.exports = router

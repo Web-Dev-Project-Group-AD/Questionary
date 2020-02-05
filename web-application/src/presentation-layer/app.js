@@ -22,13 +22,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // Handles parsing data from the request body.
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Attach all routers.
 app.use('/', variousRouter)
 app.use('/accounts', accountRouter)
 
 // Start listening for incoming HTTP requests!
-app.listen(8080, function(){
+app.listen(8080, function () {
 	console.log('Running on 8080!')
 })
