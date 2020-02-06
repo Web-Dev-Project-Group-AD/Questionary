@@ -3,6 +3,9 @@ const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 
+const session = require('express-session')
+const redis = require('redis')
+
 const variousRouter = require('./routers/various-router')
 const accountRouter = require('./routers/account-router')
 
@@ -23,6 +26,25 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Handles parsing data from the request body.
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Handles the storage of the sessions.
+let RedisStore = require('connect-redis')(session)
+let redisClient = redis.createClient({ host:'redis' })
+
+app.use(session({
+	name: 'login',
+	saveUninitialized: false,
+	resave: false,
+	secret: '9hTYuxloxt',
+	store: new RedisStore({ 
+		client: redisClient
+	}),
+	cookie: {
+		maxAge: 2 * 60 * 60 * 1000, // 2 hours
+		sameSite: true,
+		secure: false
+	}
+}))
 
 // Attach all routers.
 app.use('/', variousRouter)

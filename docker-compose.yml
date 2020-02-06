@@ -1,6 +1,11 @@
 version: '3'
 services:
-  "web-application":
+  redis:
+    image: redis
+    hostname: redis
+    ports: 
+      - "6379:6379"
+  web-application:
     build: "./web-application"
     ports:
       - "8080:8080"
@@ -9,6 +14,7 @@ services:
       - "./web-application/src:/web-application/src"
     depends_on:
       - database
+      - redis
   database:
     build: ./database
     ports:

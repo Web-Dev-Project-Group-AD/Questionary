@@ -15,7 +15,7 @@ router.post("/sign-up", function (request, response) {
 	const account = { username, password, passwordRepeated }
 
 	accountManager.createAccount(account, function (errors) {
-		if (errors) {
+		if (0 < errors.length) {
 			console.log(errors)
 			// TODO: Handle errors
 		} else {
