@@ -36,9 +36,7 @@ app.use(session({
 	saveUninitialized: false,
 	resave: false,
 	secret: '9hTYuxloxt',
-	store: new RedisStore({ 
-		client: redisClient
-	}),
+	store: new RedisStore({ client: redisClient }),
 	cookie: {
 		maxAge: 2 * 60 * 60 * 1000, // 2 hours
 		sameSite: true,

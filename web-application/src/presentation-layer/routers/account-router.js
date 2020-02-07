@@ -19,10 +19,23 @@ router.post("/sign-up", function (request, response) {
 			console.log(errors)
 			// TODO: Handle errors
 		} else {
-			response.render("home.hbs")
+			accountManager.attemptAccountSignIn(account, function (errors) {
+				if (0 < errors.length) {
+					console.log(errors)
+					// TODO: Handle errors
+				} else {
+					const signedIn = true
+					const isAdmin = false
+					//const isAdmin = (user.userType == 'admin' ? true : false)
+					const userStatus = { signedIn, isAdmin, username }
+					request.session.userStatus = userStatus
+					console.log(username, " signed in")
+
+					response.render("home.hbs", userStatus)
+				}
+			})
 		}
 	})
-	
 })
 
 router.get("/sign-in", function (request, response) {
