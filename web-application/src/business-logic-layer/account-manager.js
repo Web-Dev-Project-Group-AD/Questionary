@@ -10,6 +10,10 @@ exports.getAllAccounts = function (callback) {
 
 exports.createAccount = function (account, callback) {
 
+	const pw = '$2b$10$7hj/ahyohgdp8RZJ41Xk4uRSrlrFgWf5YG4GeXLWqKReCkefPfolG'
+	console.log(pw.length)
+
+
 	// Validate the account.
 	const errors = accountValidator.getErrorsNewAccount(account)
 
