@@ -1,26 +1,30 @@
-const accountRepository = require('../data-access-layer/account-repository')
-const accountValidator = require('./account-validator')
 
+module.exports = function ({ accountRepository, accountValidator }) {
+	// Name all the dependencies in the curly brackets. 
 
-exports.getAllAccounts = function (callback) {
-	accountRepository.getAllAccounts(callback)
-}
+	return {
+		getAllAccounts: function (callback) {
+			accountRepository.getAllAccounts(function (errors, accounts) {
+				callback(errors, accounts)
+			})
+		},
 
-exports.createAccount = function (account, callback) {
+		createAccount: function (account, callback) {
+			// Validate the account.
+			const errors = accountValidator.getErrorsNewAccount(account)
 
-	// Validate the account.
-	const errors = accountValidator.getErrorsNewAccount(account)
+			if (0 < errors.length) {
+				callback(errors, null)
+				return
+			}
 
-	if (0 < errors.length) {
-		callback(errors, null)
-		return
+			accountRepository.createAccount(account, callback)
+
+		},
+
+		getAccountByUsername: function (username, callback) {
+			accountRepository.getAccountByUsername(username, callback)
+		}
 	}
-
-	accountRepository.createAccount(account, callback)
-
+	// Continue to list all other functions in account manager here.
 }
-
-exports.getAccountByUsername = function (username, callback) {
-	accountRepository.getAccountByUsername(username, callback)
-}
-

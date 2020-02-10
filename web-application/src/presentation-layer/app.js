@@ -6,8 +6,32 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const redis = require('redis')
 
-const variousRouter = require('./routers/various-router')
+const awilix = require('awilix')
+
+// Import the ones we want to use (real or mockup), real in this case.
+const accountManager = require('../business-logic-layer/account-manager')
+const accountRepository = require('../data-access-layer/account-repository')
+const accountValidator = require('../business-logic-layer/account-validator')
 const accountRouter = require('./routers/account-router')
+
+// Create a container and add the dependencies we want to use.
+const container = awilix.createContainer({
+	accountRepository: awilix.asFunction(accountRepository),
+	accountManager: awilix.asFunction(accountManager),
+	accountValidator: awilix.asFunction(accountValidator),
+	accountRouter: awilix.asFunction(accountRouter)
+})
+
+//container.register("accountRepository", awilix.asFunction(accountRepository))
+//container.register("accountManager", awilix.asFunction(accountManager))
+//container.register("accountValidator", awilix.asFunction(accountValidator))
+//container.register("accountRouter", awilix.asFunction(accountRouter))
+
+// Retrieve the router, which resolves all other dependencies.
+const theAccountRouter = container.resolve("accountRouter")
+
+//const variousRouter = require('./routers/various-router')
+//const accountRouter = require('./routers/account-router')
 
 const app = express()
 
