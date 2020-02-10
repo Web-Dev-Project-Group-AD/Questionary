@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.8",
     "connect-redis": "^4.0.4",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",

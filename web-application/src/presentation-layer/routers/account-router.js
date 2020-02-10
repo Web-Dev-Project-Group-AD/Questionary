@@ -19,10 +19,11 @@ router.post("/sign-up", function (request, response) {
 			console.log(errors)
 			// TODO: Handle errors
 		} else {
-			accountManager.attemptAccountSignIn(account, function (errors) {
-				if (0 < errors.length) {
-					console.log(errors)
+			accountManager.signInAccount(account, function (error) {
+				if (error != null) {
+					console.log(error)
 					// TODO: Handle errors
+					response.render("error.hbs")
 				} else {
 					const signedIn = true
 					const isAdmin = false

@@ -38,15 +38,3 @@ exports.getErrorsNewAccount = function (account) {
 	
 	return errors
 }
-
-exports.checkMatchingPasswords = function (password1, password2) {
-	//TODO: implement bcrypt and hashing
-	return (password1 == password2)
-	
-}
-
-exports.hashPasswords = function (password) {
-	//TODO
-	
-	return password
-}

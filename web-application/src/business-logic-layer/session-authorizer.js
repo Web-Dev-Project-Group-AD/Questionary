@@ -1,8 +1,8 @@
 
-exports.authorizeUser = function(userType) {
-    return (userType != null) 
+exports.authorizeUser = function(user) {
+    return (user.userType != null) 
 }
 
-exports.authorizeAdmin = function(session) {
-    return (userType && userType == admin)
+exports.authorizeAdmin = function(user) {
+    return (user.userType && user.userType == admin)
 }

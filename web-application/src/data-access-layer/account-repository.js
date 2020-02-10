@@ -50,6 +50,7 @@ exports.createAccount = function (account, callback) {
 
 	const query = `INSERT INTO accounts (username, password) VALUES (?, ?)`
 	const values = [account.username, account.password]
+	console.log(values)
 
 	db.query(query, values, function (error, results) {
 		if (error) {
