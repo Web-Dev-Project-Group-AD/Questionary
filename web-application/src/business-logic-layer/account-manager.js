@@ -10,35 +10,21 @@ exports.getAllAccounts = function (callback) {
 
 exports.createAccount = function (account, callback) {
 
-	const pw = '$2b$10$7hj/ahyohgdp8RZJ41Xk4uRSrlrFgWf5YG4GeXLWqKReCkefPfolG'
-	console.log(pw.length)
-
-
 	// Validate the account.
 	const errors = accountValidator.getErrorsNewAccount(account)
 
 	if (errors.length > 0) {
-		console.log("accountValidator error not null")
-		callback(errors, null)
+		callback(errors)
 	} else {
-		console.log("password:", account.password)
-		bcrypt.genSalt(saltRounds, function (error, salt) {
-			if (error) {
-				console.log(error)
-			} else {
-				bcrypt.hash(account.password, salt, function (error, hash) {
-					// if (error) {
-					// 	console.log(error)
-					// 	callback(error, null)
+		bcrypt.hash(account.password, saltRounds, function (error, hash) {
+			// if (error) {
+			// 	console.log(error)
+			// 	callback(error, null)
 
-					account.password = hash
-					console.log(hash)
-					accountRepository.createAccount(account, callback)
-
-				})
-			}
+			account.password = hash
+			accountRepository.createAccount(account, callback)
+			callback([])
 		})
-
 	}
 }
 
@@ -48,20 +34,19 @@ exports.getAccountByUsername = function (username, callback) {
 
 exports.signInAccount = function (account, callback) {
 	accountRepository.getAccountByUsername(account.username, function (error, repositoryAccount) {
-		if (error = ! null) {
-			console.log("signInAccount error not null")
+		if (error.length > 0) {
 			// TODO: handle error
 			// TODO: Look for usernameUnique violation.
-			callback(error, null)
+			callback(error)
 		} else {
 			bcrypt.compare(account.password, repositoryAccount.password, function (error, isValidPassword) {
-				if (error = ! null) {
-					console.log("bcrypt.compare error not null")
+				if (error != null) {
 					callback(error)
 				} else if (!isValidPassword) {
-					console.log("error wrong password")
 					error = new Error("wrongPassword")
 					callback(error)
+				} else {
+					callback(null)
 				}
 			});
 		}

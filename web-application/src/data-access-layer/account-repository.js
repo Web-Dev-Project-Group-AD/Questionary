@@ -50,12 +50,10 @@ exports.createAccount = function (account, callback) {
 
 	const query = `INSERT INTO accounts (username, password) VALUES (?, ?)`
 	const values = [account.username, account.password]
-	console.log(values)
 
 	db.query(query, values, function (error, results) {
 		if (error != null) {
-			console.log(error)
-			// TODO: Look for usernameUnique violation.
+			// Look for usernameUnique violation.
 			callback(['databaseError'], null)
 		} else {
 			callback([], results.insertId)

@@ -13,15 +13,16 @@ router.post("/sign-up", function (request, response) {
 
 	const { username, password, passwordRepeated } = request.body
 	const account = { username, password, passwordRepeated }
+	const plainTextPassword = password
 
 	accountManager.createAccount(account, function (errors) {
-		if (0 < errors.length) {
-			console.log(errors)
+		if (errors.length > 0) {
 			// TODO: Handle errors
+			response.render("error.hbs")
 		} else {
+			account.password = plainTextPassword
 			accountManager.signInAccount(account, function (error) {
 				if (error != null) {
-					console.log(error)
 					// TODO: Handle errors
 					response.render("error.hbs")
 				} else {
@@ -32,7 +33,7 @@ router.post("/sign-up", function (request, response) {
 					request.session.userStatus = userStatus
 					console.log(username, " signed in")
 
-					response.render("home.hbs", userStatus)
+					response.render("home.hbs")
 				}
 			})
 		}
@@ -47,7 +48,6 @@ router.get("/sign-in", function (request, response) {
 
 router.get("/", function (request, response) {
 	accountManager.getAllAccounts(function (errors, accounts) {
-		console.log(errors, accounts)
 		const model = {
 			errors: errors,
 			accounts: accounts
