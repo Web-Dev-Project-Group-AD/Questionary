@@ -44,6 +44,13 @@ app.use(session({
 	}
 }))
 
+const hbs = expressHandlebars.create({})
+
+//Handlebars helper for passing objects to client-side JS
+hbs.handlebars.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+})
+
 // Attach all routers.
 app.use('/', variousRouter)
 app.use('/accounts', accountRouter)

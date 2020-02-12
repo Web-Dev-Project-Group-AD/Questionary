@@ -38,3 +38,12 @@ exports.getErrorsNewAccount = function (account) {
 	
 	return errors
 }
+
+exports.getValidationConstraints = function() {
+	const validationConstraints = {
+		MIN_USERNAME_LENGTH,
+		MAX_USERNAME_LENGTH,
+		MIN_PASSWORD_LENGTH,
+		MAX_PASSWORD_LENGTH }
+	return validationConstraints
+}

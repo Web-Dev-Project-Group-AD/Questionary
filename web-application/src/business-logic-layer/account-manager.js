@@ -53,6 +53,7 @@ exports.signInAccount = function (account, callback) {
 	})
 }
 
-exports.signOutUser = function () {
-	// TODO
+exports.getValidationConstraints = function () {
+	const validationConstraints = accountValidator.getValidationConstraints()
+	return validationConstraints
 }
