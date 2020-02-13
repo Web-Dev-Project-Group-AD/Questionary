@@ -10,6 +10,6 @@ module.exports = function ({ }) {
 			password: 'theRootPassword',
 			database: 'webAppDatabase'
 		})
-
 	}
+
 }

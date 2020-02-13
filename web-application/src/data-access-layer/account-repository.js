@@ -10,12 +10,15 @@ module.exports = function ({ database }) {
 
 	return {
 
+
 		getAllAccounts: function (callback) {
+
+			
 
 			const query = `SELECT * FROM accounts ORDER BY username`
 			const values = []
 
-			database.query(query, values, function (error, accounts) {
+			database.connection.query(query, values, function (error, accounts) {
 				if (error) {
 					callback(['databaseError'], null)
 				} else {
@@ -35,7 +38,7 @@ module.exports = function ({ database }) {
 			const query = `SELECT * FROM accounts WHERE username = ? LIMIT 1`
 			const values = [username]
 
-			database.query(query, values, function (error, accounts) {
+			database.connection.query(query, values, function (error, accounts) {
 				if (error) {
 					callback(['databaseError'], null)
 				} else {
@@ -56,7 +59,7 @@ module.exports = function ({ database }) {
 			const query = `INSERT INTO accounts (username, password) VALUES (?, ?)`
 			const values = [account.username, account.password]
 
-			database.query(query, values, function (error, results) {
+			database.connection.query(query, values, function (error, results) {
 				if (error) {
 					// TODO: Look for usernameUnique violation.
 					callback(['databaseError'], null)
