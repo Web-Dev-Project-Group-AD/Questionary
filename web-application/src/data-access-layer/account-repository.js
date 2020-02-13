@@ -52,8 +52,8 @@ exports.createAccount = function (account, callback) {
 	const values = [account.username, account.password]
 
 	db.query(query, values, function (error, results) {
-		if (error) {
-			// TODO: Look for usernameUnique violation.
+		if (error != null) {
+			// Look for usernameUnique violation.
 			callback(['databaseError'], null)
 		} else {
 			callback([], results.insertId)

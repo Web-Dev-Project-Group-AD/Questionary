@@ -18,7 +18,10 @@
 	<br><br>
 	<input type="submit" class="btn" value="Register" />
 
+	<div id="errorMessage"></div>
 </form>
+
+
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
@@ -28,33 +31,41 @@
 		form.addEventListener("submit", validateRegisterForm)
 
 		function validateRegisterForm(event) {
+			
+			/*
+			const constraints =  JSON.parse('{{{validationConstraints}}}')
+			console.log(constraints)
+			*/
+
+			const minUsernameLength = 4
+			const maxUsernameLength = 20
+			const minPasswordLength = 8
+			const maxPasswordLength = 20
 
 			const username = document.getElementById("username").value
 			const password1 = document.getElementById("password1").value
 			const password2 = document.getElementById("password2").value
 
-			
-
-			let errorMessage = ""
-			const errorField = document.createElement("div")
+			const errorField = document.getElementById("errorMessage")
 			errorField.innerText = ""
-			form.appendChild(errorField)
 
-			if (username.length < 8) {
-				errorMessage = "Username needs to be atleast 8 characters long."
-			} else if (username.length > 20) {
-				errorMessage = "Username can not be longer than 20 characters."
-			} else if (password1.length < 8) {
-				errorMessage = "Password needs to be atleast 8 characters long."
-			} else if (password1.length > 20) {
-				errorMessage = "Password can not be longer than 20 characters."
+			if (minUsernameLength > username.length) {
+				errorMessage = "Username needs to be atleast " + minUsernameLength + " characters long."
+			} else if (username.length > maxUsernameLength) {
+				errorMessage = "Username can not be longer than " + maxUsernameLength + " characters."
+			} else if (minPasswordLength > password1.length) {
+				errorMessage = "Password needs to be atleast " + minPasswordLength + " characters long."
+			} else if (password1.length > maxPasswordLength) {
+				errorMessage = "Password can not be longer than " + maxPasswordLength + " characters."
 			} else if (password1 != password2) {
 				errorMessage = "Passwords dont match."
 			} else {
 				return true
 			}
+
 			errorField.innerText = errorMessage
 			event.preventDefault()
+			
 		}
 
 	})
