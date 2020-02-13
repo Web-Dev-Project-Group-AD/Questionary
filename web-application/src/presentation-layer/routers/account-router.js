@@ -7,31 +7,77 @@ module.exports = function ({ accountManager }) {
 	//TODO it could be more dependecies 
 
 
+
 	const router = express.Router()
 
-	router.get("/sign-up", function (request, response) {
-		response.render("accounts-sign-up.hbs")
-	})
+  router.get("/sign-up", function (request, response) {
+    
+    const validationConstraints = accountManager.getValidationConstraints()
+    console.log(validationConstraints)
+    response.render("accounts-sign-up.hbs", validationConstraints)
+    
+  })
 
-	router.post("/sign-up", function (request, response) {
 
-		const { username, password, passwordRepeated } = request.body
-		const account = { username, password, passwordRepeated }
+  router.post("/sign-up", function (request, response) {
 
-		accountManager.createAccount(account, function (errors) {
-			if (0 < errors.length) {
-				console.log(errors)
-				// TODO: Handle errors
-			} else {
-				response.render("home.hbs")
-			}
-		})
+    const { username, password, passwordRepeated } = request.body
+    const account = { username, password, passwordRepeated }
+    const plainTextPassword = password
 
-	})
+    accountManager.createAccount(account, function (errors) {
+      if (errors.length > 0) {
+        // TODO: Handle errors
+        response.render("error.hbs")
+      } else {
+        account.password = plainTextPassword
+        accountManager.signInAccount(account, function (error) {
+          if (error != null) {
+            // TODO: Handle errors
+            response.render("error.hbs")
+          } else {
+            const signedIn = true
+            const isAdmin = false
+            //const isAdmin = (user.userType == 'admin' ? true : false)
+            const userStatus = { signedIn, isAdmin, username }
+            request.session.userStatus = userStatus
+            console.log(username, " signed in")
+
+            response.render("home.hbs")
+          }
+        })
+      }
+    })
+    
+  })
 
 	router.get("/sign-in", function (request, response) {
+    
 		response.render("accounts-sign-in.hbs")
+    
 	})
+
+  router.post("/sign-in", function (request, response) {
+    
+    const account = { username, password }
+
+    accountManager.signInAccount(account, function (error) {
+      if (error != null) {
+        // TODO: Handle errors
+        response.render("error.hbs")
+      } else {
+        const signedIn = true
+        const isAdmin = false
+        //const isAdmin = (user.userType == 'admin' ? true : false)
+        const userStatus = { signedIn, isAdmin, username }
+        request.session.userStatus = userStatus
+        console.log(username, " signed in")
+
+        response.render("home.hbs")
+      }
+    })
+    
+  })
 
 
 
@@ -40,7 +86,6 @@ module.exports = function ({ accountManager }) {
 		//const loggedInAccounts = request.session.account
 
 		accountManager.getAllAccounts(function (errors, accounts) {
-
 			console.log(errors, accounts)
 			const model = {
 				errors: errors,
@@ -48,6 +93,7 @@ module.exports = function ({ accountManager }) {
 			}
 			response.render("accounts-list-all.hbs", model)
 		})
+
 	})
 
 	router.get('/:username', function (request, response) {

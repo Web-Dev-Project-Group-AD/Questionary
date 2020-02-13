@@ -1,4 +1,5 @@
 
+
 const MIN_USERNAME_LENGTH = 4
 const MAX_USERNAME_LENGTH = 20
 const MIN_PASSWORD_LENGTH = 8
@@ -36,6 +37,18 @@ module.exports = function ({ }) {
 
 			return errors
 
-		}
-	}
+		},
+
+
+    getValidationConstraints : function() {
+      const validationConstraints = {
+        MIN_USERNAME_LENGTH,
+        MAX_USERNAME_LENGTH,
+        MIN_PASSWORD_LENGTH,
+        MAX_PASSWORD_LENGTH 
+      }
+      return validationConstraints
+    }
+    
+  }
 }

@@ -1,19 +1,17 @@
 //const db = require('./db')
 
-/*
-	Retrieves all accounts ordered by username.
-	Possible errors: databaseError
-	Success value: The fetched accounts in an array.
-*/
+
 
 module.exports = function ({ database }) {
 
 	return {
 
-
+    /*
+  	  Retrieves all accounts ordered by username.
+  	  Possible errors: databaseError
+  	  Success value: The fetched accounts in an array.
+    */
 		getAllAccounts: function (callback) {
-
-			
 
 			const query = `SELECT * FROM accounts ORDER BY username`
 			const values = []
@@ -55,18 +53,18 @@ module.exports = function ({ database }) {
 			Success value: The id of the new account.
 		*/
 		createAccount : function (account, callback) {
-
-			const query = `INSERT INTO accounts (username, password) VALUES (?, ?)`
+      
+      const query = `INSERT INTO accounts (username, password) VALUES (?, ?)`
 			const values = [account.username, account.password]
-
-			database.connection.query(query, values, function (error, results) {
-				if (error) {
-					// TODO: Look for usernameUnique violation.
-					callback(['databaseError'], null)
-				} else {
-					callback([], results.insertId)
-				}
-			})
+      
+      db.query(query, values, function (error, results) {
+        if (error != null) {
+          // Look for usernameUnique violation.
+          callback(['databaseError'], null)
+        } else {
+          callback([], results.insertId)
+        }
+      })
 
 		}
 	}

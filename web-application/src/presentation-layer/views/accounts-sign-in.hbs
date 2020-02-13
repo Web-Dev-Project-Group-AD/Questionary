@@ -3,8 +3,26 @@
 	<p>Sign in using the form below.</p>
 </div>
 
-<form action="">
-	
-	TODO
-	
+<form method="POST" action="/accounts/sign-in">
+
+	<p1>Username:</p1>
+	<br>
+	<input type="text" name="username" id="username" />
+	<br>
+	<p1>Password:</p1>
+	<br>
+	<input type="password" name="password" id="password" />
+	<p1>Repeat password:</p1>
+	<br>
+	<br><br>
+	<input type="submit" class="btn" value="Sign in" />
+
 </form>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+
+		const form = document.querySelector("form")
+
+	})
+</script>
