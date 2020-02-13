@@ -1,9 +1,11 @@
 const awilix = require('awilix')
 
+const accountRouter = require('./routers/account-router')
+const variousRouter = require('./routers/various-router')
+
 const accountManager = require('../business-logic-layer/account-manager')
 const accountRepository = require('../data-access-layer/account-repository')
 const accountValidator = require('../business-logic-layer/account-validator')
-const accountRouter = require('./routers/account-router')
 const database = require('../data-access-layer/db')
 
 const container = awilix.createContainer()
@@ -15,9 +17,7 @@ container.register("accountValidator", awilix.asFunction(accountValidator))
 
 container.register("database", awilix.asFunction(database))
 
-
 module.exports = container
 
 //const theAccountRouter = accountContainer.resolve("accountRouter")
-
 

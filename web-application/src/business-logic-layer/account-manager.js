@@ -18,49 +18,51 @@ module.exports = function ({ accountRepository, accountValidator }) {
 			const errors = accountValidator.getErrorsNewAccount(account)
 
 			if (errors.length > 0) {
-		    callback(errors)
-	    } else {
-		    bcrypt.hash(account.password, saltRounds, function (error, hash) {
-			    // if (error) {
-			    // 	console.log(error)
-			    // 	callback(error, null)
+				callback(errors)
+			} else {
+				bcrypt.hash(account.password, saltRounds, function (error, hash) {
+					// if (error) {
+					// 	console.log(error)
+					// 	callback(error, null)
 
-			    account.password = hash
-			    accountRepository.createAccount(account, callback)
-			    callback([])
-		    })
-	    }
+					account.password = hash
+					accountRepository.createAccount(account, callback)
+					callback([])
+				})
+			}
 		},
 
 
 		getAccountByUsername: function (username, callback) {
 			accountRepository.getAccountByUsername(username, callback)
+		},
+
+		// Continue to list all other functions in account manager here.
+
+		signInAccount: function (account, callback) {
+			accountRepository.getAccountByUsername(account.username, function (error, repositoryAccount) {
+				if (error.length > 0) {
+					// TODO: handle error
+					// TODO: Look for usernameUnique violation.
+					callback(error)
+				} else {
+					bcrypt.compare(account.password, repositoryAccount.password, function (error, isValidPassword) {
+						if (error != null) {
+							callback(error)
+						} else if (!isValidPassword) {
+							error = new Error("wrongPassword")
+							callback(error)
+						} else {
+							callback(null)
+						}
+					})
+				}
+			})
+		},
+
+		getValidationConstraints: function () {
+			const validationConstraints = accountValidator.getValidationConstraints()
+			return validationConstraints
 		}
-	},
-	// Continue to list all other functions in account manager here.
-
-  signInAccount: function (account, callback) {
-    accountRepository.getAccountByUsername(account.username, function (error, repositoryAccount) {
-      if (error.length > 0) {
-        // TODO: handle error
-        // TODO: Look for usernameUnique violation.
-        callback(error)
-      } else {
-        bcrypt.compare(account.password, repositoryAccount.password, function (error, isValidPassword) {
-          if (error != null) {
-            callback(error)
-          } else if (!isValidPassword) {
-            error = new Error("wrongPassword")
-            callback(error)
-          } else {
-            callback(null)
-          }
-        })
-      }
-    })
-  },
-
-  getValidationConstraints : function () {
-    const validationConstraints = accountValidator.getValidationConstraints()
-    return validationConstraints
-  }
+	}
+}
