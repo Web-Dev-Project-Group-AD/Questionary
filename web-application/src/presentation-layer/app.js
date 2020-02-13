@@ -6,8 +6,10 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const redis = require('redis')
 
-const variousRouter = require('./routers/various-router')
-const accountRouter = require('./routers/account-router')
+const container = require('./main')
+
+const variousRouter = container.resolve("variousRouter")
+const accountRouter = container.resolve("accountRouter")
 
 const app = express()
 
