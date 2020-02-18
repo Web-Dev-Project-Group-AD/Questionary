@@ -21,13 +21,15 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=theRootPassword
-      - MYSQL_DATABASE=webAppDatabase
+      MYSQL_DATABASE: 'database'
+      MYSQL_USER: 'username'
+      MYSQL_ROOT_PASSWORD: 'password'
   postgres:
-    image: postgres
-    build: "./postgres"
+    build: "./postgres-database"
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=postgresDatabase
-      - POSTGRES_PASSWORD=theRootPassword
+      POSTGRES_DB: 'postgres'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_HOST: 'db'

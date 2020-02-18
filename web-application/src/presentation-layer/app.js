@@ -6,10 +6,9 @@ const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const redis = require('redis')
-const Sequelize = require('sequelize')
 
-// Create the sequelize database.
-const sequelize = new Sequelize('sqlite:my-database.db')
+
+// Create the postgres sequelize database.
 
 
 

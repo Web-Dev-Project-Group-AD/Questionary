@@ -1,17 +1,33 @@
 
+const Sequelize = require('sequelize')
+//const sequelize = new Sequelize('postgres:postgres-database')
 
+console.log(process.env)
 
+const sequelize = new Sequelize(
+    process.env.POSTGRES_DB,
+    process.env.POSTGRES_USER,
+    process.env.POSTGRES_PASSWORD,
+    {
+        host: process.env.DB_HOST,
+        dialect: 'postgres'
+    },
+  )
 
+const Account = sequelize.define('account', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true
+    },
+    username: Sequelize.TEXT,
+    password: Sequelize.TEXT
+})
 
 module.exports = function () {
 
     return {
 
-        Account: sequelize.define('account', {
-            id: Sequelize.INTEGER,
-            username: Sequelize.TEXT,
-            password: Sequelize.TEXT
-        }),
+
 
         /*
 			  Retrieves all accounts ordered by username.
@@ -20,11 +36,11 @@ module.exports = function () {
 		*/
         getAllAccounts: function (callback) {
             Account.findAll()
-            .then(function (accounts) {
-                callback([], accounts)
-            }).catch(function (error) {
-                callback(['databaseError'], null)
-            })
+                .then(function (accounts) {
+                    callback([], accounts)
+                }).catch(function (error) {
+                    callback(['databaseError'], null)
+                })
 
         },
 
@@ -51,11 +67,14 @@ module.exports = function () {
 			Success value: The id of the new account.
 		*/
         createAccount: function (account, callback) {
+            console.log(account)
             Account.create({
                 username: account.username, password: account.password
             }).then(function (account) {
                 callback([], account)
             }).catch(function (error) {
+                console.log("OOOPS")
+                console.log(error)
                 callback(['databaseError'], null)
             })
         }
@@ -65,7 +84,7 @@ module.exports = function () {
 
 // Example functions for accounts
 
-
+/*
 Account.findById(accountId).then(function (databaseAccount) { }).catch(function (error) { })
 
 
@@ -82,3 +101,4 @@ Account.update({
 Account.destroy({
     where: { username: accountName }
 }).then(function () { }).catch(function (error) { })
+*/
