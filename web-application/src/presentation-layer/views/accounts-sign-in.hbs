@@ -5,19 +5,25 @@
 
 <form method="POST" action="/accounts/sign-in">
 
-	<p1>Username:</p1>
+	<p>Username:</p>
 	<br>
 	<input type="text" name="username" id="username" />
 	<br>
-	<p1>Password:</p1>
+	<p>Password:</p>
 	<br>
 	<input type="password" name="password" id="password" />
-	<p1>Repeat password:</p1>
+	<p>Repeat password:</p>
 	<br>
 	<br><br>
 	<input type="submit" class="btn" value="Sign in" />
 
 </form>
+
+<div id="signup">
+<p>Not a user?</p>
+<p><a href="/accounts/sign-un">Sign Up</a></p>
+
+</div>
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
