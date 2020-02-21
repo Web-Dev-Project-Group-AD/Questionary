@@ -1,5 +1,7 @@
 
 // Include all requires.
+require('dotenv').config()
+
 const path = require('path')
 const express = require('express')
 const expressHandlebars = require('express-handlebars')

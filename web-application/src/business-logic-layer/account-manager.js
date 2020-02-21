@@ -13,50 +13,50 @@ module.exports = function ({ accountRepository, accountValidator }) {
 			})
 		},
 
-		createAccount: function (account, callback) {
+		createAccount(account) {
 			// Validate the account.
+			console.log(account)
 			const errors = accountValidator.getErrorsNewAccount(account)
 
 			if (errors.length > 0) {
-				callback(errors)
+				Promise.reject(errors)
 			} else {
-				bcrypt.hash(account.password, saltRounds, function (error, hash) {
-					// if (error) {
-					// 	console.log(error)
-					// 	callback(error, null)
-
-					account.password = hash
-					accountRepository.createAccount(account, callback)
-					callback([])
+				return new Promise((resolve, reject) => {
+					bcrypt.hash(account.password, saltRounds
+					).then(hash => {
+						account.password = hash
+						return accountRepository.createAccount(account)
+					}).then(createdAccount => {
+						resolve(createdAccount)
+					}).catch(errors => {
+						reject(errors)
+					})
 				})
 			}
 		},
-
 
 		getAccountByUsername: function (username, callback) {
 			accountRepository.getAccountByUsername(username, callback)
 		},
 
-		// Continue to list all other functions in account manager here.
+		signInAccount(account) {
+			console.log("signInAccount", account)
 
-		signInAccount: function (account, callback) {
-			accountRepository.getAccountByUsername(account.username, function (error, repositoryAccount) {
-				if (error.length > 0) {
-					// TODO: handle error
-					// TODO: Look for usernameUnique violation.
-					callback(error)
-				} else {
-					bcrypt.compare(account.password, repositoryAccount.password, function (error, isValidPassword) {
-						if (error != null) {
-							callback(error)
-						} else if (!isValidPassword) {
-							error = new Error("wrongPassword")
-							callback(error)
+			return new Promise((resolve, reject) => {
+				accountRepository.getAccountByUsername(account.username
+					).then(returnedAccount => {
+					bcrypt.compare(account.password, returnedAccount.password
+					).then(isValidPassword => {
+						if (!isValidPassword) {
+							error = new Error("Wrong password.")
 						} else {
-							callback(null)
+							resolve(returnedAccount)
 						}
+					}).catch(error => {
+						const errors = [error]
+						reject(errors)
 					})
-				}
+				})
 			})
 		},
 

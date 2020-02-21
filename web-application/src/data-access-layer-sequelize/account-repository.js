@@ -1,47 +1,58 @@
 
 const Sequelize = require('sequelize')
+
 //const sequelize = new Sequelize('postgres:postgres-database')
 
-console.log(process.env)
 
 const sequelize = new Sequelize(
-    process.env.POSTGRES_DB,
-    process.env.POSTGRES_USER,
+    /*process.env.POSTGRES_DB, 
+    process.env.POSTGRES_USER, 
     process.env.POSTGRES_PASSWORD,
+    */
+    "postgres",
+    "admin",
+    "password",
     {
-        host: process.env.DB_HOST,
-        dialect: 'postgres'
+        dialect: 'postgres',
+        host: "192.168.99.100" //process.env.POSTGRES_HOST
     },
-  )
+)
 
 const Account = sequelize.define('account', {
     id: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     username: Sequelize.TEXT,
     password: Sequelize.TEXT
 })
 
+sequelize.sync({ force: true })
+    .then(() => {
+        console.log(`Database & tables created!`)
+    })
+
+
 module.exports = function () {
 
     return {
-
-
 
         /*
 			  Retrieves all accounts ordered by username.
 			  Possible errors: databaseError
 			  Success value: The fetched accounts in an array.
 		*/
-        getAllAccounts: function (callback) {
-            Account.findAll()
-                .then(function (accounts) {
-                    callback([], accounts)
-                }).catch(function (error) {
-                    callback(['databaseError'], null)
+        getAllAccounts() {
+            return new Promise((resolve, reject) => {
+                Account.findAll(
+                ).then(account => {
+                    resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject("database error")
                 })
-
+            })
         },
 
         /*
@@ -49,15 +60,17 @@ module.exports = function () {
 			Possible errors: databaseError
 			Success value: The fetched account, or null if no account has that username.
 		*/
-        getAccountByUsername: function (account, callback) {
-            Account.findOne({
-                where: { username: account.username }
-            }).then(function (account) {
-                callback([], account)
-            }).catch(function (error) {
-                callback(['databaseError'], null)
+        getAccountByUsername(username) {
+            return new Promise((resolve, reject) => {
+                Account.findOne({
+                    where: { username: username }
+                }).then(account => {
+                    resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject("database error")
+                })
             })
-
         },
 
         /*
@@ -66,16 +79,18 @@ module.exports = function () {
 			Possible errors: databaseError, usernameTaken
 			Success value: The id of the new account.
 		*/
-        createAccount: function (account, callback) {
-            console.log(account)
-            Account.create({
-                username: account.username, password: account.password
-            }).then(function (account) {
-                callback([], account)
-            }).catch(function (error) {
-                console.log("OOOPS")
-                console.log(error)
-                callback(['databaseError'], null)
+        createAccount(account) {
+            console.log("hello")
+            return new Promise((resolve, reject) => {
+                Account.create({
+                    username: account.username,
+                    password: account.password
+                }).then(account => {
+                    resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject("database error")
+                })
             })
         }
 
