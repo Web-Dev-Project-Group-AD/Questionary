@@ -7,9 +7,14 @@ module.exports = function ({ accountRepository, accountValidator }) {
 	// Name all the dependencies in the curly brackets. 
 
 	return {
-		getAllAccounts: function (callback) {
-			accountRepository.getAllAccounts(function (errors, accounts) {
-				callback(errors, accounts)
+		getAllAccounts() {
+			return new Promise((resolve, reject) => {
+				accountRepository.getAllAccounts(
+				).then(accounts => {
+					resolve(accounts)
+				}).catch(error => {
+					reject(error)
+				})
 			})
 		},
 
@@ -34,8 +39,15 @@ module.exports = function ({ accountRepository, accountValidator }) {
 			}
 		},
 
-		getAccountByUsername: function (username, callback) {
-			accountRepository.getAccountByUsername(username, callback)
+		getAccountByUsername(username) {
+			return new Promise((resolve, reject) => {
+				accountRepository.getAccountByUsername(username
+				).then(account => {
+					resolve(account)
+				}).catch(error => {
+					reject(error)
+				})
+			})
 		},
 
 		signInAccount(account) {
@@ -43,7 +55,7 @@ module.exports = function ({ accountRepository, accountValidator }) {
 
 			return new Promise((resolve, reject) => {
 				accountRepository.getAccountByUsername(account.username
-					).then(returnedAccount => {
+				).then(returnedAccount => {
 					bcrypt.compare(account.password, returnedAccount.password
 					).then(isValidPassword => {
 						if (!isValidPassword) {
