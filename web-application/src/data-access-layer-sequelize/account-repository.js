@@ -1,40 +1,26 @@
-
 const Sequelize = require('sequelize')
 
-//const sequelize = new Sequelize('postgres:postgres-database')
+module.exports = function ({sequelize}) {
 
-
-const sequelize = new Sequelize(
-    /*process.env.POSTGRES_DB, 
-    process.env.POSTGRES_USER, 
-    process.env.POSTGRES_PASSWORD,
-    */
-    "postgres",
-    "admin",
-    "password",
-    {
-        dialect: 'postgres',
-        host: "192.168.99.100" //process.env.POSTGRES_HOST
-    },
-)
-
-const Account = sequelize.define('account', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    username: Sequelize.TEXT,
-    password: Sequelize.TEXT
-})
-
-sequelize.sync({ force: true })
-    .then(() => {
+    const AccountModel = sequelize.define('account', {
+        id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        username: Sequelize.TEXT,
+        password: Sequelize.TEXT
+        /*,
+        email: Sequelize.TEXT,
+        isAdmin: Sequelize.BOOLEAN,
+        */
+    })
+    
+    sequelize.sync({
+        force: true
+    }).then(() => {
         console.log(`Database & tables created!`)
     })
-
-
-module.exports = function () {
 
     return {
 
@@ -45,12 +31,12 @@ module.exports = function () {
 		*/
         getAllAccounts() {
             return new Promise((resolve, reject) => {
-                Account.findAll(
+                AccountModel.findAll(
                 ).then(account => {
                     resolve(account)
                 }).catch(error => {
                     console.log(error)
-                    reject("database error")
+                    reject("db_error")
                 })
             })
         },
@@ -62,13 +48,13 @@ module.exports = function () {
 		*/
         getAccountByUsername(username) {
             return new Promise((resolve, reject) => {
-                Account.findOne({
+                AccountModel.findOne({
                     where: { username: username }
                 }).then(account => {
                     resolve(account)
                 }).catch(error => {
                     console.log(error)
-                    reject("database error")
+                    reject("db_error")
                 })
             })
         },
@@ -80,16 +66,15 @@ module.exports = function () {
 			Success value: The id of the new account.
 		*/
         createAccount(account) {
-            console.log("hello")
             return new Promise((resolve, reject) => {
-                Account.create({
+                AccountModel.create({
                     username: account.username,
                     password: account.password
                 }).then(account => {
                     resolve(account)
                 }).catch(error => {
                     console.log(error)
-                    reject("database error")
+                    reject("db_error")
                 })
             })
         }
@@ -97,23 +82,23 @@ module.exports = function () {
     }
 }
 
-// Example functions for accounts
+// Sequelize example functions
 
 /*
-Account.findById(accountId).then(function (databaseAccount) { }).catch(function (error) { })
+AccountModel.findById(accountId).then(function (databaseAccount) { }).catch(function (error) { })
 
 
-Account.findAll({
+AccountModel.findAll({
     where: { username: accountName }
 }).then(function (databaseAccounts) { }).catch(function (error) { })
 
-Account.update({
+AccountModel.update({
     username: newUsername
 }, {
     where: { id: accountId }
 }).then(function (updatedAccounts) { }).catch(function (error) { })
 
-Account.destroy({
+AccountModel.destroy({
     where: { username: accountName }
 }).then(function () { }).catch(function (error) { })
 */

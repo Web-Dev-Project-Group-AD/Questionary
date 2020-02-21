@@ -9,11 +9,6 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const redis = require('redis')
 
-
-// Create the postgres sequelize database.
-
-
-
 // Create the dependency-injection container.
 const container = require('./main')
 

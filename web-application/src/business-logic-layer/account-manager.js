@@ -15,7 +15,6 @@ module.exports = function ({ accountRepository, accountValidator }) {
 
 		createAccount(account) {
 			// Validate the account.
-			console.log(account)
 			const errors = accountValidator.getErrorsNewAccount(account)
 
 			if (errors.length > 0) {
