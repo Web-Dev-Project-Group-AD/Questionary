@@ -61,7 +61,8 @@ module.exports = function ({ accountManager }) {
         }).catch((errors) => {
             // TODO: More complex error handling
             console.log(errors)
-            response.render("error.hbs")
+            const errorMessage = "Wrong Username or Password."
+            response.render("accounts-sign-in.hbs", { errorMessage, username })
         })
     })
 
