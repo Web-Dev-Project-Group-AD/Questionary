@@ -1,3 +1,7 @@
+CREATE USER 'root'@'%' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON database.* TO 'root'@'%' IDENTIFIED BY 'password';
+
 -- Create a table to store user accounts in.
 CREATE TABLE IF NOT EXISTS accounts (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

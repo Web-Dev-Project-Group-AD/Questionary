@@ -22,14 +22,14 @@ services:
       - "3306:3306"
     environment:
       MYSQL_DATABASE: 'database'
-      MYSQL_USER: 'username'
+      MYSQL_USER: 'admin'
       MYSQL_ROOT_PASSWORD: 'password'
   postgres:
     build: "./postgres-database"
     ports:
       - "5432:5432"
     environment:
+      #POSTGRES_HOST: 'db'
       POSTGRES_DB: 'postgres'
       POSTGRES_USER: 'admin'
       POSTGRES_PASSWORD: 'password1'
-      POSTGRES_HOST: 'db'

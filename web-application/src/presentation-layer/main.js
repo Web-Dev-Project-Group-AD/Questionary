@@ -20,20 +20,27 @@ container.register("accountValidator", awilix.asFunction(accountValidator))
 // Choose either Data-access-layer or Data-access-layer-sequelize
 
 // Data-access-layer 
-/*
-const database = require('../data-access-layer/db')
+
+const Database = require('../data-access-layer/db')
+container.register("database", awilix.asClass(Database))
+
+
+
+
+
 const accountRepository = require('../data-access-layer/account-repository')
 
-container.register("database", awilix.asFunction(database))
+//container.register("database", awilix.asClass(database))
 container.register("accountRepository", awilix.asFunction(accountRepository))
-*/
+
 
 // Data-access-layer-sequelize
+/*
 const sequelize = require('../data-access-layer-sequelize/sequelize-setup')
 const accountRepository = require('../data-access-layer-sequelize/account-repository')
 
 container.register("sequelize", awilix.asFunction(sequelize))
 container.register("accountRepository", awilix.asFunction(accountRepository))
-
+*/
 
 module.exports = container
