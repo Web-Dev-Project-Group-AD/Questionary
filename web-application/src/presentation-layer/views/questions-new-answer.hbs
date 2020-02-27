@@ -1,0 +1,15 @@
+<div class="question">
+    <h3>{{question}}</h3>
+    <br>
+    <p>{{description}}</p>
+    <br>
+</div>
+
+<form class="question-answer" method="POST" action="/questions/by-id/answer">
+    <br>
+	<input type="text" name="answer" id="answer" placeholder="Answer" />
+	<br>
+	<input type="submit" class="btn" value="Post answer" />
+    <br>
+    <div id="error-message"></div>
+</form>

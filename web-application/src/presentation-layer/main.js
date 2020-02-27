@@ -5,9 +5,11 @@ const container = awilix.createContainer()
 // Presentation-layer
 const variousRouter = require('./routers/various-router')
 const accountRouter = require('./routers/account-router')
+const questionRouter = require('./routers/question-router')
 
 container.register("variousRouter", awilix.asFunction(variousRouter))
 container.register("accountRouter", awilix.asFunction(accountRouter))
+container.register('questionRouter', awilix.asFunction(questionRouter))
 
 // Business-logic-layer
 const accountManager = require('../business-logic-layer/account-manager')

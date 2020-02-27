@@ -1,0 +1,14 @@
+ <div class="question">
+            <h3>{{question}}</h3>
+            <br>
+            <p>{{description}}</p>
+            <br>
+        </div>
+
+        {{#if answers}}
+            {{#each answers}}
+            <div class="answer">
+                <p>{{content}}</p>
+            </div>
+            {{/each}}
+        {{/if}}
