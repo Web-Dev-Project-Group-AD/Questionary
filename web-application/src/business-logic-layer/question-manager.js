@@ -18,8 +18,6 @@ module.exports = function ({ questionValidator, questionRepository }) {
 					})
 				})
 			}
-
-			const errors = questionValidator()
 		},
 
 		createAnswer(answerObject) {
@@ -39,33 +37,33 @@ module.exports = function ({ questionValidator, questionRepository }) {
 			}
 		},
 
-		getAllQuestions() {
+        getQuestionsByAnswerStatus(isAnswered) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getAllQuestions(
-				).then(questionObject => {
-					resolve(questionObject)
+				questionRepository.getQuestionsByAnswerStatus(isAnswered
+				).then(questions => {
+					resolve(questions)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+		
+		getQuestionsByCategory(category, isAnswered) {
+			return new Promise((resolve, reject) => {
+				questionRepository.getQuestionsByCategory(category, isAnswered
+				).then(questions => {
+					resolve(questions)
 				}).catch(error => {
 					reject(error)
 				})
 			})
 		},
 
-        getQuestionByAnswerStatus(isAnswered) {
+        getAnswersByIdType(idType, id) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getQuestionByAnswerStatus(isAnswered
-				).then(questionObject => {
-					resolve(questionObject)
-				}).catch(error => {
-					reject(error)
-				})
-			})
-        },
-        
-        getAnswerByIdType(idType, id) {
-			return new Promise((resolve, reject) => {
-				questionRepository.getAnswerByIdType(idType, id
-				).then(answerObject => {
-					resolve(answerObject)
+				questionRepository.getAnswersByIdType(idType, id
+				).then(answers => {
+					resolve(answers)
 				}).catch(error => {
 					reject(error)
 				})
