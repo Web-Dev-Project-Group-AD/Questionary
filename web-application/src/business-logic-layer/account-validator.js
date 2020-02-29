@@ -1,54 +1,53 @@
 
+const USERNAME_MIN_LENGTH = 4
+const USERNAME_MAX_LENGTH = 20
+const PASSWORD_MIN_LENGTH = 8
+const PASSWORD_MAX_LENGTH = 20
 
-const MIN_USERNAME_LENGTH = 4
-const MAX_USERNAME_LENGTH = 20
-const MIN_PASSWORD_LENGTH = 8
-const MAX_PASSWORD_LENGTH = 20
 
-module.exports = function ({ }) {
+module.exports = () => {
 
 	return {
 
-		getErrorsNewAccount: function (account) {
-
+		getErrorsNewAccount(account) {
 			const errors = []
 
-			// Validate username.
 			if (!account.hasOwnProperty("username")) {
 				errors.push("usernameMissing")
-			} else if (account.username.length < MIN_USERNAME_LENGTH) {
+			} else if (account.username.length < USERNAME_MIN_LENGTH) {
 				errors.push("usernameTooShort")
-			} else if (MAX_USERNAME_LENGTH < account.username.length) {
+			} else if (USERNAME_MAX_LENGTH < account.username.length) {
 				errors.push("usernameTooLong")
 			}
 
-			// Validate password.
 			if (!account.hasOwnProperty("password")) {
 				errors.push("passwordMissing")
 			} else if (!account.hasOwnProperty("passwordRepeated")) {
 				errors.push("repeatPasswordMissing")
 			} else if (account.password != account.passwordRepeated) {
 				errors.push("passwordsDontMatch")
-			} else if (account.password.length < MIN_PASSWORD_LENGTH) {
+			} else if (account.password.length < PASSWORD_MIN_LENGTH) {
 				errors.push("passwordTooShort")
-			} else if (MAX_PASSWORD_LENGTH < account.password.length) {
+			} else if (PASSWORD_MAX_LENGTH < account.password.length) {
 				errors.push("passwordTooLong")
 			}
 
 			return errors
-
 		},
 
 
-    getValidationConstraints : function() {
-      const validationConstraints = {
-        MIN_USERNAME_LENGTH,
-        MAX_USERNAME_LENGTH,
-        MIN_PASSWORD_LENGTH,
-        MAX_PASSWORD_LENGTH 
-      }
-      return validationConstraints
-    }
-    
-  }
+		getValidationConstraints() {
+
+			const validationConstraints = {
+				USERNAME_MIN_LENGTH: USERNAME_MIN_LENGTH,
+				USERNAME_MAX_LENGTH: USERNAME_MAX_LENGTH,
+				PASSWORD_MIN_LENGTH: PASSWORD_MIN_LENGTH,
+				PASSWORD_MAX_LENGTH: PASSWORD_MAX_LENGTH
+			}
+
+			return validationConstraints
+		}
+
+	}
+
 }

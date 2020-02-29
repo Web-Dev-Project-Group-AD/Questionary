@@ -19,9 +19,9 @@ module.exports = () => {
 
             if (!account.hasOwnProperty("question")) {
                 errors.push("questionMissing")
-            } else if (questionObject.question.length < USERNAME_MIN_LENGTH) {
+            } else if (questionObject.question.length < QUESTION_MIN_LENGTH) {
                 errors.push("questionTooShort")
-            } else if (USERNAME_MAX_LENGTH < questionObject.username.length) {
+            } else if (QUESTION_MAX_LENGTH < questionObject.username.length) {
                 errors.push("questionTooLong")
             }
 
@@ -30,6 +30,7 @@ module.exports = () => {
                 errors.push("descriptionTooLong")
             }
 
+            return errors
         },
 
         getErrorsNewAnswer(answerObject) {
@@ -43,6 +44,10 @@ module.exports = () => {
             } else if (ANSWER_MAX_LENGTH < answerObject.answer.length) {
                 errors.push("answerTooLong")
             }
+
+            return errors
         }
+
     }
+    
 }
