@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt') //TODO: move dependency?
 const saltRounds = 10
 
 
-module.exports = function ({ accountRepository, accountValidator }) {
+module.exports = ({ accountRepository, accountValidator }) => {
 
 	return {
 		getAllAccounts() {

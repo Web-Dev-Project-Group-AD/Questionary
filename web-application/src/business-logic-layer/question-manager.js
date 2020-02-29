@@ -50,9 +50,9 @@ module.exports = function ({ questionValidator, questionRepository }) {
 			})
 		},
 
-        getQuestionByAnsweredStatus() {
+        getQuestionByAnswerStatus(isAnswered) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getQuestionByAnswerStatus(
+				questionRepository.getQuestionByAnswerStatus(isAnswered
 				).then(questionObject => {
 					resolve(questionObject)
 				}).catch(error => {
@@ -61,9 +61,9 @@ module.exports = function ({ questionValidator, questionRepository }) {
 			})
         },
         
-        getAnswerById() {
+        getAnswerByIdType(idType, id) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getAnswerById(
+				questionRepository.getAnswerByIdType(idType, id
 				).then(answerObject => {
 					resolve(answerObject)
 				}).catch(error => {

@@ -1,12 +1,9 @@
 
-
 const QUESTION_MIN_LENGTH = 6
 const QUESTION_MAX_LENGTH = 60
 const QUESTION_DESCRIPTION_MAX_LENGTH = 255
 const ANSWER_MIN_LENGTH = 8
 const ANSWER_MAX_LENGTH = 5000
-
-
 
 
 module.exports = () => {
@@ -49,5 +46,5 @@ module.exports = () => {
         }
 
     }
-    
+
 }
