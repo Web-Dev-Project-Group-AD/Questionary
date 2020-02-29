@@ -4,7 +4,6 @@ const saltRounds = 10
 
 
 module.exports = function ({ accountRepository, accountValidator }) {
-	// Name all the dependencies in the curly brackets. 
 
 	return {
 		getAllAccounts() {
@@ -19,7 +18,6 @@ module.exports = function ({ accountRepository, accountValidator }) {
 		},
 
 		createAccount(account) {
-			// Validate the account.
 			const errors = accountValidator.getErrorsNewAccount(account)
 
 			if (errors.length > 0) {
@@ -52,7 +50,6 @@ module.exports = function ({ accountRepository, accountValidator }) {
 
 		signInAccount(account) {
 
-
 			if (!account.username.length > 0 || !account.password.length > 0) {
 				const errors = [new Error("error")]
 				Promise.reject(errors)
@@ -81,5 +78,7 @@ module.exports = function ({ accountRepository, accountValidator }) {
 			const validationConstraints = accountValidator.getValidationConstraints()
 			return validationConstraints
 		}
+
 	}
+
 }
