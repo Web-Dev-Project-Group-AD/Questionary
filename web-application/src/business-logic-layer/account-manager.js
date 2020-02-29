@@ -53,32 +53,31 @@ module.exports = function ({ accountRepository, accountValidator }) {
 		signInAccount(account) {
 
 
-
-
-			return new Promise((resolve, reject) => {
-				if (!account.username.length > 0 || !account.password.length > 0) {
-					const errors = ["error"]
-					reject(errors)
-				} else {
+			if (!account.username.length > 0 || !account.password.length > 0) {
+				const errors = [new Error("error")]
+				Promise.reject(errors)
+			} else {
+				return new Promise((resolve, reject) => {
 					accountRepository.getAccountByUsername(account.username
-					).then(returnedAccount => {
-						bcrypt.compare(account.password, returnedAccount.password
-					).then(isValidPassword => {
+					).then(returnedAccount => bcrypt.compare(account.password, returnedAccount.password
+					)).then(isValidPassword => {
+						console.log("bcrypt compare")
 						if (!isValidPassword) {
-							error = new Error()
+							error = new Error("invalid password")
+							reject(error)
 						} else {
 							resolve(returnedAccount)
 						}
 					}).catch(error => {
-						const errors = ["error"]
+						console.log("signInAccount error catch")
+						const errors = [error]
 						reject(errors)
 					})
 				})
 			}
-			})
 		},
 
-		getValidationConstraints: function () {
+		getValidationConstraints: () => {
 			const validationConstraints = accountValidator.getValidationConstraints()
 			return validationConstraints
 		}

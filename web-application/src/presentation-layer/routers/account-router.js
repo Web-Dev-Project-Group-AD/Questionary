@@ -17,16 +17,12 @@ module.exports = function ({ accountManager }) {
         accountManager.createAccount(account
         ).then(createdAccount => {
             // TODO: handle the created account?
-            account.password = account.passwordRepeated
-            account.passwordRepeated = ""
-        }).then(accountManager.signInAccount(account
-        )).then(returnedAccount => {
-            // TODO: handle the returned account?s
+            const userId = createdAccount.id
             const signedIn = true
             const isAdmin = false 
             // TODO: check if user is admin
             //const isAdmin = (user.userType == 'admin' ? true : false)
-            const userStatus = { signedIn, isAdmin, username }
+            const userStatus = { signedIn, isAdmin, username, userId }
             request.session.userStatus = userStatus
             console.log(username, " signed in")
             response.render("home.hbs")
@@ -70,7 +66,6 @@ module.exports = function ({ accountManager }) {
 
         //const loggedInAccounts = request.session.account
 
-
         accountManager.getAllAccounts(
         ).then(accounts => {
             const model = { accounts: accounts }
@@ -82,7 +77,6 @@ module.exports = function ({ accountManager }) {
     })
 
     router.get('/:username', function (request, response) {
-
 
         const username = request.params.username
 

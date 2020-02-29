@@ -13,7 +13,7 @@ module.exports =  ({ database }) => {
 		*/
 		getAllAccounts() {
 			
-			const query = `SELECT * FROM accounts ORDER BY username`
+			const query = "SELECT * FROM accounts ORDER BY username"
 			const values = []
 
 			return new Promise((resolve, reject) => {
@@ -35,14 +35,21 @@ module.exports =  ({ database }) => {
 		getAccountByUsername(username) {
 
 
-			const query = `SELECT * FROM accounts WHERE username = ? LIMIT 1`
+			const query = "SELECT * FROM accounts WHERE username = ? LIMIT 1"
 			const values = [username]
 			
 			return new Promise((resolve, reject) => {
 				database.query(query, values
 				).then(accounts => {
+					if (accounts.length > 0) {
+						console.log("Matching accounts: ", accounts)
 						resolve(accounts[0])
+					} else {
+						console.log("error!")
+						error = new Error("account does not exist")
+					} 
                 }).catch(error => {
+					console.log(error)
 					reject(error)
 				})
 			})
@@ -57,7 +64,7 @@ module.exports =  ({ database }) => {
 		*/
 		createAccount(account) {
 
-			const query = `INSERT INTO accounts (username, password) VALUES (?, ?)`
+			const query = "INSERT INTO accounts (username, password) VALUES (?, ?)"
 			const values = [account.username, account.password]
 
 			return new Promise((resolve, reject) => {
