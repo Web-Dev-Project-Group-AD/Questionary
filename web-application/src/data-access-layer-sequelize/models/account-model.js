@@ -1,6 +1,6 @@
 sequelize = require('sequelize')
 
-module.exports = sequelize.define('account', {
+module.exports = ({}) => sequelize.define('Account', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,

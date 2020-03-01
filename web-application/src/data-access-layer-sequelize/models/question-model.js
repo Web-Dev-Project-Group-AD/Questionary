@@ -11,7 +11,7 @@ module.exports = ({}) => sequelize.define('Question', {
         allowNull: false,
         references: {
             model: Account,
-            key: 'id'
+            key: 'username'
         }
     },
     category: {
@@ -19,7 +19,7 @@ module.exports = ({}) => sequelize.define('Question', {
         allowNull: false,
         references: {
             model: QuestionCategory,
-            key: 'category'
+            key: 'name'
         }
     },
     question: {
@@ -38,5 +38,4 @@ module.exports = ({}) => sequelize.define('Question', {
     lastEdited: {
         type: Sequelize.DATE,
     }
-
 })
