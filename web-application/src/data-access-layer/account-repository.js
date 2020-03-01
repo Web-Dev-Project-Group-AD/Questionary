@@ -46,7 +46,7 @@ module.exports =  ({ database }) => {
 						resolve(accounts[0])
 					} else {
 						console.log("error!")
-						error = new Error("account does not exist")
+						throw new Error("account does not exist")
 					} 
                 }).catch(error => {
 					console.log(error)

@@ -10,7 +10,7 @@ module.exports = function ({ questionValidator, questionRepository }) {
 				Promise.reject(errors)
 			} else {
 				return new Promise((resolve, reject) => {
-					questionRepository.createAccount(questionObject
+					questionRepository.createQuestion(questionObject
 					).then(createdQuestionObject => {
 						resolve(createdQuestionObject)
 					}).catch(errors => {

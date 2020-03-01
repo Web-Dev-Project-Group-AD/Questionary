@@ -1,6 +1,6 @@
 const express = require('express')
 
-module.exports = function ({ }) {
+module.exports = function ({ questionManager }) {
 
     const router = express.Router()
 
@@ -11,11 +11,26 @@ module.exports = function ({ }) {
 
     router.post("/new-post", function (request, response) {
 
+        const author = request.session.userStatus.username
+        const { category, question, description } = request.body
+        const questionObject = { author, category, question, description }
+
+        questionManager.createQuestion(questionObject
+        ).then(createdQuestionObject => {
+
+            res.redirect('/by-user/:author')
+
+        }).catch(errors => {
+            // TODO: More complex error handling
+            console.log(errors)
+            response.render("questions-new-post.hbs", questionObject, errors)
+        })
+
+
         // TODO: validate
         // TODO:  post to database
 
         // const username = request.sessions.username
-        res.redirect('questions/by-user/:username');
     })
 
     router.get("/unanswered", function (request, response) {

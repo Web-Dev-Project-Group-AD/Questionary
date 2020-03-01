@@ -14,18 +14,25 @@ module.exports = () => {
 
             const errors = []
 
-            if (!account.hasOwnProperty("question")) {
+            if (!questionObject.hasOwnProperty("question")) {
                 errors.push("questionMissing")
             } else if (questionObject.question.length < QUESTION_MIN_LENGTH) {
                 errors.push("questionTooShort")
-            } else if (QUESTION_MAX_LENGTH < questionObject.username.length) {
+            } else if (QUESTION_MAX_LENGTH < questionObject.author.length) {
                 errors.push("questionTooLong")
             }
 
-            if (account.hasOwnProperty("description") &&
+            
+            if (questionObject.hasOwnProperty("description") &&
                 QUESTION_DESCRIPTION_MAX_LENGTH < questionObject.description.length) {
                 errors.push("descriptionTooLong")
             }
+
+            
+            if (!questionObject.hasOwnProperty("category")) {
+                errors.push("questionMissing")
+            } 
+
 
             return errors
         },
