@@ -1,16 +1,16 @@
 
-module.exports = function ({ questionValidator, questionRepository }) {
+module.exports = function ({ QuestionValidator, QuestionRepository }) {
 
 	return {
 
 		createQuestion(questionObject) {
-			const errors = questionValidator.getErrorsNewQuestion(questionObject)
+			const errors = QuestionValidator.getErrorsNewQuestion(questionObject)
 
 			if (errors.length > 0) {
 				Promise.reject(errors)
 			} else {
 				return new Promise((resolve, reject) => {
-					questionRepository.createQuestion(questionObject
+					QuestionRepository.createQuestion(questionObject
 					).then(createdQuestionObject => {
 						resolve(createdQuestionObject)
 					}).catch(errors => {
@@ -21,13 +21,13 @@ module.exports = function ({ questionValidator, questionRepository }) {
 		},
 
 		createAnswer(answerObject) {
-			const errors = questionValidator.getErrorsNewAnswer(answerObject)
+			const errors = QuestionValidator.getErrorsNewAnswer(answerObject)
 
 			if (errors.length > 0) {
 				Promise.reject(errors)
 			} else {
 				return new Promise((resolve, reject) => {
-					questionRepository.createAnswer(answerObject
+					QuestionRepository.createAnswer(answerObject
 					).then(createdAnswerObject => {
 						resolve(createdAnswerObject)
 					}).catch(errors => {
@@ -39,7 +39,7 @@ module.exports = function ({ questionValidator, questionRepository }) {
 
         getQuestionsByAnswerStatus(isAnswered) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getQuestionsByAnswerStatus(isAnswered
+				QuestionRepository.getQuestionsByAnswerStatus(isAnswered
 				).then(questions => {
 					resolve(questions)
 				}).catch(error => {
@@ -50,7 +50,7 @@ module.exports = function ({ questionValidator, questionRepository }) {
 		
 		getQuestionsByCategory(category, isAnswered) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getQuestionsByCategory(category, isAnswered
+				QuestionRepository.getQuestionsByCategory(category, isAnswered
 				).then(questions => {
 					resolve(questions)
 				}).catch(error => {
@@ -61,7 +61,7 @@ module.exports = function ({ questionValidator, questionRepository }) {
 
         getAnswersByIdType(idType, id) {
 			return new Promise((resolve, reject) => {
-				questionRepository.getAnswersByIdType(idType, id
+				QuestionRepository.getAnswersByIdType(idType, id
 				).then(answers => {
 					resolve(answers)
 				}).catch(error => {

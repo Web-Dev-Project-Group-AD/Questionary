@@ -1,6 +1,6 @@
 const express = require('express')
 
-module.exports = function ({ questionManager }) {
+module.exports = function ({  }) {
 
     const router = express.Router()
 
@@ -15,7 +15,7 @@ module.exports = function ({ questionManager }) {
         const { category, question, description } = request.body
         const questionObject = { author, category, question, description }
 
-        questionManager.createQuestion(questionObject
+        QuestionManager.createQuestion(questionObject
         ).then(createdQuestionObject => {
 
             res.redirect('/by-user/:author')

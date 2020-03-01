@@ -1,6 +1,6 @@
-sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 
-module.exports = ({}) => sequelize.define('Answer', {
+module.exports = ({sequelize, AccountModel, QuestionModel}) => sequelize.define('AnswerModel', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -10,7 +10,7 @@ module.exports = ({}) => sequelize.define('Answer', {
         type: Sequelize.TEXT,
         allowNull: false,
         references: {
-            model: Account,
+            model: AccountModel,
             key: 'username'
         }
     },
@@ -18,7 +18,7 @@ module.exports = ({}) => sequelize.define('Answer', {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-            model: Question,
+            model: QuestionModel,
             key: 'id'
         }
     },

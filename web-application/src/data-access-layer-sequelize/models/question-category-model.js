@@ -1,6 +1,6 @@
-sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 
-module.exports = ({}) => sequelize.define('QuestionCategory', {
+module.exports = ({sequelize}) => sequelize.define('QuestionCategoryModel', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,

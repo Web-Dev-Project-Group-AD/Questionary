@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 CREATE TABLE IF NOT EXISTS questionCategories (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	categoryName VARCHAR(50) NOT NULL,
-	CONSTRAINT nameUnique UNIQUE (name)
+	CONSTRAINT nameUnique UNIQUE (categoryName)
 );
 
 -- Create a table to store questions in.

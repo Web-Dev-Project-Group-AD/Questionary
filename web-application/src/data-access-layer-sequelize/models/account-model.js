@@ -1,6 +1,6 @@
-sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 
-module.exports = ({}) => sequelize.define('Account', {
+module.exports = ({sequelize}) => sequelize.define('AccountModel', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,

@@ -3,12 +3,12 @@ const bcrypt = require('bcrypt') //TODO: move dependency?
 const saltRounds = 10
 
 
-module.exports = ({ accountRepository, accountValidator }) => {
+module.exports = ({ AccountRepository, AccountValidator }) => {
 
 	return {
 		getAllAccounts() {
 			return new Promise((resolve, reject) => {
-				accountRepository.getAllAccounts(
+				AccountRepository.getAllAccounts(
 				).then(accounts => {
 					resolve(accounts)
 				}).catch(error => {
@@ -18,7 +18,7 @@ module.exports = ({ accountRepository, accountValidator }) => {
 		},
 
 		createAccount(account) {
-			const errors = accountValidator.getErrorsNewAccount(account)
+			const errors = AccountValidator.getErrorsNewAccount(account)
 
 			if (errors.length > 0) {
 				Promise.reject(errors)
@@ -27,7 +27,7 @@ module.exports = ({ accountRepository, accountValidator }) => {
 					bcrypt.hash(account.password, saltRounds
 					).then(hash => {
 						account.password = hash
-						return accountRepository.createAccount(account)
+						return AccountRepository.createAccount(account)
 					}).then(createdAccount => {
 						resolve(createdAccount)
 					}).catch(errors => {
@@ -39,7 +39,7 @@ module.exports = ({ accountRepository, accountValidator }) => {
 
 		getAccountByUsername(username) {
 			return new Promise((resolve, reject) => {
-				accountRepository.getAccountByUsername(username
+				AccountRepository.getAccountByUsername(username
 				).then(account => {
 					resolve(account)
 				}).catch(error => {
@@ -55,7 +55,7 @@ module.exports = ({ accountRepository, accountValidator }) => {
 				Promise.reject(errors)
 			} else {
 				return new Promise((resolve, reject) => {
-					accountRepository.getAccountByUsername(account.username
+					AccountRepository.getAccountByUsername(account.username
 					).then(returnedAccount => bcrypt.compare(account.password, returnedAccount.password
 					)).then(isValidPassword => {
 						console.log("bcrypt compare")
@@ -75,7 +75,7 @@ module.exports = ({ accountRepository, accountValidator }) => {
 		},
 
 		getValidationConstraints: () => {
-			const validationConstraints = accountValidator.getValidationConstraints()
+			const validationConstraints = AccountValidator.getValidationConstraints()
 			return validationConstraints
 		}
 

@@ -1,7 +1,7 @@
 const express = require('express')
 
 
-module.exports = function ({ accountManager }) {
+module.exports = function ({ AccountManager }) {
 
     const router = express.Router()
 
@@ -14,7 +14,7 @@ module.exports = function ({ accountManager }) {
         const { username, password, passwordRepeated } = request.body
         const account = { username, password, passwordRepeated }
 
-        accountManager.createAccount(account
+        AccountManager.createAccount(account
         ).then(createdAccount => {
             // TODO: handle the created account?
             const userId = createdAccount.id
@@ -45,7 +45,7 @@ module.exports = function ({ accountManager }) {
         const { username, password } = request.body
         const account = { username, password }
 
-        accountManager.signInAccount(account
+        AccountManager.signInAccount(account
         ).then((returnedAccount) => {
             const signedIn = true
             const isAdmin = false // TODO: check if user is admin
@@ -66,7 +66,7 @@ module.exports = function ({ accountManager }) {
 
         //const loggedInAccounts = request.session.account
 
-        accountManager.getAllAccounts(
+        AccountManager.getAllAccounts(
         ).then(accounts => {
             const model = { accounts: accounts }
             response.render("accounts-list-all.hbs", model)
@@ -80,7 +80,7 @@ module.exports = function ({ accountManager }) {
 
         const username = request.params.username
 
-        accountManager.getAccountByUsername(username
+        AccountManager.getAccountByUsername(username
             ).then(account => {
                 const model = { account: account }
                 response.render("accounts-show-one.hbs", model)

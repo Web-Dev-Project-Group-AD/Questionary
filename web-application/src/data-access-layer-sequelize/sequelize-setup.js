@@ -6,19 +6,25 @@ const POSTGRES_PASSWORD = "password1"
 const POSTGRES_HOST = "192.168.99.100"
 
 
-module.exports = () => {
+module.exports = ({}) => {
 
-    return sequelize = new Sequelize(
-        /*process.env.POSTGRES_DB, 
-        process.env.POSTGRES_USER, 
-        process.env.POSTGRES_PASSWORD,
-        */
+    sequelize = new Sequelize(
+
         POSTGRES_DB,
         POSTGRES_USER,
         POSTGRES_PASSWORD,
         {
             dialect: 'postgres',
-            host: POSTGRES_HOST //process.env.POSTGRES_HOST
+            host: POSTGRES_HOST
         },
     )
+
+    sequelize.sync({
+        force: true
+    }).then(() => {
+        console.log(`Database & tables created!`)
+    })
+
+    return sequelize
+
 }
