@@ -1,5 +1,5 @@
 
-module.exports = ({ sequelize, QuestionModel, AnswerModel }) => {
+module.exports = ({ QuestionModel, AnswerModel }) => {
 
     return {
 

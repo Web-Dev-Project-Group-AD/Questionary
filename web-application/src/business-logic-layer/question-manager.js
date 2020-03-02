@@ -4,40 +4,44 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 	return {
 
 		createQuestion(questionObject) {
-			const errors = QuestionValidator.getErrorsNewQuestion(questionObject)
 
-			if (errors.length > 0) {
-				Promise.reject(errors)
-			} else {
-				return new Promise((resolve, reject) => {
-					QuestionRepository.createQuestion(questionObject
-					).then(createdQuestionObject => {
-						resolve(createdQuestionObject)
-					}).catch(errors => {
-						reject(errors)
-					})
+
+			return new Promise((resolve, reject) => {
+
+				const validationErrors = QuestionValidator.getErrorsNewQuestion(questionObject)
+				if (validationErrors.length > 0) {
+					throw validationErrors
+				}
+				QuestionRepository.createQuestion(questionObject
+				).then(createdQuestionObject => {
+					resolve(createdQuestionObject)
+				}).catch(validationErrors => {
+					reject(validationErrors)
+				}).catch(error => {
+					reject(error)
 				})
-			}
+			})
 		},
 
 		createAnswer(answerObject) {
-			const errors = QuestionValidator.getErrorsNewAnswer(answerObject)
-
-			if (errors.length > 0) {
-				Promise.reject(errors)
-			} else {
-				return new Promise((resolve, reject) => {
-					QuestionRepository.createAnswer(answerObject
-					).then(createdAnswerObject => {
-						resolve(createdAnswerObject)
-					}).catch(errors => {
-						reject(errors)
-					})
+			return new Promise((resolve, reject) => {
+				const validationErrors = QuestionValidator.getErrorsNewAnswer(answerObject)
+				if (validationErrors.length > 0) {
+					throw validationErrors
+				}
+				QuestionRepository.createAnswer(answerObject
+				).then(createdAnswerObject => {
+					resolve(createdAnswerObject)
+				}).catch(validationErrors => {
+					reject(validationErrors)
+				}).catch(error => {
+					reject(error)
 				})
-			}
+			})
+
 		},
 
-        getQuestionsByAnswerStatus(isAnswered) {
+		getQuestionsByAnswerStatus(isAnswered) {
 			return new Promise((resolve, reject) => {
 				QuestionRepository.getQuestionsByAnswerStatus(isAnswered
 				).then(questions => {
@@ -47,7 +51,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				})
 			})
 		},
-		
+
 		getQuestionsByCategory(category, isAnswered) {
 			return new Promise((resolve, reject) => {
 				QuestionRepository.getQuestionsByCategory(category, isAnswered
@@ -59,7 +63,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-        getAnswersByIdType(idType, id) {
+		getAnswersByIdType(idType, id) {
 			return new Promise((resolve, reject) => {
 				QuestionRepository.getAnswersByIdType(idType, id
 				).then(answers => {
@@ -69,7 +73,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				})
 			})
 		}
-		
+
 	}
 
 }

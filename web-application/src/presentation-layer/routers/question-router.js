@@ -1,6 +1,6 @@
 const express = require('express')
 
-module.exports = function ({  }) {
+module.exports = function ({  QuestionManager }) {
 
     const router = express.Router()
 
