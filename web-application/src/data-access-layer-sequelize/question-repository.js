@@ -1,15 +1,16 @@
 
-module.exports = ({ sequelize }) => {
+module.exports = ({ sequelize, QuestionModel, AnswerModel }) => {
 
     return {
 
         createQuestion(questionObject) {
-
-           
 			return new Promise((resolve, reject) => {
-
-
-                ).then(results => {
+                QuestionModel.create({
+                    author: questionObject.author,
+                    category: questionObject.category,
+                    question: questionObject.question,
+                    description: questionObject.description,
+                }).then(results => {
 					resolve(results.insertId)
 				}).catch(error => {
 					reject(error)
@@ -18,11 +19,12 @@ module.exports = ({ sequelize }) => {
         },
 
         createAnswer(answerObject) {
-            
-           
 			return new Promise((resolve, reject) => {
-
-                ).then(results => {
+                AnswerModel.create({
+                    author: answerObject.username,
+                    questionId: answerObject.questionId,
+                    answer: answerObject.answer
+                }).then(results => {
 					resolve(results.insertId)
 				}).catch(error => {
 					reject(error)
@@ -30,13 +32,11 @@ module.exports = ({ sequelize }) => {
 			})
         },
 
-        getQuestionsByAnswerStatus(isAnswered) {
-
-           
+        getQuestionsByAnswerStatus(isAnswered) {           
             return new Promise((resolve, reject) => {
-
-
-                ).then(questions => {
+                QuestionModel.findAll({
+                    where: { isAnswered: isAnswered }
+                }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
                     reject(error)
@@ -45,12 +45,11 @@ module.exports = ({ sequelize }) => {
         },
 
         getQuestionsByCategory(category, isAnswered) {
-
-            
             return new Promise((resolve, reject) => {
-
-
-                ).then(questions => {
+                QuestionModel.findAll({
+                    where: { category: category,
+                            isAnswered: isAnswered }
+                }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
                     reject(error)
@@ -59,13 +58,12 @@ module.exports = ({ sequelize }) => {
         },
 
         getAnswersByIdType(idType, id) {
-
-
             return new Promise((resolve, reject) => {
-
-
-                ).then(questions => {
-                    resolve(questions)
+                AnswerModel.findAll({
+                    where: { idType: id }
+                }
+                ).then(answers => {
+                    resolve(answers)
                 }).catch(error => {
                     reject(error)
                 })
