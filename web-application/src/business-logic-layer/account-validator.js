@@ -13,29 +13,31 @@ module.exports = () => {
 			const errors = []
 
 			if (!account.hasOwnProperty("username")) {
-				errors.push("usernameMissing")
+				errors.push("Username is missing.")
 			} else if (account.username.length < USERNAME_MIN_LENGTH) {
-				errors.push("usernameTooShort")
+				errors.push("Username is too short.")
 			} else if (USERNAME_MAX_LENGTH < account.username.length) {
-				errors.push("usernameTooLong")
+				errors.push("Username is too long.")
 			}
 
+			console.log(account.email)
+
 			if (!account.hasOwnProperty("email")) {
-				errors.push("emailMissing")
+				errors.push("Email is missing.")
 			} else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(account.email))) {
-				errors.push("emailInvalid")
+				errors.push("Email is invalid.")
 			}
 
 			if (!account.hasOwnProperty("password")) {
-				errors.push("passwordMissing")
+				errors.push("Password is missing.")
 			} else if (!account.hasOwnProperty("passwordRepeated")) {
-				errors.push("repeatPasswordMissing")
+				errors.push("Repeated password is missing.")
 			} else if (account.password != account.passwordRepeated) {
-				errors.push("passwordsDontMatch")
+				errors.push("Passwords don't match.")
 			} else if (account.password.length < PASSWORD_MIN_LENGTH) {
-				errors.push("passwordTooShort")
+				errors.push("Password is too short.")
 			} else if (PASSWORD_MAX_LENGTH < account.password.length) {
-				errors.push("passwordTooLong")
+				errors.push("Password is too long.")
 			}
 
 			return errors

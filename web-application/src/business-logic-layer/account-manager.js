@@ -18,23 +18,26 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 		},
 
 		createAccount(account) {
-			const errors = AccountValidator.getErrorsNewAccount(account)
-			console.log("reachable")
-			if (errors.length > 0) {
-				Promise.reject(errors)
-			} else {
+
+			
 				return new Promise((resolve, reject) => {
+					const validationErrors = AccountValidator.getErrorsNewAccount(account)
+					if (validationErrors.length > 0) {
+						throw validationErrors
+					}
 					bcrypt.hash(account.password, saltRounds
 					).then(hash => {
 						account.password = hash
 						return AccountRepository.createAccount(account)
 					}).then(createdAccount => {
 						resolve(createdAccount)
-					}).catch(errors => {
-						reject(errors)
+					}).catch(validationErrors => {
+						reject(validationErrors)
+					}).catch(error => {
+						reject(error)
 					})
 				})
-			}
+			
 		},
 
 		getAccountByUsername(username) {

@@ -5,9 +5,15 @@
 
 <form method="POST" action="/accounts/sign-up">
 	<br>
-	<input type="text" name="username" id="username" placeholder="Username" /> 
+	<input type="text" name="username" id="username" placeholder="Username" 
+		text="{{#if account}}
+				{{account.username}}
+			{{/if}}" />
 	<br>
-	<input type="text" name="" id="email" placeholder="Email" />
+	<input type="text" name="email" id="email" placeholder="Email" 
+		text="{{#if account}}
+				{{account.email}}
+			{{/if}}" />
 	<br>
 	<input type="password" name="password" id="password1" placeholder="Password" />
 	<br>
@@ -15,20 +21,26 @@
 	<br>
 	<input type="submit" class="btn" value="Register" />
 	<br>
-	<div id="errorMessage"></div>
+	<ul id="errorMessages">
+		{{#if validationErrors}}
+			{{#each validationErrors}}
+				<li>{{this}}</li>
+			{{/each}}
+		{{/if}}
+	</ul>
 </form>
 
 
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
-		
+
 		const form = document.querySelector("form")
 
 		form.addEventListener("submit", validateRegisterForm)
 
 		function validateRegisterForm(event) {
-			
+
 			/*
 			const constraints =  JSON.parse('{{{validationConstraints}}}')
 			console.log(constraints)
@@ -44,28 +56,42 @@
 			const password1 = document.getElementById("password1").value
 			const password2 = document.getElementById("password2").value
 
-			const errorField = document.getElementById("errorMessage")
-			errorField.innerText = ""
-			
-			if (MIN_USERNAME_LENGTH > username.length) {
-				errorMessage = "Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long."
-			} else if (username.length > MAX_USERNAME_LENGTH) {
-				errorMessage = "Username can not be longer than " + MAX_USERNAME_LENGTH + " characters."
-			} else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-				errorMessage = "Invalid email address."
-			} else if (MIN_PASSWORD_LENGTH > password1.length) {
-				errorMessage = "Password needs to be atleast " + MIN_PASSWORD_LENGTH + " characters long."
-			} else if (password1.length > MAX_PASSWORD_LENGTH) {
-				errorMessage = "Password can not be longer than " + MAX_PASSWORD_LENGTH + " characters."
-			} else if (password1 != password2) {
-				errorMessage = "Passwords dont match."
-			} else {
-				return true
+			const errorMessages = []
+
+			const errorList = document.getElementById("errorMessages")
+			while (errorList.firstChild) {
+				errorList.removeChild(errorList.firstChild)
 			}
 
-			errorField.innerText = errorMessage
-			event.preventDefault()
-			
+			if (MIN_USERNAME_LENGTH > username.length) {
+				errorMessages.push("Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long.")
+			} else if (username.length > MAX_USERNAME_LENGTH) {
+				errorMessages.push("Username can not be longer than " + MAX_USERNAME_LENGTH + " characters.")
+			}
+			if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+				errorMessages.push("Invalid email address.")
+			}
+			if (MIN_PASSWORD_LENGTH > password1.length) {
+				errorMessages.push("Password needs to be atleast " + MIN_PASSWORD_LENGTH + " characters long.")
+			} else if (password1.length > MAX_PASSWORD_LENGTH) {
+				errorMessages.push("Password can not be longer than " + MAX_PASSWORD_LENGTH + " characters.")
+			}
+			if (password1 != password2) {
+				errorMessages.push("Passwords dont match.")
+			}
+
+			if (!errorMessages.length > 0) {
+				return true
+			} else {
+
+				for (error of errorMessages) {
+					var newError = document.createElement("LI")
+					newError.innerText = error
+					errorList.appendChild(newError)
+				}
+				event.preventDefault()
+			}
+
 		}
 
 	})
