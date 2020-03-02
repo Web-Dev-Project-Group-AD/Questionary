@@ -80,6 +80,18 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     reject(error)
                 })
             })
+        },
+
+        getAllAnswers() {
+            return new Promise((resolve, reject) => {
+                AnswerModel.findAll(      
+                ).then(answers => {
+                    resolve(answers)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+
         }
 
     }

@@ -35,29 +35,52 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			return new Promise((resolve, reject) => {
 				const validationErrors = QuestionValidator.getErrorsNewAnswer(answerObject)
 				if (validationErrors.length > 0) {
-					throw validationErrors
+					return reject(validationErrors)
 				}
 				QuestionRepository.createAnswer(answerObject
 				).then(createdAnswerObject => {
 					resolve(createdAnswerObject)
-				}).catch(validationErrors => {
-					reject(validationErrors)
-				}).catch(error => {
-					reject(error)
+				}).catch(errors => {
+					reject(errors)
 				})
 			})
 
 		},
 
-		getQuestionsByAnswerStatus(isAnswered) {
+		getAllUnansweredQuestions() {
 			return new Promise((resolve, reject) => {
-				QuestionRepository.getQuestionsByAnswerStatus(isAnswered
+				QuestionRepository.getQuestionsByAnswerStatus(false
 				).then(questions => {
 					resolve(questions)
 				}).catch(error => {
 					reject(error)
 				})
 			})
+		},
+
+		getAllAnsweredQuestions() {
+			return new Promise((resolve, reject) => {
+				var questions = []
+				QuestionRepository.getQuestionsByAnswerStatus(false
+				).then(fetchedQuestions => {
+					questions = fetchedQuestions
+					return QuestionRepository.getAllAnswers() 
+				}).then(answers => {
+					const questionList = [{question, answer}]
+					for (question of questions) {
+						const answerList = []
+						for (answer of answers) {
+							if (question.id == answer.questionId) {
+								answerList.push(answer)
+							}
+						}
+						questionList.push({question, answerList})
+					}
+					resolve(questionList)
+				}).catch(error => {
+					reject(error)
+				})
+			}
 		},
 
 		getQuestionsByCategory(category, isAnswered) {
@@ -80,7 +103,9 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 					reject(error)
 				})
 			})
-		}
+		},
+
+		
 
 	}
 
