@@ -1,54 +1,60 @@
 
+const USERNAME_MIN_LENGTH = 4
+const USERNAME_MAX_LENGTH = 20
+const PASSWORD_MIN_LENGTH = 8
+const PASSWORD_MAX_LENGTH = 20
 
-const MIN_USERNAME_LENGTH = 4
-const MAX_USERNAME_LENGTH = 20
-const MIN_PASSWORD_LENGTH = 8
-const MAX_PASSWORD_LENGTH = 20
 
-module.exports = function ({ }) {
+module.exports = () => {
 
 	return {
 
-		getErrorsNewAccount: function (account) {
-
+		getErrorsNewAccount(account) {
 			const errors = []
 
-			// Validate username.
 			if (!account.hasOwnProperty("username")) {
-				errors.push("usernameMissing")
-			} else if (account.username.length < MIN_USERNAME_LENGTH) {
-				errors.push("usernameTooShort")
-			} else if (MAX_USERNAME_LENGTH < account.username.length) {
-				errors.push("usernameTooLong")
+				errors.push("Username is missing.")
+			} else if (account.username.length < USERNAME_MIN_LENGTH) {
+				errors.push("Username is too short.")
+			} else if (USERNAME_MAX_LENGTH < account.username.length) {
+				errors.push("Username is too long.")
 			}
 
-			// Validate password.
+			console.log(account.email)
+
+			if (!account.hasOwnProperty("email")) {
+				errors.push("Email is missing.")
+			} else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(account.email))) {
+				errors.push("Email is invalid.")
+			}
+
 			if (!account.hasOwnProperty("password")) {
-				errors.push("passwordMissing")
+				errors.push("Password is missing.")
 			} else if (!account.hasOwnProperty("passwordRepeated")) {
-				errors.push("repeatPasswordMissing")
+				errors.push("Repeated password is missing.")
 			} else if (account.password != account.passwordRepeated) {
-				errors.push("passwordsDontMatch")
-			} else if (account.password.length < MIN_PASSWORD_LENGTH) {
-				errors.push("passwordTooShort")
-			} else if (MAX_PASSWORD_LENGTH < account.password.length) {
-				errors.push("passwordTooLong")
+				errors.push("Passwords don't match.")
+			} else if (account.password.length < PASSWORD_MIN_LENGTH) {
+				errors.push("Password is too short.")
+			} else if (PASSWORD_MAX_LENGTH < account.password.length) {
+				errors.push("Password is too long.")
 			}
 
 			return errors
-
 		},
 
+		getValidationConstraints() {
 
-    getValidationConstraints : function() {
-      const validationConstraints = {
-        MIN_USERNAME_LENGTH,
-        MAX_USERNAME_LENGTH,
-        MIN_PASSWORD_LENGTH,
-        MAX_PASSWORD_LENGTH 
-      }
-      return validationConstraints
-    }
-    
-  }
+			const validationConstraints = {
+				USERNAME_MIN_LENGTH: USERNAME_MIN_LENGTH,
+				USERNAME_MAX_LENGTH: USERNAME_MAX_LENGTH,
+				PASSWORD_MIN_LENGTH: PASSWORD_MIN_LENGTH,
+				PASSWORD_MAX_LENGTH: PASSWORD_MAX_LENGTH
+			}
+
+			return validationConstraints
+		}
+
+	}
+
 }

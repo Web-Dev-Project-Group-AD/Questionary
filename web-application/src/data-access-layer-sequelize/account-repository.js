@@ -1,26 +1,5 @@
-const Sequelize = require('sequelize')
 
-module.exports = function ({sequelize}) {
-
-    const AccountModel = sequelize.define('account', {
-        id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        username: Sequelize.TEXT,
-        password: Sequelize.TEXT
-        /*,
-        email: Sequelize.TEXT,
-        isAdmin: Sequelize.BOOLEAN,
-        */
-    })
-    
-    sequelize.sync({
-        force: true
-    }).then(() => {
-        console.log(`Database & tables created!`)
-    })
+module.exports = function ({ AccountModel }) {
 
     return {
 
@@ -69,6 +48,7 @@ module.exports = function ({sequelize}) {
             return new Promise((resolve, reject) => {
                 AccountModel.create({
                     username: account.username,
+                    email: account.email,
                     password: account.password
                 }).then(account => {
                     resolve(account)

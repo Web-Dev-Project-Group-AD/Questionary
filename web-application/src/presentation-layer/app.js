@@ -1,6 +1,6 @@
 
 // Include all requires.
-require('dotenv').config()
+//require('dotenv').config()
 
 const path = require('path')
 const express = require('express')
@@ -12,8 +12,11 @@ const redis = require('redis')
 // Create the dependency-injection container.
 const container = require('./main')
 
-const variousRouter = container.resolve("variousRouter")
-const accountRouter = container.resolve("accountRouter")
+const VariousRouter = container.resolve('VariousRouter')
+const AccountRouter = container.resolve('AccountRouter')
+const QuestionRouter = container.resolve('QuestionRouter')
+
+
 
 // Create the express application.
 const app = express()
@@ -59,8 +62,9 @@ app.use(session({
 }))
 
 // Attach all routers.
-app.use('/', variousRouter)
-app.use('/accounts', accountRouter)
+app.use('/', VariousRouter)
+app.use('/accounts', AccountRouter)
+app.use('/questions', QuestionRouter)
 
 // Start listening for incoming HTTP requests!
 app.listen(8080, function () {

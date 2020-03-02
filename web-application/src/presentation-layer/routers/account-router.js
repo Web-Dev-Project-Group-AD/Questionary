@@ -1,7 +1,7 @@
 const express = require('express')
 
 
-module.exports = function ({ accountManager }) {
+module.exports = function ({ AccountManager }) {
 
     const router = express.Router()
 
@@ -11,29 +11,31 @@ module.exports = function ({ accountManager }) {
 
     router.post("/sign-up", function (request, response) {
 
-        const { username, password, passwordRepeated } = request.body
-        const account = { username, password, passwordRepeated }
+        const { username, email, password, passwordRepeated } = request.body
+        console.log("email:", email)
+        const account = { username, email, password, passwordRepeated }
 
-        accountManager.createAccount(account
+        AccountManager.createAccount(account
         ).then(createdAccount => {
             // TODO: handle the created account?
-            account.password = account.passwordRepeated
-            account.passwordRepeated = ""
-        }).then(accountManager.signInAccount(account
-        )).then(returnedAccount => {
-            // TODO: handle the returned account?s
+            const userId = createdAccount.id
             const signedIn = true
             const isAdmin = false 
             // TODO: check if user is admin
             //const isAdmin = (user.userType == 'admin' ? true : false)
-            const userStatus = { signedIn, isAdmin, username }
+            const userStatus = { signedIn, isAdmin, username, userId }
             request.session.userStatus = userStatus
             console.log(username, " signed in")
             response.render("home.hbs")
 
-        }).catch(errors => {
+        }).catch(validationErrors => {
             // TODO: More complex error handling
-            console.log(errors)
+            console.log(validationErrors)
+            account.password = ""
+            account.passwordRepeated = ""
+            response.render("accounts-sign-up.hbs", {validationErrors, account} )
+
+        }).catch(error => {
             response.render("error.hbs")
         })
     })
@@ -46,10 +48,10 @@ module.exports = function ({ accountManager }) {
 
     router.post("/sign-in", function (request, response) {
 
-        const { username, password } = request.body
-        const account = { username, password }
+        const { email, password } = request.body
+        const account = { email, password }
 
-        accountManager.signInAccount(account
+        AccountManager.signInAccount(account
         ).then((returnedAccount) => {
             const signedIn = true
             const isAdmin = false // TODO: check if user is admin
@@ -61,8 +63,8 @@ module.exports = function ({ accountManager }) {
         }).catch((errors) => {
             // TODO: More complex error handling
             console.log(errors)
-            const errorMessage = "Wrong Username or Password."
-            response.render("accounts-sign-in.hbs", { errorMessage, username })
+            const errorMessage = "Wrong Email or Password."
+            response.render("accounts-sign-in.hbs", { errorMessage, email })
         })
     })
 
@@ -70,8 +72,7 @@ module.exports = function ({ accountManager }) {
 
         //const loggedInAccounts = request.session.account
 
-
-        accountManager.getAllAccounts(
+        AccountManager.getAllAccounts(
         ).then(accounts => {
             const model = { accounts: accounts }
             response.render("accounts-list-all.hbs", model)
@@ -83,10 +84,9 @@ module.exports = function ({ accountManager }) {
 
     router.get('/:username', function (request, response) {
 
-
         const username = request.params.username
 
-        accountManager.getAccountByUsername(username
+        AccountManager.getAccountByUsername(username
             ).then(account => {
                 const model = { account: account }
                 response.render("accounts-show-one.hbs", model)

@@ -3,13 +3,12 @@ const bcrypt = require('bcrypt') //TODO: move dependency?
 const saltRounds = 10
 
 
-module.exports = function ({ accountRepository, accountValidator }) {
-	// Name all the dependencies in the curly brackets. 
+module.exports = ({ AccountRepository, AccountValidator }) => {
 
 	return {
 		getAllAccounts() {
 			return new Promise((resolve, reject) => {
-				accountRepository.getAllAccounts(
+				AccountRepository.getAllAccounts(
 				).then(accounts => {
 					resolve(accounts)
 				}).catch(error => {
@@ -19,29 +18,31 @@ module.exports = function ({ accountRepository, accountValidator }) {
 		},
 
 		createAccount(account) {
-			// Validate the account.
-			const errors = accountValidator.getErrorsNewAccount(account)
 
-			if (errors.length > 0) {
-				Promise.reject(errors)
-			} else {
+			
 				return new Promise((resolve, reject) => {
+					const validationErrors = AccountValidator.getErrorsNewAccount(account)
+					if (validationErrors.length > 0) {
+						throw validationErrors
+					}
 					bcrypt.hash(account.password, saltRounds
 					).then(hash => {
 						account.password = hash
-						return accountRepository.createAccount(account)
+						return AccountRepository.createAccount(account)
 					}).then(createdAccount => {
 						resolve(createdAccount)
-					}).catch(errors => {
-						reject(errors)
+					}).catch(validationErrors => {
+						reject(validationErrors)
+					}).catch(error => {
+						reject(error)
 					})
 				})
-			}
+			
 		},
 
 		getAccountByUsername(username) {
 			return new Promise((resolve, reject) => {
-				accountRepository.getAccountByUsername(username
+				AccountRepository.getAccountByUsername(username
 				).then(account => {
 					resolve(account)
 				}).catch(error => {
@@ -52,35 +53,35 @@ module.exports = function ({ accountRepository, accountValidator }) {
 
 		signInAccount(account) {
 
-
-
-
-			return new Promise((resolve, reject) => {
-				if (!account.username.length > 0 || !account.password.length > 0) {
-					const errors = ["error"]
-					reject(errors)
-				} else {
-					accountRepository.getAccountByUsername(account.username
-					).then(returnedAccount => {
-						bcrypt.compare(account.password, returnedAccount.password
-					).then(isValidPassword => {
+			if (!account.username.length > 0 || !account.password.length > 0) {
+				const errors = [new Error("error")]
+				Promise.reject(errors)
+			} else {
+				return new Promise((resolve, reject) => {
+					AccountRepository.getAccountByUsername(account.username
+					).then(returnedAccount => bcrypt.compare(account.password, returnedAccount.password
+					)).then(isValidPassword => {
+						console.log("bcrypt compare")
 						if (!isValidPassword) {
-							error = new Error()
+							error = new Error("invalid password")
+							reject(error)
 						} else {
 							resolve(returnedAccount)
 						}
 					}).catch(error => {
-						const errors = ["error"]
+						console.log("signInAccount error catch")
+						const errors = [error]
 						reject(errors)
 					})
 				})
 			}
-			})
 		},
 
-		getValidationConstraints: function () {
-			const validationConstraints = accountValidator.getValidationConstraints()
+		getValidationConstraints: () => {
+			const validationConstraints = AccountValidator.getValidationConstraints()
 			return validationConstraints
 		}
+
 	}
+
 }
