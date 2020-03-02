@@ -12,7 +12,10 @@ module.exports = function ({ AccountManager }) {
     router.post("/sign-up", function (request, response) {
 
         const { username, email, password, passwordRepeated } = request.body
-        console.log("email:", email)
+        console.log("username: ", username)
+        console.log("email: ", email)
+
+        
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
@@ -31,9 +34,11 @@ module.exports = function ({ AccountManager }) {
         }).catch(validationErrors => {
             // TODO: More complex error handling
             console.log(validationErrors)
+            
+
             account.password = ""
             account.passwordRepeated = ""
-            response.render("accounts-sign-up.hbs", {validationErrors, account} )
+            response.render("accounts-sign-up.hbs", {validationErrors, username, email} )
 
         }).catch(error => {
             response.render("error.hbs")

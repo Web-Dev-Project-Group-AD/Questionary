@@ -6,13 +6,13 @@
 <form method="POST" action="/accounts/sign-up">
 	<br>
 	<input type="text" name="username" id="username" placeholder="Username" 
-		text="{{#if account}}
-				{{account.username}}
-			{{/if}}" />
+		value="{{#if username}}
+					{{username}}
+				{{/if}}" />
 	<br>
 	<input type="text" name="email" id="email" placeholder="Email" 
-		text="{{#if account}}
-				{{account.email}}
+		value="{{#if email}}
+				{{email}}
 			{{/if}}" />
 	<br>
 	<input type="password" name="password" id="password1" placeholder="Password" />

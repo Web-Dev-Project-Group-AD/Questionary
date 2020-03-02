@@ -20,8 +20,6 @@ module.exports = () => {
 				errors.push("Username is too long.")
 			}
 
-			console.log(account.email)
-
 			if (!account.hasOwnProperty("email")) {
 				errors.push("Email is missing.")
 			} else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(account.email))) {
