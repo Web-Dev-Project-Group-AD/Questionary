@@ -7,6 +7,8 @@
 	<br>
 	<input type="text" name="username" id="username" placeholder="Username" /> 
 	<br>
+	<input type="text" name="" id="email" placeholder="Email" />
+	<br>
 	<input type="password" name="password" id="password1" placeholder="Password" />
 	<br>
 	<input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
@@ -32,26 +34,29 @@
 			console.log(constraints)
 			*/
 
-			const minUsernameLength = 4
-			const maxUsernameLength = 20
-			const minPasswordLength = 8
-			const maxPasswordLength = 20
+			const MIN_USERNAME_LENGTH = 4
+			const MAX_USERNAME_LENGTH = 20
+			const MIN_PASSWORD_LENGTH = 8
+			const MAX_PASSWORD_LENGTH = 20
 
 			const username = document.getElementById("username").value
+			const email = document.getElementById("email").value
 			const password1 = document.getElementById("password1").value
 			const password2 = document.getElementById("password2").value
 
 			const errorField = document.getElementById("errorMessage")
 			errorField.innerText = ""
-
-			if (minUsernameLength > username.length) {
-				errorMessage = "Username needs to be atleast " + minUsernameLength + " characters long."
-			} else if (username.length > maxUsernameLength) {
-				errorMessage = "Username can not be longer than " + maxUsernameLength + " characters."
-			} else if (minPasswordLength > password1.length) {
-				errorMessage = "Password needs to be atleast " + minPasswordLength + " characters long."
-			} else if (password1.length > maxPasswordLength) {
-				errorMessage = "Password can not be longer than " + maxPasswordLength + " characters."
+			
+			if (MIN_USERNAME_LENGTH > username.length) {
+				errorMessage = "Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long."
+			} else if (username.length > MAX_USERNAME_LENGTH) {
+				errorMessage = "Username can not be longer than " + MAX_USERNAME_LENGTH + " characters."
+			} else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+				errorMessage = "Invalid email address."
+			} else if (MIN_PASSWORD_LENGTH > password1.length) {
+				errorMessage = "Password needs to be atleast " + MIN_PASSWORD_LENGTH + " characters long."
+			} else if (password1.length > MAX_PASSWORD_LENGTH) {
+				errorMessage = "Password can not be longer than " + MAX_PASSWORD_LENGTH + " characters."
 			} else if (password1 != password2) {
 				errorMessage = "Passwords dont match."
 			} else {

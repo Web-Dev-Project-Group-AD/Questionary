@@ -19,7 +19,7 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 
 		createAccount(account) {
 			const errors = AccountValidator.getErrorsNewAccount(account)
-
+			console.log("reachable")
 			if (errors.length > 0) {
 				Promise.reject(errors)
 			} else {

@@ -48,6 +48,7 @@ module.exports = function ({ AccountModel }) {
             return new Promise((resolve, reject) => {
                 AccountModel.create({
                     username: account.username,
+                    email: account.email,
                     password: account.password
                 }).then(account => {
                     resolve(account)

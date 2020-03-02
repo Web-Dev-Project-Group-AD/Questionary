@@ -11,8 +11,8 @@ module.exports = function ({ AccountManager }) {
 
     router.post("/sign-up", function (request, response) {
 
-        const { username, password, passwordRepeated } = request.body
-        const account = { username, password, passwordRepeated }
+        const { username, email, password, passwordRepeated } = request.body
+        const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
         ).then(createdAccount => {
@@ -42,8 +42,8 @@ module.exports = function ({ AccountManager }) {
 
     router.post("/sign-in", function (request, response) {
 
-        const { username, password } = request.body
-        const account = { username, password }
+        const { email, password } = request.body
+        const account = { email, password }
 
         AccountManager.signInAccount(account
         ).then((returnedAccount) => {
@@ -57,8 +57,8 @@ module.exports = function ({ AccountManager }) {
         }).catch((errors) => {
             // TODO: More complex error handling
             console.log(errors)
-            const errorMessage = "Wrong Username or Password."
-            response.render("accounts-sign-in.hbs", { errorMessage, username })
+            const errorMessage = "Wrong Email or Password."
+            response.render("accounts-sign-in.hbs", { errorMessage, email })
         })
     })
 

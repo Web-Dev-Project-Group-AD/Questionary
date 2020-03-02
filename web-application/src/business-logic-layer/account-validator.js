@@ -20,6 +20,12 @@ module.exports = () => {
 				errors.push("usernameTooLong")
 			}
 
+			if (!account.hasOwnProperty("email")) {
+				errors.push("emailMissing")
+			} else if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(account.email))) {
+				errors.push("emailInvalid")
+			}
+
 			if (!account.hasOwnProperty("password")) {
 				errors.push("passwordMissing")
 			} else if (!account.hasOwnProperty("passwordRepeated")) {

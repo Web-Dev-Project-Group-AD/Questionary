@@ -1,5 +1,5 @@
 
-module.exports = ({ database }) => {
+module.exports = ({ sequelize }) => {
 
     return {
 
