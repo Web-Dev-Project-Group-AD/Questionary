@@ -24,7 +24,8 @@ module.exports = ({sequelize, AccountModel, QuestionCategoryModel}) => sequelize
     },
     question: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     description: Sequelize.TEXT,
     isAnswered: {

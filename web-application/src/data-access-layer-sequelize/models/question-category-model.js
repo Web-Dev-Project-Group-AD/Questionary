@@ -9,5 +9,6 @@ module.exports = ({sequelize}) => sequelize.define('QuestionCategoryModel', {
     name: {
         type: Sequelize.TEXT,
         allowNull: false,
+        unique: true
     }
 })

@@ -4,22 +4,30 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 	return {
 
 		createQuestion(questionObject) {
-
-
 			return new Promise((resolve, reject) => {
-
 				const validationErrors = QuestionValidator.getErrorsNewQuestion(questionObject)
 				if (validationErrors.length > 0) {
-					throw validationErrors
+					return reject(validationErrors)
 				}
-				QuestionRepository.createQuestion(questionObject
-				).then(createdQuestionObject => {
+				QuestionRepository.createQuestionCategory(questionObject.category
+				).then(() => {
+					return QuestionRepository.createQuestion(questionObject)
+				}).then(createdQuestionObject => {
 					resolve(createdQuestionObject)
-				}).catch(validationErrors => {
-					reject(validationErrors)
-				}).catch(error => {
-					reject(error)
+				}).catch(errors => {
+					reject(errors)
 				})
+
+
+				// QuestionRepository.createQuestionCategory(questionObject.category
+				// ).then(QuestionRepository.createQuestion(questionObject
+				// ).then(createdQuestionObject => {
+				// 	resolve(createdQuestionObject)
+				// }).catch(validationErrors => {
+				// 	reject(validationErrors)
+				// }).catch(error => {
+				// 	reject(error)
+				// }))
 			})
 		},
 

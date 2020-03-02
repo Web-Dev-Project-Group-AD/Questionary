@@ -18,7 +18,7 @@ module.exports = function ({  QuestionManager }) {
         QuestionManager.createQuestion(questionObject
         ).then(createdQuestionObject => {
 
-            res.redirect('/by-user/:author')
+            response.redirect("/by-user/:author")
 
         }).catch(errors => {
             // TODO: More complex error handling

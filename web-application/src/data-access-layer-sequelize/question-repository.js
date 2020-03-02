@@ -1,5 +1,5 @@
 
-module.exports = ({ QuestionModel, AnswerModel }) => {
+module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
 
     return {
 
@@ -24,6 +24,18 @@ module.exports = ({ QuestionModel, AnswerModel }) => {
                     author: answerObject.username,
                     questionId: answerObject.questionId,
                     answer: answerObject.answer
+                }).then(results => {
+					resolve(results.insertId)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+        },
+
+        createQuestionCategory(category) {
+            return new Promise((resolve, reject) => {
+                QuestionCategoryModel.create({
+                    name: category
                 }).then(results => {
 					resolve(results.insertId)
 				}).catch(error => {
