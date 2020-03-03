@@ -1,5 +1,8 @@
 const express = require('express')
 
+const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
+const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
 module.exports = function ({ AccountManager }) {
 
@@ -15,7 +18,6 @@ module.exports = function ({ AccountManager }) {
         console.log("username: ", username)
         console.log("email: ", email)
 
-        
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
@@ -23,7 +25,7 @@ module.exports = function ({ AccountManager }) {
             // TODO: handle the created account?
             const userId = createdAccount.id
             const signedIn = true
-            const isAdmin = false 
+            const isAdmin = false
             // TODO: check if user is admin
             //const isAdmin = (user.userType == 'admin' ? true : false)
             const userStatus = { signedIn, isAdmin, username, userId }
@@ -32,16 +34,13 @@ module.exports = function ({ AccountManager }) {
             response.render("home.hbs")
 
         }).catch(validationErrors => {
-            // TODO: More complex error handling
             console.log(validationErrors)
-            
 
-            account.password = ""
-            account.passwordRepeated = ""
-            response.render("accounts-sign-up.hbs", {validationErrors, username, email} )
-
-        }).catch(error => {
-            response.render("error.hbs")
+            if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
+                response.render("error.hbs")
+            } else {
+                response.render("accounts-sign-up.hbs", { validationErrors, username, email })
+            }
         })
     })
 
@@ -59,17 +58,19 @@ module.exports = function ({ AccountManager }) {
         AccountManager.signInAccount(account
         ).then((returnedAccount) => {
             const signedIn = true
-            const isAdmin = false // TODO: check if user is admin
-            //const isAdmin = (user.userType == 'admin' ? true : false)
+            const isAdmin = returnedAccount.isAdmin
             const userStatus = { signedIn, isAdmin, username }
             request.session.userStatus = userStatus
             console.log(username, " signed in")
             response.render("home.hbs")
-        }).catch((errors) => {
-            // TODO: More complex error handling
-            console.log(errors)
-            const errorMessage = "Wrong Email or Password."
-            response.render("accounts-sign-in.hbs", { errorMessage, email })
+        }).catch((errorMessage) => {
+            console.log(errorMessage)
+ 
+            if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
+                response.render("error.hbs")
+            } else {
+                response.render("accounts-sign-in.hbs", { errorMessage, email })
+            }
         })
     })
 
@@ -92,13 +93,13 @@ module.exports = function ({ AccountManager }) {
         const username = request.params.username
 
         AccountManager.getAccountByUsername(username
-            ).then(account => {
-                const model = { account: account }
-                response.render("accounts-show-one.hbs", model)
-            }).catch(error => {
-                console.log(error)
-                response.render("error.hbs")
-            })
+        ).then(account => {
+            const model = { account: account }
+            response.render("accounts-show-one.hbs", model)
+        }).catch(error => {
+            console.log(error)
+            response.render("error.hbs")
+        })
     })
 
     return router

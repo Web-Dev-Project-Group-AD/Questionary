@@ -1,13 +1,19 @@
 
+//TODO: Move constants to separate file and use dependency injection
+
+const ERROR_MSG_SIGN_UP_INPUT = "Incorrect email or password."
+const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
+const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
+
+const SEQUELIZE_ERROR_UNIQUE_USERNAME = "username must be unique"
+const SEQUELIZE_ERROR_UNIQUE_EMAIL = "email must be unique"
+
+
 module.exports = function ({ AccountModel }) {
 
     return {
 
-        /*
-			  Retrieves all accounts ordered by username.
-			  Possible errors: databaseError
-			  Success value: The fetched accounts in an array.
-		*/
         getAllAccounts() {
             return new Promise((resolve, reject) => {
                 AccountModel.findAll(
@@ -15,16 +21,11 @@ module.exports = function ({ AccountModel }) {
                     resolve(account)
                 }).catch(error => {
                     console.log(error)
-                    reject("db_error")
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
 
-        /*
-			Retrieves the account with the given username.
-			Possible errors: databaseError
-			Success value: The fetched account, or null if no account has that username.
-		*/
         getAccountByUsername(username) {
             return new Promise((resolve, reject) => {
                 AccountModel.findOne({
@@ -33,17 +34,24 @@ module.exports = function ({ AccountModel }) {
                     resolve(account)
                 }).catch(error => {
                     console.log(error)
-                    reject("db_error")
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
 
-        /*
-			Creates a new account.
-			account: {username: "The username", password: "The password"}
-			Possible errors: databaseError, usernameTaken
-			Success value: The id of the new account.
-		*/
+        getAccountByEmail(email) {
+            return new Promise((resolve, reject) => {
+                AccountModel.findOne({
+                    where: { email: email }
+                }).then(account => {
+                    resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
         createAccount(account) {
             return new Promise((resolve, reject) => {
                 AccountModel.create({
@@ -52,9 +60,19 @@ module.exports = function ({ AccountModel }) {
                     password: account.password
                 }).then(account => {
                     resolve(account)
-                }).catch(error => {
-                    console.log(error)
-                    reject("db_error")
+                }).catch(errorList => {
+                    const errors = []
+
+                    for (error of errorList.errors) {
+                        if (error.message == SEQUELIZE_ERROR_UNIQUE_USERNAME) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_USERNAME)
+                        } else if (error.message == SEQUELIZE_ERROR_UNIQUE_EMAIL) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_EMAIL)
+                        } else {
+                            errors.push(ERROR_MSG_DATABASE_GENERAL)
+                        }
+                    }
+                    reject(errors)
                 })
             })
         }

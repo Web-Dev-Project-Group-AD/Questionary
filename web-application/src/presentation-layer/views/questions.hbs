@@ -1,19 +1,27 @@
 {{#if questions}}
     {{#each questions}}
         <div class="question">
-            <h3>{{question}}</h3>
+            <h3>Question: {{question}}</h3>
             <br>
-            <p>{{description}}</p>
+            <p>Description: {{description}}</p>
             <br>
-        </div>
+            <p>Author: {{author}}</p>
 
-        {{#if answers}}
-            {{#each answers}}
+        </div>
+    {{/each}}
+
+    {{#if answers}}
+        {{#each answers}}
                 <div class="answer">
-                    <p>{{content}}</p>
+                    <p>Answer: {{answer}}</p>
+                    <p>Author: {{author}}</p>
                 </div>
             {{/each}}
-        {{/if}}
+        
+    {{/if}}
+{{/if}}
+
+            
     {{/each}}
 {{else}}
     <p>No content.</p>

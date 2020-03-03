@@ -1,6 +1,6 @@
 const express = require('express')
 
-module.exports = function ({  }) {
+module.exports = function ({  QuestionManager }) {
 
     const router = express.Router()
 
@@ -18,36 +18,31 @@ module.exports = function ({  }) {
         QuestionManager.createQuestion(questionObject
         ).then(createdQuestionObject => {
 
-            res.redirect('/by-user/:author')
+            response.redirect("/by-user/:author")
 
         }).catch(errors => {
             // TODO: More complex error handling
             console.log(errors)
             response.render("questions-new-post.hbs", questionObject, errors)
         })
-
-
-        // TODO: validate
-        // TODO:  post to database
-
-        // const username = request.sessions.username
     })
 
     router.get("/unanswered", function (request, response) {
-
-        // TODO: fetch list of unanswered questions
-
-        response.render("questions.hbs", questions)
+        QuestionManager.getAllUnansweredQuestions(
+        ).then(questions => {
+            response.render("questions.hbs", questions)
+        }).catch(errors => {
+            response.render("error.hbs")
+        })
     })
 
     router.get("/answered", function (request, response) {
-
-        // TODO: fetch list of answered questions
-        // TODO: fetch list of answers matching questions
-        // TODO: create new list containing both
-        // TODO: render questions and answers
-
-        response.render("questions.hbs", questions)
+        QuestionManager.getAllAnsweredQuestions(
+        ).then(questions => {
+            response.render("questions.hbs", questions)
+        }).catch(errors => {
+            response.render("error.hbs")
+        })
     })
 
     router.get('/by-user/:username'), function (request, response) {
