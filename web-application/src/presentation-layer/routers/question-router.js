@@ -28,7 +28,7 @@ module.exports = function ({  QuestionManager }) {
     })
 
     router.get("/unanswered", function (request, response) {
-        QuestionManager.getAllUnAnsweredQuestions(
+        QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
             response.render("questions.hbs", questions)
         }).catch(errors => {
@@ -38,8 +38,8 @@ module.exports = function ({  QuestionManager }) {
 
     router.get("/answered", function (request, response) {
         QuestionManager.getAllAnsweredQuestions(
-        ).then(answeredQuestions => {
-            response.render("questions.hbs", answeredQuestions)
+        ).then(questions => {
+            response.render("questions.hbs", questions)
         }).catch(errors => {
             response.render("error.hbs")
         })

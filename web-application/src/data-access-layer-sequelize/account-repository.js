@@ -41,7 +41,7 @@ module.exports = function ({ AccountModel }) {
         /*
 			Creates a new account.
 			account: {username: "The username", password: "The password"}
-			Possible errors: databaseError, usernameTaken
+			Possible errors: databaseError, usernameTaken, emailTaken
 			Success value: The id of the new account.
 		*/
         createAccount(account) {
@@ -52,9 +52,19 @@ module.exports = function ({ AccountModel }) {
                     password: account.password
                 }).then(account => {
                     resolve(account)
-                }).catch(error => {
-                    console.log(error)
-                    reject("db_error")
+                }).catch(errorList => {
+                    const errors = []
+
+                    for (error of errorList.errors) {
+                        if (error.message == "username must be unique") {
+                            errors.push("usernameTaken")
+                        } else if (error.message == "email must be unique") {
+                            errors.push("emailTaken")
+                        } else {
+                            errors.push("databaseError")
+                        }
+                    }
+                    reject(errors)
                 })
             })
         }

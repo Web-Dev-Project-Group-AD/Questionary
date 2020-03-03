@@ -15,7 +15,6 @@ module.exports = function ({ AccountManager }) {
         console.log("username: ", username)
         console.log("email: ", email)
 
-        
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
@@ -23,7 +22,7 @@ module.exports = function ({ AccountManager }) {
             // TODO: handle the created account?
             const userId = createdAccount.id
             const signedIn = true
-            const isAdmin = false 
+            const isAdmin = false
             // TODO: check if user is admin
             //const isAdmin = (user.userType == 'admin' ? true : false)
             const userStatus = { signedIn, isAdmin, username, userId }
@@ -32,16 +31,13 @@ module.exports = function ({ AccountManager }) {
             response.render("home.hbs")
 
         }).catch(validationErrors => {
-            // TODO: More complex error handling
             console.log(validationErrors)
-            
 
-            account.password = ""
-            account.passwordRepeated = ""
-            response.render("accounts-sign-up.hbs", {validationErrors, username, email} )
-
-        }).catch(error => {
-            response.render("error.hbs")
+            if (validationErrors.includes("databaseError")) {
+                response.render("error.hbs")
+            } else {
+                response.render("accounts-sign-up.hbs", { validationErrors, username, email })
+            }
         })
     })
 
@@ -92,13 +88,13 @@ module.exports = function ({ AccountManager }) {
         const username = request.params.username
 
         AccountManager.getAccountByUsername(username
-            ).then(account => {
-                const model = { account: account }
-                response.render("accounts-show-one.hbs", model)
-            }).catch(error => {
-                console.log(error)
-                response.render("error.hbs")
-            })
+        ).then(account => {
+            const model = { account: account }
+            response.render("accounts-show-one.hbs", model)
+        }).catch(error => {
+            console.log(error)
+            response.render("error.hbs")
+        })
     })
 
     return router

@@ -73,8 +73,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
                     where: { idType: id }
-                }
-                ).then(answers => {
+                }).then(answers => {
                     resolve(answers)
                 }).catch(error => {
                     reject(error)

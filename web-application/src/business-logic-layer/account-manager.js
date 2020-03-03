@@ -18,8 +18,6 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 		},
 
 		createAccount(account) {
-
-			
 				return new Promise((resolve, reject) => {
 					const validationErrors = AccountValidator.getErrorsNewAccount(account)
 					if (validationErrors.length > 0) {
@@ -31,10 +29,23 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 						return AccountRepository.createAccount(account)
 					}).then(createdAccount => {
 						resolve(createdAccount)
-					}).catch(validationErrors => {
+					}).catch(errors => {
+						for (error of errors) {
+							switch (error) {
+								case "databaseError":
+									return reject([error])
+								case "usernameTaken":
+									validationErrors.push("The username is taken.")
+									break
+								case "emailTaken":
+									validationErrors.push("The email is already in use.")
+									break
+								default: 
+									validationErrors.push(error)
+									break
+							}
+						}
 						reject(validationErrors)
-					}).catch(error => {
-						reject(error)
 					})
 				})
 			
@@ -53,24 +64,19 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 
 		signInAccount(account) {
 
-			if (!account.username.length > 0 || !account.password.length > 0) {
-				const errors = [new Error("error")]
-				Promise.reject(errors)
+			if (!account.username || !account.password) {
+				throw ["Incorrect username or password."]
 			} else {
 				return new Promise((resolve, reject) => {
 					AccountRepository.getAccountByUsername(account.username
 					).then(returnedAccount => bcrypt.compare(account.password, returnedAccount.password
 					)).then(isValidPassword => {
-						console.log("bcrypt compare")
 						if (!isValidPassword) {
-							error = new Error("invalid password")
 							reject(error)
 						} else {
 							resolve(returnedAccount)
 						}
-					}).catch(error => {
-						console.log("signInAccount error catch")
-						const errors = [error]
+					}).catch(errors => {
 						reject(errors)
 					})
 				})

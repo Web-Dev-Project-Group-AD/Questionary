@@ -80,7 +80,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				}).catch(error => {
 					reject(error)
 				})
-			}
+			})
 		},
 
 		getQuestionsByCategory(category, isAnswered) {

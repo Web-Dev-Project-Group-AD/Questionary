@@ -72,6 +72,7 @@ module.exports =  ({ database }) => {
 				).then(results => {
 					resolve(results.insertId)
 				}).catch(error => {
+					//TODO: look for unique username violation
 					reject(error)
 				})
 			})
