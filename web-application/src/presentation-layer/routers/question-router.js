@@ -1,15 +1,15 @@
 const express = require('express')
 
-module.exports = function ({  QuestionManager }) {
+module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
     const router = express.Router()
 
-    router.get("/new-post", function (request, response) {
+    router.get("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
 
         response.render("questions-new-post.hbs")
     })
 
-    router.post("/new-post", function (request, response) {
+    router.post("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
 
         const author = request.session.userStatus.username
         const { category, question, description } = request.body
@@ -27,25 +27,25 @@ module.exports = function ({  QuestionManager }) {
         })
     })
 
-    router.get("/unanswered", function (request, response) {
+    router.get("/unanswered", (request, response) => {
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
             response.render("questions.hbs", questions)
         }).catch(errors => {
-            response.render("error.hbs")
+            response.render("statuscode-500.hbs")
         })
     })
 
-    router.get("/answered", function (request, response) {
+    router.get("/answered", (request, response) => {
         QuestionManager.getAllAnsweredQuestions(
         ).then(questions => {
             response.render("questions.hbs", questions)
         }).catch(errors => {
-            response.render("error.hbs")
+            response.render("statuscode-500.hbs")
         })
     })
 
-    router.get('/by-user/:username'), function (request, response) {
+    router.get('/by-user/:username'), (request, response) => {
         const username = request.params.username
 
         // TODO: fetch list of questions by username
@@ -53,14 +53,14 @@ module.exports = function ({  QuestionManager }) {
         response.render("questions.hbs", questions)
     }
 
-    router.get("/by-question-id/:questionid", function (request, response) {
+    router.get("/by-question-id/:questionid", (request, response) => {
 
         // TODO: fetch single question
 
         response.render("questions-show-one.hbs", question)
     })
 
-    router.post("/by-question-id/:questionid", function (request, response) {
+    router.post("/by-question-id/:questionid", (request, response) => {
         const questionId = request.params.questionid
 
         // TODO: validate
@@ -69,13 +69,13 @@ module.exports = function ({  QuestionManager }) {
         response.redirect('/by-question-id/:questionid')
     })
 
-    router.post("/by-question-id/:questionid/answer", function (request, response) {
+    router.post("/by-question-id/:questionid/answer", (request, response) => {
 
         // TODO: validate
         // TODO: post answer to database
         // TODO: render question and answer together
 
-        response.render("questions-show-one.hbs", question, answer)
+        response.render("questions-show-one.hbs", { question, answer })
     })
 
     return router

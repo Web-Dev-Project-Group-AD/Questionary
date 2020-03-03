@@ -108,7 +108,6 @@ module.exports = ({ AccountManager }) => {
     })
 
     router.get("/:username", (request, response) => {
-
         const username = request.params.username
 
         AccountManager.getAccountByUsername(username

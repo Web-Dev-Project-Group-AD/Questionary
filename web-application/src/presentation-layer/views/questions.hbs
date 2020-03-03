@@ -12,17 +12,13 @@
 
     {{#if answers}}
         {{#each answers}}
-                <div class="answer">
-                    <p>Answer: {{answer}}</p>
-                    <p>Author: {{author}}</p>
-                </div>
-            {{/each}}
-        
+            <div class="answer">
+                <p>Answer: {{answer}}</p>
+                <p>Author: {{author}}</p>
+            </div>
+        {{/each}}
     {{/if}}
-{{/if}}
 
-            
-    {{/each}}
 {{else}}
-    <p>No content.</p>
+    <h3>No content.</h3>
 {{/if}}

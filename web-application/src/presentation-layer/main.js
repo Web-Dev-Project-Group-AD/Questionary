@@ -16,11 +16,14 @@ const AccountManager = require('../business-logic-layer/account-manager')
 const AccountValidator = require('../business-logic-layer/account-validator')
 const QuestionManager = require('../business-logic-layer/question-manager')
 const QuestionValidator = require('../business-logic-layer/question-validator')
+const SessionAuthenticator = require('../business-logic-layer/session-authenticator')
 
 container.register("AccountManager", awilix.asFunction(AccountManager))
 container.register("AccountValidator", awilix.asFunction(AccountValidator))
 container.register("QuestionManager", awilix.asFunction(QuestionManager))
 container.register("QuestionValidator", awilix.asFunction(QuestionValidator))
+container.register("SessionAuthenticator", awilix.asFunction(SessionAuthenticator))
+
 
 // Choose either Data-access-layer or Data-access-layer-sequelize
 
