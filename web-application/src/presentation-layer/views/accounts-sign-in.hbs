@@ -6,14 +6,8 @@
 <form method="POST" action="/accounts/sign-in">
 	<br>
 	<input type="text" 
-		{{#if username}} 
-			text="{{username}}"
-		{{/if}}
-		name="username" id="username" placeholder="Username" />
-	<br>
-	<input type="text" 
 		{{#if email}} 
-			text="{{email}}"
+			value="{{email}}"
 		{{/if}}
 		name="email" id="email" placeholder="Email" />
 	<br>
@@ -31,12 +25,12 @@
 
 </div>
 
-<div id="error-message">
+<ul id="error-message">
 	{{#if errorMessage}} 
 		<br>
-		{{errorMessage}}
+		<li>{{errorMessage}}</li>
 	{{/if}}
-</div>
+</ul>
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
