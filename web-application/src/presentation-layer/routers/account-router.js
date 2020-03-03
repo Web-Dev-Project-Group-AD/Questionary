@@ -4,39 +4,33 @@ const ERROR_MSG_DATABASE_GENERAL = "Database error."
 const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
 const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
-module.exports = ({ AccountManager }) => {
+module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) => {
 
     const router = express.Router()
 
-    router.get("/sign-up", (request, response) => {
-
+    router.get("/sign-up", SessionRedirector.redirectUser, (request, response) => {
         response.render("accounts-sign-up.hbs")
     })
 
-    router.post("/sign-up", (request, response) => {
+    router.post("/sign-up", SessionRedirector.redirectUser, (request, response) => {
 
         const { username, email, password, passwordRepeated } = request.body
-        console.log("username: ", username)
-        console.log("email: ", email)
-
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
         ).then(createdAccount => {
-            // TODO: handle the created account?
+
             const userId = createdAccount.id
             const signedIn = true
             const isAdmin = false
-            // TODO: check if user is admin
-            //const isAdmin = (user.userType == 'admin' ? true : false)
             const userStatus = { signedIn, isAdmin, username, userId }
             request.session.userStatus = userStatus
+
             console.log(username, " signed in")
             response.render("home.hbs", { userStatus })
-
         }).catch(validationErrors => {
-            console.log(validationErrors)
 
+            console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
                 response.render("error.hbs")
             } else {
@@ -45,27 +39,28 @@ module.exports = ({ AccountManager }) => {
         })
     })
 
-    router.get("/sign-in", (request, response) => {
-
+    router.get("/sign-in", SessionRedirector.redirectUser, (request, response) => {
         response.render("accounts-sign-in.hbs")
     })
 
-    router.post("/sign-in", (request, response) => {
+    router.post("/sign-in", SessionRedirector.redirectUser, (request, response) => {
 
         const { email, password } = request.body
         const account = { email, password }
 
         AccountManager.signInAccount(account
         ).then((returnedAccount) => {
+
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
             const userStatus = { isAdmin, username, userId }
             request.session.userStatus = userStatus
+
             console.log(username, " signed in")
             response.render("home.hbs")
         }).catch((errorMessage) => {
-            console.log(errorMessage)
 
+            console.log(errorMessage)
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
                 response.render("error.hbs")
             } else {
@@ -74,13 +69,15 @@ module.exports = ({ AccountManager }) => {
         })
     })
 
-    router.get("/sign-out", (request, response) => {
+    router.get("/sign-out", SessionAuthenticator.authenticateUser, (request, response) => {
+
         const userStatus = request.session.userStatus
 
         response.render("accounts-sign-out.hbs", { userStatus })
     })
 
-    router.post("/sign-out", (request, response) => {
+    router.post("/sign-out", SessionAuthenticator.authenticateUser, (request, response) => {
+
         const userStatus = request.session.userStatus
 
         request.session.destroy(error => {
@@ -94,12 +91,15 @@ module.exports = ({ AccountManager }) => {
 
     })
 
-    router.get("/", (request, response) => {
+    router.get("/", SessionAuthenticator.authenticateAdmin, (request, response) => {
+        
         const userStatus = request.session.userStatus
 
         AccountManager.getAllAccounts(
         ).then(accounts => {
+
             const model = { accounts: accounts }
+
             response.render("accounts-list-all.hbs", { model, userStatus })
         }).catch(error => {
             console.log(error)
@@ -108,11 +108,15 @@ module.exports = ({ AccountManager }) => {
     })
 
     router.get("/:username", (request, response) => {
+
+        const userStatus = request.session.userStatus
         const username = request.params.username
 
         AccountManager.getAccountByUsername(username
         ).then(account => {
+            
             const model = { account: account }
+
             response.render("accounts-show-one.hbs", { model, userStatus })
         }).catch(error => {
             console.log(error)

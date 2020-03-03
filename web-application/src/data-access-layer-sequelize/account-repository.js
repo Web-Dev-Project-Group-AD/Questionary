@@ -10,7 +10,7 @@ const SEQUELIZE_ERROR_UNIQUE_USERNAME = "username must be unique"
 const SEQUELIZE_ERROR_UNIQUE_EMAIL = "email must be unique"
 
 
-module.exports = function ({ AccountModel }) {
+module.exports = ({ AccountModel }) => {
 
     return {
 

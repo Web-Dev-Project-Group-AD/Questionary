@@ -5,12 +5,15 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
     const router = express.Router()
 
     router.get("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
+        
+        const userStatus = request.session.userStatus
 
         response.render("questions-new-post.hbs")
     })
 
     router.post("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
 
+        const userStatus = request.session.userStatus
         const author = request.session.userStatus.username
         const { category, question, description } = request.body
         const questionObject = { author, category, question, description }
@@ -18,12 +21,12 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         QuestionManager.createQuestion(questionObject
         ).then(createdQuestionObject => {
 
-            response.redirect("/by-user/:author")
+            response.redirect("/by-user/" + author)
 
         }).catch(errors => {
             // TODO: More complex error handling
             console.log(errors)
-            response.render("questions-new-post.hbs", questionObject, errors)
+            response.render("questions-new-post.hbs", {userStatus, questionObject, errors})
         })
     })
 
