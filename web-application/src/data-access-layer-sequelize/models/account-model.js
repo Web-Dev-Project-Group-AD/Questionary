@@ -8,7 +8,8 @@ module.exports = ({sequelize}) => sequelize.define('AccountModel', {
     },
     username: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     email: {
         type: Sequelize.TEXT,

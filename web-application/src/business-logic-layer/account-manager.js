@@ -2,6 +2,9 @@
 const bcrypt = require('bcrypt') //TODO: move dependency?
 const saltRounds = 10
 
+const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const ERROR_MSG_SIGN_UP_INPUT = "Incorrect email or password."
+
 
 module.exports = ({ AccountRepository, AccountValidator }) => {
 
@@ -18,26 +21,21 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 		},
 
 		createAccount(account) {
-
-			
-				return new Promise((resolve, reject) => {
-					const validationErrors = AccountValidator.getErrorsNewAccount(account)
-					if (validationErrors.length > 0) {
-						throw validationErrors
-					}
-					bcrypt.hash(account.password, saltRounds
-					).then(hash => {
-						account.password = hash
-						return AccountRepository.createAccount(account)
-					}).then(createdAccount => {
-						resolve(createdAccount)
-					}).catch(validationErrors => {
-						reject(validationErrors)
-					}).catch(error => {
-						reject(error)
-					})
+			return new Promise((resolve, reject) => {
+				const errors = AccountValidator.getErrorsNewAccount(account)
+				if (errors.length > 0) {
+					throw errors
+				}
+				bcrypt.hash(account.password, saltRounds
+				).then(hash => {
+					account.password = hash
+					return AccountRepository.createAccount(account)
+				}).then(createdAccount => {
+					resolve(createdAccount)
+				}).catch(errors => {
+					reject(errors)
 				})
-			
+			})
 		},
 
 		getAccountByUsername(username) {
@@ -52,29 +50,27 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 		},
 
 		signInAccount(account) {
-
-			if (!account.username.length > 0 || !account.password.length > 0) {
-				const errors = [new Error("error")]
-				Promise.reject(errors)
-			} else {
-				return new Promise((resolve, reject) => {
-					AccountRepository.getAccountByUsername(account.username
-					).then(returnedAccount => bcrypt.compare(account.password, returnedAccount.password
-					)).then(isValidPassword => {
-						console.log("bcrypt compare")
-						if (!isValidPassword) {
-							error = new Error("invalid password")
-							reject(error)
-						} else {
-							resolve(returnedAccount)
-						}
-					}).catch(error => {
-						console.log("signInAccount error catch")
-						const errors = [error]
-						reject(errors)
-					})
+			return new Promise((resolve, reject) => {
+				if (!account.username || !account.password) {
+					throw ERROR_MSG_SIGN_UP_INPUT
+				}
+				AccountRepository.getAccountByEmail(account.email
+				).then(returnedAccount => {
+					if (!returnedAccount) {
+						throw ERROR_MSG_SIGN_UP_INPUT
+					} else {
+						return bcrypt.compare(account.password, returnedAccount.password)
+					}
+				}).then(isValidPassword => {
+					if (!isValidPassword) {
+						throw ERROR_MSG_SIGN_UP_INPUT
+					} else {
+						resolve(returnedAccount)
+					}
+				}).catch(error => {
+					reject(error)
 				})
-			}
+			})
 		},
 
 		getValidationConstraints: () => {

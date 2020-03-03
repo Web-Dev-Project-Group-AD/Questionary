@@ -49,7 +49,7 @@ let RedisStore = require('connect-redis')(session)
 let redisClient = redis.createClient({ host:'redis' })
 
 app.use(session({
-	name: 'login',
+	name: 'signIn',
 	saveUninitialized: false,
 	resave: false,
 	secret: '9hTYuxloxt',
@@ -68,5 +68,5 @@ app.use('/questions', QuestionRouter)
 
 // Start listening for incoming HTTP requests!
 app.listen(8080, function () {
-	console.log('Running on 8080!')
+	console.log("Running on 8080!")
 })
