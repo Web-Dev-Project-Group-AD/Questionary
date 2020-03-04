@@ -17,8 +17,8 @@ module.exports = ({ AccountModel }) => {
         getAllAccounts() {
             return new Promise((resolve, reject) => {
                 AccountModel.findAll(
-                ).then(account => {
-                    resolve(account)
+                ).then(accounts => {
+                    resolve(accounts)
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)

@@ -5,10 +5,10 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
     const router = express.Router()
 
     router.get("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
-        
+
         const userStatus = request.session.userStatus
 
-        response.render("questions-new-post.hbs")
+        response.render("questions-new-post.hbs", { userStatus })
     })
 
     router.post("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
@@ -26,44 +26,61 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         }).catch(errors => {
             // TODO: More complex error handling
             console.log(errors)
-            response.render("questions-new-post.hbs", {userStatus, questionObject, errors})
+            response.render("questions-new-post.hbs", { userStatus, questionObject, errors })
         })
     })
 
     router.get("/unanswered", (request, response) => {
+
+        const userStatus = request.session.userStatus
+
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
-            response.render("questions.hbs", questions)
+            console.log(questions)
+            response.render("questions.hbs", { userStatus, questions })
         }).catch(errors => {
-            response.render("statuscode-500.hbs")
+            console.log(errors)
+            response.render("statuscode-500.hbs", { userStatus })
         })
     })
 
     router.get("/answered", (request, response) => {
+
+        const userStatus = request.session.userStatus
         QuestionManager.getAllAnsweredQuestions(
         ).then(questions => {
-            response.render("questions.hbs", questions)
+            console.log(questions)
+            response.render("questions.hbs", { userStatus, questions })
         }).catch(errors => {
-            response.render("statuscode-500.hbs")
+            console.log(errors)
+            response.render("statuscode-500.hbs", { userStatus })
         })
     })
 
-    router.get('/by-user/:username'), (request, response) => {
-        const username = request.params.username
+    router.get('/by-user/:author'), (request, response) => {
 
-        // TODO: fetch list of questions by username
+        const userStatus = request.session.userStatus
+        const author = request.params.author
 
-        response.render("questions.hbs", questions)
+        QuestionManager.getQuestionsByAuthor(author
+        ).then(questions => {
+            response.render("questions.hbs", { userStatus, questions })
+        }).catch(errors => {
+            response.render("statuscode-500.hbs", { userStatus })
+        })
     }
 
     router.get("/by-question-id/:questionid", (request, response) => {
 
+        const userStatus = request.session.userStatus
+
         // TODO: fetch single question
 
-        response.render("questions-show-one.hbs", question)
+        response.render("questions-show-one.hbs", { userStatus, question })
     })
 
     router.post("/by-question-id/:questionid", (request, response) => {
+
         const questionId = request.params.questionid
 
         // TODO: validate
@@ -74,11 +91,13 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
     router.post("/by-question-id/:questionid/answer", (request, response) => {
 
+        const userStatus = request.session.userStatus
+
         // TODO: validate
         // TODO: post answer to database
         // TODO: render question and answer together
 
-        response.render("questions-show-one.hbs", { question, answer })
+        response.render("questions-show-one.hbs", { userStatus, question, answer })
     })
 
     return router
