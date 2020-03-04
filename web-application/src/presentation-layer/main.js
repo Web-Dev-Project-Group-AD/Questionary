@@ -48,14 +48,17 @@ const QuestionModel = require('../data-access-layer-sequelize/models/question-mo
 const AnswerModel = require('../data-access-layer-sequelize/models/answer-model')
 const AccountRepository = require('../data-access-layer-sequelize/account-repository')
 const QuestionRepository = require('../data-access-layer-sequelize/question-repository')
+const sequelizeSync = require('../data-access-layer-sequelize/sequelize-sync')
 
 container.register("sequelize", awilix.asFunction(sequelize))
 container.register("AccountModel", awilix.asFunction(AccountModel))
 container.register("QuestionCategoryModel", awilix.asFunction(QuestionCategoryModel))
 container.register("QuestionModel", awilix.asFunction(QuestionModel))
 container.register("AnswerModel", awilix.asFunction(AnswerModel))
+container.register("sequelizeSync", awilix.asFunction(sequelizeSync))
 container.register("AccountRepository", awilix.asFunction(AccountRepository))
 container.register("QuestionRepository", awilix.asFunction(QuestionRepository))
 
+console.log("this is a questionModel:", QuestionModel)
 
 module.exports = container

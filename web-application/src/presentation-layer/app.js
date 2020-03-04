@@ -16,6 +16,7 @@ const VariousRouter = container.resolve('VariousRouter')
 const AccountRouter = container.resolve('AccountRouter')
 const QuestionRouter = container.resolve('QuestionRouter')
 
+const sequelizeSync = container.resolve('sequelizeSync')
 
 
 // Create the express application.

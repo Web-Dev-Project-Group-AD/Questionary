@@ -5,26 +5,18 @@ const POSTGRES_USER = "admin"
 const POSTGRES_PASSWORD = "password1"
 const POSTGRES_HOST = "192.168.99.100"
 
+const sequelize = new Sequelize(
 
-module.exports = ({}) => {
+    POSTGRES_DB,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+    {
+        dialect: 'postgres',
+        host: POSTGRES_HOST
+    },
+    console.log("sequelize-setup!")
+)
 
-    sequelize = new Sequelize(
-
-        POSTGRES_DB,
-        POSTGRES_USER,
-        POSTGRES_PASSWORD,
-        {
-            dialect: 'postgres',
-            host: POSTGRES_HOST
-        },
-    )
-
-    sequelize.sync({
-        force: true
-    }).then(() => {
-        console.log(`Database & tables created!`)
-    })
-
+module.exports = () => {
     return sequelize
-
 }
