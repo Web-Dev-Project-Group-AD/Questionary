@@ -1,73 +1,46 @@
 
 // Include all requires.
-//require('dotenv').config()
+//require("dotenv").config()
 
-const path = require('path')
-const express = require('express')
-const expressHandlebars = require('express-handlebars')
-const bodyParser = require('body-parser')
-const session = require('express-session')
-const redis = require('redis')
+const path = require("path")
+const express = require("express")
+const bodyParser = require("body-parser")
 
 // Create the dependency-injection container.
-const container = require('./main')
+const container = require("./main")
 
-const VariousRouter = container.resolve('VariousRouter')
-const AccountRouter = container.resolve('AccountRouter')
-const QuestionRouter = container.resolve('QuestionRouter')
+const VariousRouter = container.resolve("VariousRouter")
+const AccountRouter = container.resolve("AccountRouter")
+const QuestionRouter = container.resolve("QuestionRouter")
 
-const sequelizeSync = container.resolve('sequelizeSync')
-
+const sequelizeSync = container.resolve("sequelizeSync")
+const handlebars = container.resolve("expressHandlebars")
+const session = container.resolve("expressSession")
 
 // Create the express application.
 const app = express()
 
 // Setup express Handlebars.
-app.set('views', path.join(__dirname, 'views'))
+app.set("views", path.join(__dirname, "views"))
 
-app.engine('hbs', expressHandlebars({
-	extname: 'hbs',
-	defaultLayout: 'main',
-	layoutsDir: path.join(__dirname, 'layouts')
-}))
-
-const hbs = expressHandlebars.create({})
-
-// Create Handlebars-helper for passing json-objects to client.
-hbs.handlebars.registerHelper('json', function(context) {
-    return JSON.stringify(context);
-})
+app.engine("hbs", handlebars.engine)
 
 // Handle static files in the public folder.
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, "public")))
 
 // Handles parsing data from the request body.
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Setup sessions and session storage
-let RedisStore = require('connect-redis')(session)
-let redisClient = redis.createClient({ host:'redis' })
-
-app.use(session({
-	name: 'signIn',
-	saveUninitialized: false,
-	resave: false,
-	secret: '9hTYuxloxt',
-	store: new RedisStore({ client: redisClient }),
-	cookie: {
-		maxAge: 2 * 60 * 60 * 1000, // Set maxAge of sessions to 2 hours.
-		sameSite: true,
-		secure: false
-	}
-}))
+app.use(session)
 
 // Attach all routers.
-app.use('/', VariousRouter)
-app.use('/accounts', AccountRouter)
-app.use('/questions', QuestionRouter)
+app.use("/", VariousRouter)
+app.use("/accounts", AccountRouter)
+app.use("/questions", QuestionRouter)
 
 // Start listening for incoming HTTP requests!
-app.listen(8080, function () {
+app.listen(8080, () => {
 	console.log("Running on 8080!")
 })
