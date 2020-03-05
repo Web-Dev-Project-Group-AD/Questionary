@@ -10,15 +10,15 @@ const SEQUELIZE_ERROR_UNIQUE_USERNAME = "username must be unique"
 const SEQUELIZE_ERROR_UNIQUE_EMAIL = "email must be unique"
 
 
-module.exports = function ({ AccountModel }) {
+module.exports = ({ AccountModel }) => {
 
     return {
 
         getAllAccounts() {
             return new Promise((resolve, reject) => {
                 AccountModel.findAll(
-                ).then(account => {
-                    resolve(account)
+                ).then(accounts => {
+                    resolve(accounts)
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)

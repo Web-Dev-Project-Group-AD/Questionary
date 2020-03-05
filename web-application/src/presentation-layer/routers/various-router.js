@@ -5,23 +5,38 @@ module.exports = ({ }) => {
 	const router = express.Router()
 
 	router.get("/", (request, response) => {
-		response.render("home.hbs")
+
+		const userStatus = request.session.userStatus
+
+		response.render("home.hbs", userStatus)
 	})
 
 	router.get("/about", (request, response) => {
-		response.render("about.hbs")
+
+		const userStatus = request.session.userStatus
+
+		response.render("about.hbs", userStatus)
 	})
 
 	router.get("/contact", (request, response) => {
-		response.render("contact.hbs")
+
+		const userStatus = request.session.userStatus
+
+		response.render("contact.hbs", userStatus)
 	})
 
 	router.get("/401", (request, response) =>{
-		response.render("statuscode-401.hbs")
+
+		const userStatus = request.session.userStatus
+
+		response.render("statuscode-401.hbs", userStatus)
 	})
 
 	router.get("/500", (request, response) =>{
-		response.render("statuscode-500.hbs")
+
+		const userStatus = request.session.userStatus
+
+		response.render("statuscode-500.hbs", userStatus)
 	})
 
 	return router
