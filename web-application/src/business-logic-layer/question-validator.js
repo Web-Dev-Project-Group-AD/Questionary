@@ -19,9 +19,9 @@ module.exports = () => {
 
             if (!question.hasOwnProperty("title")) {
                 errors.push("Question is missing.")
-            } else if (question.question.length < QUESTION_TITLE_MIN_LENGTH) {
+            } else if (question.title.length < QUESTION_TITLE_MIN_LENGTH) {
                 errors.push("Question is too short.")
-            } else if (QUESTION_TITLE_MAX_LENGTH < question.author.length) {
+            } else if (QUESTION_TITLE_MAX_LENGTH < question.title.length) {
                 errors.push("Question is too long.")
             }
 
@@ -32,7 +32,7 @@ module.exports = () => {
             }
 
             
-            if (question.hasOwnProperty("category")) {
+            if (!question.hasOwnProperty("category")) {
                 errors.push("Category is missing.")
             } else if (question.category.length < QUESTION_CATEGORY_MIN_LENGTH) {
                 errors.push("Category name is too short.")
@@ -40,7 +40,7 @@ module.exports = () => {
                 errors.push("Category name is too long.")
             }
 
-
+            return errors
         },
 
         getErrorsNewAnswer(answer) {

@@ -3,17 +3,17 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 
 	return {
 
-		createQuestion(questionObject) {
+		createQuestion(question) {
 			return new Promise((resolve, reject) => {
-				const validationErrors = QuestionValidator.getErrorsNewQuestion(questionObject)
+				const validationErrors = QuestionValidator.getErrorsNewQuestion(question)
 				if (validationErrors.length > 0) {
 					return reject(validationErrors)
 				}
-				QuestionRepository.createQuestionCategory(questionObject.category
+				QuestionRepository.createQuestionCategory(question.category
 				).then(() => {
-					return QuestionRepository.createQuestion(questionObject)
-				}).then(createdQuestionObject => {
-					resolve(createdQuestionObject)
+					return QuestionRepository.createQuestion(question)
+				}).then(createdquestion => {
+					resolve(createdquestion)
 				}).catch(errors => {
 					reject(errors)
 				})
@@ -22,7 +22,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 
 		getAllUnansweredQuestions() {
 			return new Promise((resolve, reject) => {
-				QuestionRepository.getAllUnansweredQuestions(
+				QuestionRepository.getQuestionsByAnswerStatus(false
 				).then(questions => {
 					resolve(questions)
 				}).catch(error => {
@@ -31,23 +31,31 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-		getAllAnsweredQuestions() {
+		createAnswer(answerObject) {
 			return new Promise((resolve, reject) => {
-				QuestionRepository.getAllAnsweredQuestions(
-				).then(questions => {
-					resolve(questions)
-				}).catch(error => {
-				reject(error)
+				const validationErrors = QuestionValidator.getErrorsNewAnswer(answerObject)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.createAnswer(answerObject
+				).then(createdAnswerObject => {
+					resolve(createdAnswerObject)
+				}).catch(errors => {
+					reject(errors)
 				})
 			})
-		},
-				/*
-				).then(fetchedQuestions => {
 
+		},
+
+		getAllQuestionsWithAnswers() {
+			return new Promise((resolve, reject) => {
+				var questions = []
+				QuestionRepository.getQuestionsByAnswerStatus(true
+				).then(fetchedQuestions => {
 					questions = fetchedQuestions
 					return QuestionRepository.getAllAnswers()
 				}).then(answers => {
-					const questionList = [{ question, answer }]
+					const questionList = []
 					for (question of questions) {
 						const answerList = []
 						for (answer of answers) {
@@ -58,17 +66,6 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 						questionList.push({ question, answerList })
 					}
 					resolve(questionList)
-				}).catch(error => {
-					reject(error)
-				})
-			})
-		},
-*/
-		getQuestionsByCategory(category, isAnswered) {
-			return new Promise((resolve, reject) => {
-				QuestionRepository.getQuestionsByCategory(category, isAnswered
-				).then(questions => {
-					resolve(questions)
 				}).catch(error => {
 					reject(error)
 				})
@@ -86,61 +83,78 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-		getQuestionsByAnswerAuthor(author) {
+		getAnsweredQuestionsByCategory(category) {
 			return new Promise((resolve, reject) => {
-				QuestionRepository.getQuestionsByAnswerAuthor(author
-				).then(questions => {
-					resolve(questions)
-				}).catch(error => {
-					reject(error)
-				})
-			})
-		},
-
-/*
-				var answerList = []
-				QuestionRepository.getAnswersByAuthor(author
-				).then(answers => {
+				var questions = []
+				QuestionRepository.getQuestionsByCategory(category
+				).then(fetchedQuestions => {
 					const questionIds = []
-					for (answer of answers) {
-						questionIds.push(answer.questionId)
-					}
-					answerList = answers
-					return QuestionRepository.getQuestionsByIdList(questionIds)
-				}).then(questions => {
-					const answeredQuestions = []
 					for (question of questions) {
-						for (answer of answerList) {
+						questionIds.push(question.id)
+					}
+					questions = fetchedQuestions
+					return QuestionRepository.getAnswersByQuestionIds(questionIds)
+				}).then(answers => {
+					const questionsAndAnswers = []
+					for (question of questions) {
+						for (answer of answers) {
 							if (answer.questionId == question.id) {
-								answeredQuestions.push({ question, answer })
+								questionsAndAnswers.push({ question, answer })
 							}
 						}
 					}
-					resolve(answeredQuestions)
+					resolve(questionsAndAnswers)
 				}).catch(error => {
 					reject(error)
 				})
 			})
-
 		},
-		*/
 
-		createAnswer(answerObject) {
+		getQuestionsByAnswerAuthor(author) {
 			return new Promise((resolve, reject) => {
-				const validationErrors = QuestionValidator.getErrorsNewAnswer(answerObject)
-				if (validationErrors.length > 0) {
-					return reject(validationErrors)
-				}
-				QuestionRepository.createAnswer(answerObject
-				).then(createdAnswerObject => {
-					resolve(createdAnswerObject)
-				}).catch(errors => {
-					reject(errors)
+				var answers = []
+				QuestionRepository.getAnswersByAuthor(author
+				).then(fetchedAnswers => {
+					const questionIds = []
+					for (answer of fetchedAnswers) {
+						questionIds.push(answer.questionId)
+					}
+					answers = fetchedAnswers
+					return QuestionRepository.getAnswersByQuestionIds(questionIds)
+				}).then(questions => {
+					const questionsAndAnswers = []
+					for (question of questions) {
+						for (answer of answers) {
+							if (answer.questionId == question.id) {
+								questionsAndAnswers.push({ question, answer })
+							}
+						}
+					}
+					resolve(questionsAndAnswers)
+				}).catch(error => {
+					reject(error)
 				})
 			})
+		},
 
+		getQuestionById(id) {
+			var question = null
+			return new Promise((resolve, reject) => {
+				QuestionRepository.getQuestionById(id
+				).then(fetchedQuestion => {
+					if (!question.isAnswered) {
+						return resolve(fetchedQuestion)
+					} else {
+						question = fetchedQuestion
+						return getAnswersByQuestionIds(id)
+					}
+				}).then(answer => {
+					resolve({ question, answer })
+				}).catch(error => {
+					reject(error)
+				})
+			})
 		}
 
 	}
-
 }
