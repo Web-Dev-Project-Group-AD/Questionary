@@ -1,14 +1,36 @@
- <div class="question">
-            <h3>{{question}}</h3>
-            <br>
-            <p>{{description}}</p>
-            <br>
-        </div>
+{{#if question}}
 
-        {{#if answers}}
-            {{#each answers}}
-            <div class="answer">
-                <p>{{content}}</p>
-            </div>
-            {{/each}}
-        {{/if}}
+    <div class="question">
+        <h3>{{question.title}}</h3>
+        <br>
+        <p>{{question.description}}</p>
+        <br>
+        <p>Asked by: {{question.author}}</p>
+        <br>
+    </div>
+
+    {{#ifNot ../userStatus.username author}}
+        <form method="GET" action="/questions/by-question-id/{{id}}/">
+            <input type="hidden" name="title" value="{{title}}" />
+            <input type="hidden" name="description" value="{{description}}" />
+            <input type="hidden" name="author" value="{{author}}" />
+            <input type="submit" class="btn" value="Post new answer" />
+            <br>
+        </form>
+    {{/ifNot}}
+
+    {{#if answers}}
+        {{#each answers}}
+        <div class="answer">
+            <p>{{content}}</p>
+            <br>
+            <p>{{author}}</p>
+        </div>
+        {{/each}}
+    {{/if}}
+
+{{else}}
+
+    <p>Question does not exist.</p>
+
+{{/if}}

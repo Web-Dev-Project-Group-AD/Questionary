@@ -1,24 +1,39 @@
 {{#if questions}}
+
     {{#each questions}}
         <div class="question">
-            <h3>Question: {{question}}</h3>
+            <h3>{{title}}</h3>
             <br>
-            <p>Description: {{description}}</p>
+            <p>{{description}}</p>
             <br>
-            <p>Author: {{author}}</p>
-
+            <p>Asked by: {{author}}</p>
+            <br>
         </div>
     {{/each}}
+
+    {{#ifNot ../userStatus.username author}}
+        <form method="GET" action="/questions/by-question-id/{{id}}/">
+            <input type="hidden" name="title" value="{{title}}" />
+            <input type="hidden" name="description" value="{{description}}" />
+            <input type="hidden" name="author" value="{{author}}" />
+            <input type="submit" class="btn" value="Post new answer" />
+            <br>
+        </form>
+    {{/ifNot}}
 
     {{#if answers}}
         {{#each answers}}
             <div class="answer">
-                <p>Answer: {{answer}}</p>
+                <p>Answer: {{content}}</p>
+                <br>
                 <p>Author: {{author}}</p>
+                <br>
             </div>
         {{/each}}
     {{/if}}
 
 {{else}}
+
     <h3>No content.</h3>
+
 {{/if}}
