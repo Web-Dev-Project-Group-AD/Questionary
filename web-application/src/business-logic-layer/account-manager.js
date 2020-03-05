@@ -9,17 +9,7 @@ const ERROR_MSG_SIGN_UP_INPUT = "Incorrect email or password."
 module.exports = ({ AccountRepository, AccountValidator }) => {
 
 	return {
-		getAllAccounts() {
-			return new Promise((resolve, reject) => {
-				AccountRepository.getAllAccounts(
-				).then(accounts => {
-					resolve(accounts)
-				}).catch(error => {
-					reject(error)
-				})
-			})
-		},
-
+		
 		createAccount(account) {
 			return new Promise((resolve, reject) => {
 				const errors = AccountValidator.getErrorsNewAccount(account)
@@ -34,6 +24,17 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 					resolve(createdAccount)
 				}).catch(errors => {
 					reject(errors)
+				})
+			})
+		},
+
+		getAllAccounts() {
+			return new Promise((resolve, reject) => {
+				AccountRepository.getAllAccounts(
+				).then(accounts => {
+					resolve(accounts)
+				}).catch(error => {
+					reject(error)
 				})
 			})
 		},

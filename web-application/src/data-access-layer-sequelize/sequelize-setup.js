@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize')
+const Sequelize = require("sequelize")
 
 const POSTGRES_DB = "postgres"
 const POSTGRES_USER = "admin"
@@ -11,12 +11,10 @@ const sequelize = new Sequelize(
     POSTGRES_USER,
     POSTGRES_PASSWORD,
     {
-        dialect: 'postgres',
+        dialect: "postgres",
         host: POSTGRES_HOST
     },
     console.log("sequelize-setup!")
 )
 
-module.exports = () => {
-    return sequelize
-}
+module.exports = () => { return sequelize }
