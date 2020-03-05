@@ -10,7 +10,7 @@ const session = require('express-session')
 const redis = require('redis')
 
 // Create the dependency-injection container.
-const container = require('./main')
+const container = require('../main')
 
 const VariousRouter = container.resolve('VariousRouter')
 const AccountRouter = container.resolve('AccountRouter')
@@ -66,7 +66,4 @@ app.use('/', VariousRouter)
 app.use('/accounts', AccountRouter)
 app.use('/questions', QuestionRouter)
 
-// Start listening for incoming HTTP requests!
-app.listen(8080, function () {
-	console.log("Running on 8080!")
-})
+module.exports = app
