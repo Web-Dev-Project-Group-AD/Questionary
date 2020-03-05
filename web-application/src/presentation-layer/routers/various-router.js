@@ -11,32 +11,32 @@ module.exports = ({ }) => {
 		response.render("home.hbs", userStatus)
 	})
 
-	router.get("/about", (request, response) => {
+	// router.get("/about", (request, response) => {
 
-		const userStatus = request.session.userStatus
+	// 	const userStatus = request.session.userStatus
 
-		response.render("about.hbs", userStatus)
-	})
+	// 	response.render("about.hbs", userStatus)
+	// })
 
-	router.get("/contact", (request, response) => {
+	// router.get("/contact", (request, response) => {
 
-		const userStatus = request.session.userStatus
+	// 	const userStatus = request.session.userStatus
 
-		response.render("contact.hbs", userStatus)
-	})
+	// 	response.render("contact.hbs", userStatus)
+	// })
 
 	router.get("/401", (request, response) =>{
 
 		const userStatus = request.session.userStatus
 
-		response.render("statuscode-401.hbs", userStatus)
+		response.status(401).render("statuscode-401.hbs", userStatus)
 	})
 
 	router.get("/500", (request, response) =>{
 
 		const userStatus = request.session.userStatus
 
-		response.render("statuscode-500.hbs", userStatus)
+		response.status(500).render("statuscode-500.hbs", userStatus)
 	})
 
 	return router
