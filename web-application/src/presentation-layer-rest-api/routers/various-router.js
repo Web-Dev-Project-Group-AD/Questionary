@@ -1,10 +1,14 @@
-/*const express = require('express')
+const express = require('express')
 
 module.exports = ({ }) => {
 
 	const router = express.Router()
 
-	router.get("/", (request, response) => {
+	router.get('/about', function (request, response) {
+		response.status(200).json(users)
+	})
+
+	/*router.get("/", (request, response) => {
 		response.render("home.hbs")
 	})
 
@@ -16,14 +20,14 @@ module.exports = ({ }) => {
 		response.render("contact.hbs")
 	})
 
-	router.get("/401", (request, response) =>{
+	router.get("/401", (request, response) => {
 		response.render("statuscode-401.hbs")
 	})
 
-	router.get("/500", (request, response) =>{
+	router.get("/500", (request, response) => {
 		response.render("statuscode-500.hbs")
 	})
 
-	return router
+	return router*/
 
-}*/
+}

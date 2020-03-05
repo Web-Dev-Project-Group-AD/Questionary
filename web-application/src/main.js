@@ -15,6 +15,19 @@ container.register("QuestionRouter", awilix.asFunction(QuestionRouter))
 container.register("expressHandlebars", awilix.asFunction(expressHandlebars))
 container.register("expressSession", awilix.asFunction(expressSession))
 
+// Presentation-layer-rest-api
+const VarRouter = require("./presentation-layer-rest-api/routers/various-router")
+//const AccountRouter = require("./presentation-layer/routers/account-router")
+//const QuestionRouter = require("./presentation-layer/routers/question-router")
+//const expressHandlebars = require("./presentation-layer/handlebars-setup")
+//const expressSession = require("./presentation-layer/session-setup")
+
+container.register("VarRouter", awilix.asFunction(VarRouter))
+//container.register("AccountRouter", awilix.asFunction(AccountRouter))
+//container.register("QuestionRouter", awilix.asFunction(QuestionRouter))
+//container.register("expressHandlebars", awilix.asFunction(expressHandlebars))
+//container.register("expressSession", awilix.asFunction(expressSession))
+
 // Business-logic-layer
 const AccountManager = require("./business-logic-layer/account-manager")
 const AccountValidator = require("./business-logic-layer/account-validator")

@@ -40,4 +40,6 @@ app.use("/", VariousRouter)
 app.use("/accounts", AccountRouter)
 app.use("/questions", QuestionRouter)
 
+console.log("here we are")
+
 module.exports = app
