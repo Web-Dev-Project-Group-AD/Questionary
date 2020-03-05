@@ -4,25 +4,26 @@ const container = awilix.createContainer()
 
 // Presentation-layer
 const VariousRouter = require("./presentation-layer/routers/various-router")
+const VarRouter = require("./presentation-layer-rest-api/routers/various-router")
 const AccountRouter = require("./presentation-layer/routers/account-router")
 const QuestionRouter = require("./presentation-layer/routers/question-router")
 const expressHandlebars = require("./presentation-layer/handlebars-setup")
 const expressSession = require("./presentation-layer/session-setup")
 
 container.register("VariousRouter", awilix.asFunction(VariousRouter))
+container.register("VarRouter", awilix.asFunction(VarRouter))
 container.register("AccountRouter", awilix.asFunction(AccountRouter))
 container.register("QuestionRouter", awilix.asFunction(QuestionRouter))
 container.register("expressHandlebars", awilix.asFunction(expressHandlebars))
 container.register("expressSession", awilix.asFunction(expressSession))
 
 // Presentation-layer-rest-api
-const VarRouter = require("./presentation-layer-rest-api/routers/various-router")
+
 //const AccountRouter = require("./presentation-layer/routers/account-router")
 //const QuestionRouter = require("./presentation-layer/routers/question-router")
 //const expressHandlebars = require("./presentation-layer/handlebars-setup")
 //const expressSession = require("./presentation-layer/session-setup")
 
-container.register("VarRouter", awilix.asFunction(VarRouter))
 //container.register("AccountRouter", awilix.asFunction(AccountRouter))
 //container.register("QuestionRouter", awilix.asFunction(QuestionRouter))
 //container.register("expressHandlebars", awilix.asFunction(expressHandlebars))
@@ -76,6 +77,6 @@ container.register("sequelizeSync", awilix.asFunction(sequelizeSync))
 container.register("AccountRepository", awilix.asFunction(AccountRepository))
 container.register("QuestionRepository", awilix.asFunction(QuestionRepository))
 
-console.log("this is a questionModel:", QuestionModel)
+//console.log("this is a questionModel:", QuestionModel)
 
 module.exports = container

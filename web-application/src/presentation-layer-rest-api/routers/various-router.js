@@ -4,6 +4,8 @@ module.exports = ({ }) => {
 
 	const router = express.Router()
 
+	const users = [{id: 1, name: "Alice"}, {id: 2, name: "Bob"}]
+
 	router.get('/about', function (request, response) {
 		response.status(200).json(users)
 	})
@@ -26,8 +28,8 @@ module.exports = ({ }) => {
 
 	router.get("/500", (request, response) => {
 		response.render("statuscode-500.hbs")
-	})
+	})*/
 
-	return router*/
+	return router
 
 }
