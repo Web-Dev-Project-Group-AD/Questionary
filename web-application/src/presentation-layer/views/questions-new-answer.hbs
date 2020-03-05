@@ -1,15 +1,28 @@
-<div class="question">
-    <h3>{{question}}</h3>
-    <br>
-    <p>{{description}}</p>
-    <br>
-</div>
+{{#if question}}
 
-<form class="question-answer" method="POST" action="/questions/by-id/answer">
-    <br>
-	<input type="text" name="answer" id="answer" placeholder="Answer" />
-	<br>
-	<input type="submit" class="btn" value="Post answer" />
-    <br>
-    <div id="error-message"></div>
-</form>
+    <div class="question">
+        <h3>{{question.title}}</h3>
+        <br>
+        <p>{{question.description}}</p>
+        <br>
+        <p>Asked by: {{question.author}}</p>
+        <br>
+    </div>
+
+    <form class="question-answer" method="POST" action="/questions/by-question-id/{{question.id}}/">
+        <br>
+        <input type="text" name="content" placeholder="Answer" />
+        <br>
+        <input type="submit" class="btn" value="Submit answer" />
+        <br>
+        <input type="hidden" name="questionTitle" value="{{question.title}}" />
+        <input type="hidden" name="questionDescription" value="{{question.description}}" />
+        <input type="hidden" name="questionAuthor" value="{{question.author}}" />
+        <div id="error-message"></div>
+    </form>
+
+{{else}}
+
+    <p>Question does not exist.</p>
+
+{{/if}}

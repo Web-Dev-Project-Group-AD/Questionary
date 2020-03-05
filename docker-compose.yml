@@ -13,17 +13,17 @@ services:
     volumes:
       - "./web-application/src:/web-application/src"
     depends_on:
-      - database
+      # - database
       - redis
       - postgres
-  database:
-    build: "./database"
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: 'database'
-      MYSQL_USER: 'root'
-      MYSQL_ROOT_PASSWORD: 'password'
+  # database:
+  #   build: "./database"
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     MYSQL_DATABASE: 'database'
+  #     MYSQL_USER: 'root'
+  #     MYSQL_ROOT_PASSWORD: 'password'
   postgres:
     build: "./postgres-database"
     ports:

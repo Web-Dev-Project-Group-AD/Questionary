@@ -1,12 +1,12 @@
-module.exports = ({ sequelize }) => {
 
-    console.log("sequelize-sync!")
+module.exports = ({ sequelize }) => {
 
     sequelize.sync({
         force: true
     }).then(() => {
         console.log("Database & tables created!")
     }).catch(error => {
-        console.log("hello: ", error)
+        console.log(error)
     })
+    
 }

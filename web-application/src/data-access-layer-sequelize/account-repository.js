@@ -14,6 +14,32 @@ module.exports = ({ AccountModel }) => {
 
     return {
 
+        createAccount(account) {
+            return new Promise((resolve, reject) => {
+                AccountModel.create({
+                    username: account.username,
+                    email: account.email,
+                    password: account.password
+                }).then(results => {
+                    results.get({ plain: true })
+                    resolve(results)
+                }).catch(errorList => {
+                    const errors = []
+
+                    for (error of errorList.errors) {
+                        if (error.message == SEQUELIZE_ERROR_UNIQUE_USERNAME) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_USERNAME)
+                        } else if (error.message == SEQUELIZE_ERROR_UNIQUE_EMAIL) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_EMAIL)
+                        } else {
+                            errors.push(ERROR_MSG_DATABASE_GENERAL)
+                        }
+                    }
+                    reject(errors)
+                })
+            })
+        },
+
         getAllAccounts() {
             return new Promise((resolve, reject) => {
                 AccountModel.findAll(
@@ -48,31 +74,6 @@ module.exports = ({ AccountModel }) => {
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
-                })
-            })
-        },
-
-        createAccount(account) {
-            return new Promise((resolve, reject) => {
-                AccountModel.create({
-                    username: account.username,
-                    email: account.email,
-                    password: account.password
-                }).then(account => {
-                    resolve(account)
-                }).catch(errorList => {
-                    const errors = []
-
-                    for (error of errorList.errors) {
-                        if (error.message == SEQUELIZE_ERROR_UNIQUE_USERNAME) {
-                            errors.push(ERROR_MSG_CREATE_UNIQUE_USERNAME)
-                        } else if (error.message == SEQUELIZE_ERROR_UNIQUE_EMAIL) {
-                            errors.push(ERROR_MSG_CREATE_UNIQUE_EMAIL)
-                        } else {
-                            errors.push(ERROR_MSG_DATABASE_GENERAL)
-                        }
-                    }
-                    reject(errors)
                 })
             })
         }

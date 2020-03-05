@@ -1,6 +1,6 @@
-CREATE USER 'root'@'%' IDENTIFIED BY 'password';
+-- CREATE USER 'root'@'%' IDENTIFIED BY 'password';
 
-GRANT ALL PRIVILEGES ON database.* TO 'root'@'%' IDENTIFIED BY 'password';
+-- GRANT ALL PRIVILEGES ON database.* TO 'root'@'%' IDENTIFIED BY 'password';
 
 -- Create a table to store user accounts in.
 CREATE TABLE IF NOT EXISTS accounts (
