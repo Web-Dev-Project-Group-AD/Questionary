@@ -1,5 +1,8 @@
 const express = require('express')
 
+const ERROR_MSG_DATABASE_GENERAL = "Database error."
+
+
 module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
     const router = express.Router()
@@ -15,18 +18,21 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
         const userStatus = request.session.userStatus
         const author = request.session.userStatus.username
-        const { category, question, description } = request.body
-        const questionObject = { author, category, question, description }
+        const { category, title, description } = request.body
+        const question = { author, category, title, description }
 
-        QuestionManager.createQuestion(questionObject
-        ).then(createdQuestionObject => {
+        QuestionManager.createQuestion(question
+        ).then(createdQuestion => {
 
             response.redirect("/by-user/" + author)
 
-        }).catch(errors => {
-            // TODO: More complex error handling
-            console.log(errors)
-            response.render("questions-new-post.hbs", { userStatus, questionObject, errors })
+        }).catch(validationErrors => {
+            console.log(validationErrors)
+            if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
+                response.status(500).render("statuscode-500.hbs", { userStatus })
+            } else {
+                response.render("questions-new-post.hbs", { userStatus, question, validationErrors })
+            }
         })
     })
 
@@ -36,24 +42,23 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
-            console.log(questions)
             response.render("questions.hbs", { userStatus, questions })
-        }).catch(errors => {
-            console.log(errors)
-            response.render("statuscode-500.hbs", { userStatus })
+        }).catch(error => {
+            console.log(error)
+            response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 
     router.get("/answered", (request, response) => {
 
         const userStatus = request.session.userStatus
-        QuestionManager.getAllAnsweredQuestions(
+
+        QuestionManager.getAllQuestionsWithAnswers(
         ).then(questions => {
-            console.log(questions)
             response.render("questions.hbs", { userStatus, questions })
-        }).catch(errors => {
-            console.log(errors)
-            response.render("statuscode-500.hbs", { userStatus })
+        }).catch(error => {
+            console.log(error)
+            response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 
@@ -65,39 +70,51 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         QuestionManager.getQuestionsByAuthor(author
         ).then(questions => {
             response.render("questions.hbs", { userStatus, questions })
-        }).catch(errors => {
-            response.render("statuscode-500.hbs", { userStatus })
+        }).catch(error => {
+            console.log(error)
+            response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     }
 
     router.get("/by-question-id/:questionid", (request, response) => {
-
+        const id = request.params.questionid
         const userStatus = request.session.userStatus
 
-        // TODO: fetch single question
-
-        response.render("questions-show-one.hbs", { userStatus, question })
+        if (request.body) {
+            const {title, description, author}  = request.body
+            const question = {id, title, description, author}
+            response.render("questions-show-one.hbs", { userStatus, question })
+        } else {
+            QuestionManager.getQuestionById(id
+            ).then(question => {
+                response.render("questions-show-one.hbs", { userStatus, question })
+            }).catch(error => {
+                console.log(error)
+                response.status(500).render("statuscode-500.hbs", { userStatus })
+            })
+        }
     })
 
     router.post("/by-question-id/:questionid", (request, response) => {
 
-        const questionId = request.params.questionid
+        const id = request.params.questionid
+        const {title, description, author}  = request.body
+        const answerContent = request.body.content
+        const question = {id, title, description, author}
 
-        // TODO: validate
-        // TODO: post to database 
+        QuestionManager.createAnswer(answerContent
+        ).then(createdAnswer => {
+            answers = [createdAnswer]
+            response.render("questions-show-one.hbs", { userStatus, question, answers })
+        }).catch(validationErrors => {
+            console.log(validationErrors)
+            if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
+                response.status(500).render("statuscode-500.hbs", { userStatus })
+            } else {
+                response.render("questions-new-answer.hbs", { validationErrors, userStatus, question })
 
-        response.redirect('/by-question-id/:questionid')
-    })
-
-    router.post("/by-question-id/:questionid/answer", (request, response) => {
-
-        const userStatus = request.session.userStatus
-
-        // TODO: validate
-        // TODO: post answer to database
-        // TODO: render question and answer together
-
-        response.render("questions-show-one.hbs", { userStatus, question, answer })
+            } 
+        })
     })
 
     return router
