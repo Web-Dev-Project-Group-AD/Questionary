@@ -1,38 +1,37 @@
-<div class="content">
-	<h2>Sign Up</h2>
-	<p>Create a new account using the form below.</p>
+<div name="newAccount">
+
+	<h3>New Account</h3>
+
+	<form method="POST" action="/accounts/sign-up">
+		<br>
+		<input type="text" name="username" id="username" placeholder="Username" 
+			{{#if username}}
+				value="{{username}}"
+			{{/if}} 
+		/>
+		<br>
+		<input type="text" name="email" placeholder="Email" 
+			{{#if email}}
+				value="{{email}}"
+			{{/if}} 
+		/>
+		<br>
+		<input type="password" name="password" id="password1" placeholder="Password" />
+		<br>
+		<input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
+		<br>
+		<input type="submit" class="btn" value="Register" />
+		<br>
+		<ul id="errorMessages">
+			{{#if validationErrors}}
+				{{#each validationErrors}}
+					<li>{{this}}</li>
+				{{/each}}
+			{{/if}}
+		</ul>
+	</form>
+
 </div>
-
-<form method="POST" action="/accounts/sign-up">
-	<br>
-	<input type="text" name="username" id="username" placeholder="Username" 
-		{{#if username}}
-			value="{{username}}"
-		{{/if}} 
-	/>
-	<br>
-	<input type="text" name="email" id="email" placeholder="Email" 
-		{{#if email}}
-			value="{{email}}"
-		{{/if}} 
-	/>
-	<br>
-	<input type="password" name="password" id="password1" placeholder="Password" />
-	<br>
-	<input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
-	<br>
-	<input type="submit" class="btn" value="Register" />
-	<br>
-	<ul id="errorMessages">
-		{{#if validationErrors}}
-			{{#each validationErrors}}
-				<li>{{this}}</li>
-			{{/each}}
-		{{/if}}
-	</ul>
-</form>
-
-
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
@@ -42,11 +41,6 @@
 		form.addEventListener("submit", validateRegisterForm)
 
 		function validateRegisterForm(event) {
-
-			/*
-			const constraints =  JSON.parse('{{{validationConstraints}}}')
-			console.log(constraints)
-			*/
 
 			const MIN_USERNAME_LENGTH = 4
 			const MAX_USERNAME_LENGTH = 20
