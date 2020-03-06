@@ -86,7 +86,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
                 return response.render("error.hbs", { userStatus })
             }
             response.clearCookie("signIn")
-            return response.render("home.hbs")
+            response.redirect("/")
         })
 
     })

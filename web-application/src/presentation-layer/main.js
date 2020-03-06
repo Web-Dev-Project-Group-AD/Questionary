@@ -63,6 +63,4 @@ container.register("sequelizeSync", awilix.asFunction(sequelizeSync))
 container.register("AccountRepository", awilix.asFunction(AccountRepository))
 container.register("QuestionRepository", awilix.asFunction(QuestionRepository))
 
-console.log("this is a questionModel:", QuestionModel)
-
 module.exports = container

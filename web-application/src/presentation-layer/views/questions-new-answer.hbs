@@ -1,28 +1,36 @@
-{{#if question}}
+<div name="newAnswer">
+    <div class="row" id="content">
 
-    <div class="question">
-        <h3>{{question.title}}</h3>
-        <br>
-        <p>{{question.description}}</p>
-        <br>
-        <p>Asked by: {{question.author}}</p>
-        <br>
+        {{#if question}}
+
+            <div class="question">
+                <h3>{{question.title}}</h3>
+                <br>
+                <p>{{question.description}}</p>
+                <br>
+                <p>Asked by: {{question.author}}</p>
+                <br>
+            </div>
+
+            <form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
+                <br>
+                <input type="text" name="content" placeholder="Answer" />
+                <br>
+                <input type="submit" class="btn" value="Submit answer" />
+                <br>
+                <input type="hidden" name="questionTitle" value="{{question.title}}" />
+                <input type="hidden" name="questionDescription" value="{{question.description}}" />
+                <input type="hidden" name="questionAuthor" value="{{question.author}}" />
+                <div id="error-message"></div>
+            </form>
+
+        {{else}}
+
+            <h3>Question does not exist.</h3>
+
+        {{/if}}
+
+        {{> question-categories}}
+
     </div>
-
-    <form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
-        <br>
-        <input type="text" name="content" placeholder="Answer" />
-        <br>
-        <input type="submit" class="btn" value="Submit answer" />
-        <br>
-        <input type="hidden" name="questionTitle" value="{{question.title}}" />
-        <input type="hidden" name="questionDescription" value="{{question.description}}" />
-        <input type="hidden" name="questionAuthor" value="{{question.author}}" />
-        <div id="error-message"></div>
-    </form>
-
-{{else}}
-
-    <p>Question does not exist.</p>
-
-{{/if}}
+</div>

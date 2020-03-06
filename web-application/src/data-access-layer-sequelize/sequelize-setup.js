@@ -14,7 +14,6 @@ const sequelize = new Sequelize(
         dialect: "postgres",
         host: POSTGRES_HOST
     },
-    console.log("sequelize-setup!")
 )
 
 module.exports = () => { return sequelize }

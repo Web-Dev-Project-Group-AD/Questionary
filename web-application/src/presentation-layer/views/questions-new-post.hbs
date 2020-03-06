@@ -1,59 +1,61 @@
 <div name="newQuestion">
+    <div class="row" id="content">
 
-	<h3>New Question</h3>
+		<h3>New Question</h3>
 
-	<form name="question" method="POST" action="/questions/new-post">
-		<br>
-		<input type="text" name="title" id="questionTitle" placeholder="Question" 
-			{{#if question}}
-				value="{{question.title}}"
+		<form name="question" method="POST" action="/questions/new-post">
+			<br>
+			<input type="text" name="title" id="questionTitle" placeholder="Question" 
+				{{#if question}}
+					value="{{question.title}}"
+				{{/if}}
+			/>
+			<br>
+			<input type="text" name="description" id="questionDescription" placeholder="Description (Optional)" 
+				{{#if question}}
+					value="{{question.description}}"
+				{{/if}}
+			/>
+			<br>
+			{{#if categories}}
+				<label for="categories">Choose a category:</label>
+				<select id="optionCategory" name="optionCategory">
+					{{#each categories}}
+						<option value="{{name}}">{{name}}</option>
+					{{/each}}
+				</select>
+				</ul>
+				Or create a new one:
 			{{/if}}
-		/>
-		<br>
-		<input type="text" name="description" id="questionDescription" placeholder="Description (Optional)" 
-			{{#if question}}
-				value="{{question.description}}"
-			{{/if}}
-		/>
-		<br>
-		{{#if categories}}
-			<label for="categories">Choose a category:</label>
-			<select id="optionCategory" name="optionCategory">
-				{{#each categories}}
-					<option value="{{name}}">{{name}}</option>
-				{{/each}}
-			</select>
+			<input type="text" name="customCategory" id="customCategory" placeholder="Custom category" 
+				{{#if question}}
+					value="{{question.customCategory}}"
+				{{/if}}
+			/>
+			<br>
+			<input type="submit" class="btn" value="Post question" />
+			<br>
+			<ul id="errorMessages">
+				{{#if validationErrors}}
+					{{#each validationErrors}}
+						<li>{{this}}</li>
+					{{/each}}
+				{{/if}}
 			</ul>
-			Or create a new one:
-		{{/if}}
-		<input type="text" name="customCategory" id="customCategory" placeholder="Custom category" 
-			{{#if question}}
-				value="{{question.customCategory}}"
-			{{/if}}
-		/>
-		<br>
-		<input type="submit" class="btn" value="Post question" />
-		<br>
-		<ul id="errorMessages">
-			{{#if validationErrors}}
-				{{#each validationErrors}}
-					<li>{{this}}</li>
-				{{/each}}
-			{{/if}}
-		</ul>
-	</form>
+		</form>
 
+	</div>
 </div>
 
 
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
+	document.addEventListener("DOMContentLoaded", () => {
 
 		const form = document.querySelector("form")
 
 		form.addEventListener("submit", validateRegisterForm)
 
-		function validateRegisterForm(event) {
+		validateRegisterForm(event) => {
 
 			const QUESTION_TITLE_MIN_LENGTH = 6
 			const QUESTION_TITLE_MAX_LENGTH = 60
