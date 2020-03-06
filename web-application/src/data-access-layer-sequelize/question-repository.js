@@ -52,12 +52,27 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
+        questionUpdateAnswerStatus(id, isAnswered) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.update({
+                    isAnswered: isAnswered
+                }, {
+                    where: { id: id }
+                }).then(result => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+
         createAnswer(answer) {
             return new Promise((resolve, reject) => {
                 AnswerModel.create({
-                    author: answer.username,
+                    author: answer.author,
                     questionId: answer.questionId,
-                    answer: answer.content
+                    content: answer.content
                 }).then(result => {
                     resolve(result.lastid)
                 }).catch(error => {
@@ -130,8 +145,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 QuestionModel.findAll({
                     raw: true,
                     where: { id: id }
-                }).then(questions => {
-                    resolve(questions[0])
+                }).then(question => {
+                    resolve(question)
                 }).catch(error => {
                     reject(error)
                 })
@@ -149,8 +164,20 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     reject(error)
                 })
             })
-        }
+        },
 
+        getAllCategories() {
+            return new Promise((resolve, reject) => {
+                QuestionCategoryModel.findAll({
+                    raw: true,
+                }).then(categories => {
+                    resolve(categories)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+
+        }
         
 
     }
