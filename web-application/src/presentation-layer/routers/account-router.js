@@ -18,9 +18,9 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
-        ).then(createdAccount => {
+        ).then(accountId => {
 
-            const userId = createdAccount.id
+            const userId = accountId
             const signedIn = true
             const isAdmin = false
             const userStatus = { signedIn, isAdmin, username, userId }
@@ -49,10 +49,11 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         const account = { email, password }
 
         AccountManager.signInAccount(account
-        ).then((returnedAccount) => {
+        ).then(returnedAccount => {
 
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
+            const username = returnedAccount.username
             const userStatus = { isAdmin, username, userId }
             request.session.userStatus = userStatus
 

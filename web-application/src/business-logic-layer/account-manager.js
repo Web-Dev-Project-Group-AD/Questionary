@@ -52,7 +52,8 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 
 		signInAccount(account) {
 			return new Promise((resolve, reject) => {
-				if (!account.username || !account.password) {
+				var resultAccount = {}
+				if (!account.email || !account.password) {
 					throw ERROR_MSG_SIGN_UP_INPUT
 				}
 				AccountRepository.getAccountByEmail(account.email
@@ -60,13 +61,14 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 					if (!returnedAccount) {
 						throw ERROR_MSG_SIGN_UP_INPUT
 					} else {
+						resultAccount = returnedAccount
 						return bcrypt.compare(account.password, returnedAccount.password)
 					}
 				}).then(isValidPassword => {
 					if (!isValidPassword) {
 						throw ERROR_MSG_SIGN_UP_INPUT
 					} else {
-						resolve(returnedAccount)
+						resolve(resultAccount)
 					}
 				}).catch(error => {
 					reject(error)

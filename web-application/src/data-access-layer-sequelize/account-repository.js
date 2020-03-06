@@ -20,9 +20,8 @@ module.exports = ({ AccountModel }) => {
                     username: account.username,
                     email: account.email,
                     password: account.password
-                }).then(results => {
-                    results.get({ plain: true })
-                    resolve(results)
+                }).then(result => {
+                    resolve(result.lastid)
                 }).catch(errorList => {
                     const errors = []
 
@@ -70,6 +69,7 @@ module.exports = ({ AccountModel }) => {
                 AccountModel.findOne({
                     where: { email: email }
                 }).then(account => {
+                    console.log(account)
                     resolve(account)
                 }).catch(error => {
                     console.log(error)
