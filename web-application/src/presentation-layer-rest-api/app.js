@@ -2,7 +2,7 @@
 // Include all requires.
 //require("dotenv").config()
 
-//const path = require("path")
+const path = require("path")
 const express = require("express")
 const bodyParser = require("body-parser")
 
@@ -10,19 +10,19 @@ const bodyParser = require("body-parser")
 const container = require("../main")
 
 const VarRouter = container.resolve("VarRouter")
-const VariousRouter = container.resolve("VariousRouter")
-//const AccountRouter = container.resolve("AccountRouter")
+//const generateToken = container.resolve("generateToken")
+const AccountRouterApi = container.resolve("AccountRouterApi")
 //const QuestionRouter = container.resolve("QuestionRouter")
 
 const sequelizeSync = container.resolve("sequelizeSync")
 const handlebars = container.resolve("expressHandlebars")
-//const session = container.resolve("expressSession")
+//const jwt = require('jsonwebtoken')
 
 // Create the express application.
 const app = express()
 
 // Setup express Handlebars.
-//app.set("views", path.join(__dirname, "views"))
+app.set("views", path.join(__dirname, "views"))
 
 app.engine("hbs", handlebars.engine)
 
@@ -33,22 +33,9 @@ app.engine("hbs", handlebars.engine)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Setup sessions and session storage
-//app.use(session)
-
 // Attach all routers.
-
 app.use("/api", VarRouter)
-//app.use("/api", VarRouter) //todo not used
-//app.use('/api/accounts', AccountRouter) //todo not used
-//app.use('/questions', QuestionRouter)
-app.use("/api/var", VariousRouter)
-//app.use("/accounts", AccountRouter)
-//app.use("/questions", QuestionRouter)
-
-//app.use(app.VarRouter);
-//routes.initialize(app);
-//restApiRoutes.initialize(app);
+app.use("/api/accounts", AccountRouterApi)
 
 console.log("here we are in rest api")
 
