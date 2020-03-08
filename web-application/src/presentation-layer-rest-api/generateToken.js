@@ -10,14 +10,14 @@ module.exports = ({ }) => {
    function createToken(account) {
       var claims = {
          sub: account.id,
-         email: account.email,
+         admin: account.admin,
       }
       var token = jwt.sign(claims, secretKey)
       return token
    }
 
    function checkToken(token) {
-      token = token.replace(/\"/g, '') // Remove any quotation marks left in token
+      token = token.replace(/\"/g, '')
       return new Promise(function (resolve, reject) {
          jwt.verify(token, 'secret', (err, decoded) => {
             if (err) {

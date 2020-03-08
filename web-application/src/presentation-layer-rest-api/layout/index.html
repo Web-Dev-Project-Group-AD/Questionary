@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionary</title>
+    <!-- <link rel="stylesheet" href="./styles.css"> -->
+    <!-- <script src="./routers/account-router.js"></script> -->
+</head>
+
+<body>
+
+    <header>
+        Questionary
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/api">Home</a></li>
+            <li><a href="/api/accounts/sign-up">Sign up</a></li>
+            <li><a href="/pets">View pets</a></li>
+            <li class="showIfLoggedIn"><a href="/create-pet">Create pet</a></li>
+            <li class="showIfLoggedOut"><a href="/login">Login</a></li>
+        </ul>
+    </nav>
+
+    <main>
+
+        <div id="home-page">
+            <h1>Home</h1>
+            <p>This is the home page...</p>
+        </div>
+
+        <div id="about-page">
+            <h1>About</h1>
+            <p>This is the about page...</p>
+        </div>
+
+        <div id="pets-page">
+            <h1>Pets</h1>
+            <ul>
+
+            </ul>
+        </div>
+
+        <div id="pet-page">
+            <h1>Pet</h1>
+            <div>Name: <span class="name"></span></div>
+            <div>Id: <span class="id"></span></div>
+        </div>
+
+        <div id="create-pet-page">
+            <h1>Create Pet</h1>
+            <form action="">
+                <div>
+                    Name: <input type="text" class="name">
+                </div>
+                <input type="submit" value="Create">
+            </form>
+        </div>
+
+        <div id="login-page">
+            <h1>Login</h1>
+            <form action="">
+                <div>
+                    Username: <input type="text" class="username">
+                </div>
+                <div>
+                    Password: <input type="text" class="password">
+                </div>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+
+        <div>
+            <div class="content">
+                <h2>Sign Up</h2>
+                <p>Create a new account using the form below.</p>
+            </div>
+
+            <form method="POST" action="/accounts/sign-up">
+                <br>
+                <input type="text" name="username" id="username" placeholder="Username" value="{{username}}" />
+                <br>
+                <input type="text" name="email" id="email" placeholder="Email" value="{{email}}" />
+                <br>
+                <input type="password" name="password" id="password1" placeholder="Password" />
+                <br>
+                <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
+                <br>
+                <input type="submit" class="btn" value="Register" />
+                <br>
+                <ul id="errorMessages">
+                    <li>{{this}}</li>
+                </ul>
+            </form>
+
+        </div>
+
+
+
+        <div id="error-page">
+            <h1>Error</h1>
+            <p>Oups, something went wrong ^^'</p>
+        </div>
+
+    </main>
+
+    <footer>
+        Petto |
+        Copyright 2020 Peter L-G |
+        <a href="/about">About</a>
+    </footer>
+
+</body>
+
+</html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.querySelector("form")
+
+        form.addEventListener("submit", validateRegisterForm)
+
+        function validateRegisterForm(event) {
+
+			/*
+			const constraints =  JSON.parse('{{{validationConstraints}}}')
+			console.log(constraints)
+			*/
+
+            const MIN_USERNAME_LENGTH = 4
+            const MAX_USERNAME_LENGTH = 20
+            const MIN_PASSWORD_LENGTH = 8
+            const MAX_PASSWORD_LENGTH = 20
+
+            const username = document.getElementById("username").value
+            const email = document.getElementById("email").value
+            const password1 = document.getElementById("password1").value
+            const password2 = document.getElementById("password2").value
+
+            const errorMessages = []
+
+            const errorList = document.getElementById("errorMessages")
+            while (errorList.firstChild) {
+                errorList.removeChild(errorList.firstChild)
+            }
+
+            if (MIN_USERNAME_LENGTH > username.length) {
+                errorMessages.push("Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long.")
+            } else if (username.length > MAX_USERNAME_LENGTH) {
+                errorMessages.push("Username can not be longer than " + MAX_USERNAME_LENGTH + " characters.")
+            }
+            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+                errorMessages.push("Invalid email address.")
+            }
+            if (MIN_PASSWORD_LENGTH > password1.length) {
+                errorMessages.push("Password needs to be atleast " + MIN_PASSWORD_LENGTH + " characters long.")
+            } else if (password1.length > MAX_PASSWORD_LENGTH) {
+                errorMessages.push("Password can not be longer than " + MAX_PASSWORD_LENGTH + " characters.")
+            }
+            if (password1 != password2) {
+                errorMessages.push("Passwords dont match.")
+            }
+
+            if (!errorMessages.length > 0) {
+                return true
+            } else {
+
+                for (error of errorMessages) {
+                    var newError = document.createElement("LI")
+                    newError.innerText = error
+                    errorList.appendChild(newError)
+                }
+                event.preventDefault()
+            }
+
+        }
+
+    })
+</script>

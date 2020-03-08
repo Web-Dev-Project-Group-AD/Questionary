@@ -1,0 +1,64 @@
+body{
+	background-color: silver;
+}
+
+header{
+	text-align: center;
+	font-size: 300%;
+	font-weight: bold;
+}
+
+nav{
+	border-bottom: 1px solid black;
+	width: 80%;
+	margin: 0 auto;
+	padding: 0.5em;
+}
+
+nav ul{
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+}
+
+nav ul li{
+	display: inline-block;
+}
+
+nav ul li a{
+	color: black;
+}
+
+main{
+	width: 75%;
+	margin: 0 auto;
+}
+
+main > div{
+	display: none;
+}
+
+main > div.current-page{
+	display: block;
+}
+
+body.isLoggedOut .showIfLoggedIn{
+	display: none;
+}
+
+body.isLoggedIn .showIfLoggedOut{
+	display: none;
+}
+
+footer{
+	border-top: 1px solid black;
+	width: 80%;
+	margin: 0 auto;
+	text-align: center;
+	padding: 0.5em;
+}
+
+footer a{
+	color: black;
+}

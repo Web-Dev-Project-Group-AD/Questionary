@@ -15,23 +15,40 @@ const AccountRouterApi = container.resolve("AccountRouterApi")
 //const QuestionRouter = container.resolve("QuestionRouter")
 
 const sequelizeSync = container.resolve("sequelizeSync")
-const handlebars = container.resolve("expressHandlebars")
-//const jwt = require('jsonwebtoken')
+//const handlebars = container.resolve("expressHandlebars")
 
 // Create the express application.
 const app = express()
 
 // Setup express Handlebars.
-app.set("views", path.join(__dirname, "views"))
+//app.set("views", path.join(__dirname, "views"))
 
-app.engine("hbs", handlebars.engine)
+//app.engine("hbs", handlebars.engine)
 
-// Handle static files in the public folder.
-//app.use(express.static(path.join(__dirname, "public")))
+// Handle static files in the layout folder.
+app.use(express.static(path.join(__dirname, "./layout")))
 
 // Handles parsing data from the request body.
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// Better to only target the frontend application.
+app.use(function (request, response, next) {
+    response.setHeader("Access-Control-Allow-Origin", "*")
+    response.setHeader("Access-Control-Allow-Methods", "*")
+    response.setHeader("Access-Control-Allow-Headers", "*")
+    response.setHeader("Access-Control-Expose-Headers", "*")
+    next()
+})
+
+//app.use(express.static("views"))
+
+// If the request is for a resource not found in the static folder,
+// send back the index.html file, and let client-side JS show the
+// correct page.
+app.use(function(request, response, next){
+	response.sendFile(__dirname+"/layout/index.html")
+})
 
 // Attach all routers.
 app.use("/api", VarRouter)
