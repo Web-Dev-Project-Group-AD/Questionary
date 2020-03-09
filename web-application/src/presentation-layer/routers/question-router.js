@@ -141,10 +141,33 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.get("/by-id/:questionid/new-answer", (request, response) => {
+    router.get("/questions/by-id/:questionId/edit", (request, response) => {
+
+        const id = request.params.questionId
+        const userStatus = request.session.userStatus
+        if (request.query && userStatus.username == author) {
+            const { title, description, author } = request.query
+            const question = { id, title, description, author }
+            return response.render("questions-edit.hbs", { userStatus, question })
+        } else {
+            return QuestionManager.getQuestionById(id
+            ).then(question => {
+                if (question.author == userStatus.username) {
+                    response.render("questions-edit.hbs", { userStatus, question })
+                } else {
+                    response.status(401).render("statuscode-401.hbs", { userStatus })
+                }
+            }).catch(error => {
+                console.log(error)
+                response.status(500).render("statuscode-500.hbs", { userStatus })
+            })
+        }
+    })
+
+    router.get("/by-id/:questionId/new-answer", (request, response) => {
 
         const userStatus = request.session.userStatus
-        const id = request.params.questionid
+        const id = request.params.questionId
 
         if (request.query) {
             const { title, description, author } = request.query
@@ -161,18 +184,18 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         }
     })
 
-    router.post("/by-id/:questionid/new-answer", (request, response) => {
+    router.post("/by-id/:questionId/new-answer", (request, response) => {
 
         const userStatus = request.session.userStatus
         var question = { 
-            id: request.params.questionid, 
+            id: request.params.questionId, 
             title: request.body.questionTitle, 
             description: request.body.questionDescription, 
             author: request.body.questionAuthor
         }
         const answer = { 
             author: userStatus.username, 
-            questionId: request.params.questionid, 
+            questionId: request.params.questionId, 
             content: request.body.content 
         }
         QuestionManager.createAnswer(answer

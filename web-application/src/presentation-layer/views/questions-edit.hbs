@@ -1,0 +1,10 @@
+<form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
+
+    <input type="text" name="questionTitle" value="{{question.title}}" />
+    <br>
+    <input type="text" name="questionDescription" value="{{question.description}}" />
+    <br>
+    <input type="submit" class="btn" value="Submit answer" />
+    <br>
+    <div id="error-message"></div>
+</form>

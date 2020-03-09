@@ -1,0 +1,44 @@
+<div class="medium-8 columns">
+
+    <div class="blog-post">
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+        <div class="callout">
+            <ul class="menu simple">
+                <li><a href="#">Asked by: {{author}}</a></li>
+            </ul>
+        </div>
+    </div>
+
+    {{#if ../userStatus}}
+        {{#ifNot ../userStatus.username author}}
+            <form method="GET" name="new answer" action="/questions/by-id/{{../id}}/new-answer">
+                <input type="hidden" name="title" value="{{../title}}" />
+                <input type="hidden" name="description" value="{{../description}}" />
+                <input type="hidden" name="author" value="{{../author}}" />
+                <input type="submit" class="btn" value="Post new answer" />
+                <br>
+            </form> 
+        {{else}}
+            <form method="GET" name="edit question" action="/questions/by-id/{{../id}}/edit">
+                <input type="hidden" name="title" value="{{../title}}" />
+                <input type="hidden" name="description" value="{{../description}}" />
+                <input type="hidden" name="author" value="{{../author}}" />
+                <input type="submit" class="btn" value="Edit question" />
+                <br>
+            </form>
+        {{/ifNot}}
+    {{/if}}
+
+    {{#if answers}}
+        {{#each answers}}
+            <div class="answer">
+                <p>Answer: {{content}}</p>
+                <br>
+                <p>Author: {{author}}</p>
+                <br>
+            </div>
+        {{/each}}
+    {{/if}}
+
+</div>
