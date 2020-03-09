@@ -25,8 +25,8 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         const userStatus = request.session.userStatus
         const author = request.session.userStatus.username
         const {title, description } = request.body
-        var category = (request.body.optionCategory && !request.body.customCategory) ? 
-            request.body.optionCategory : request.body.customCategory
+        var category = (request.body.optionCategories && !request.body.customCategory) ? 
+            request.body.optionCategories : request.body.customCategory
       
         var question = { author, category, title, description }
         
