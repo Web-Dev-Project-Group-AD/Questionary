@@ -18,7 +18,6 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
         })
-
     })
 
     router.post("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
@@ -26,16 +25,13 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         const userStatus = request.session.userStatus
         const author = request.session.userStatus.username
         const {title, description } = request.body
-        var category = ""
-        if (request.body.optionCategory && !request.body.customCategory) {
-            category = request.body.optionCategory
-        } else {
-            category = request.body.customCategory
-        }
+        var category = (request.body.optionCategories && !request.body.customCategory) ? 
+            request.body.optionCategories : request.body.customCategory
+      
         var question = { author, category, title, description }
         
         QuestionManager.createQuestion(question
-        ).then(createdQuestion => {
+        ).then(questionId => {
             response.redirect("/questions/by-user/" + author)
         }).catch(validationErrors => {
             console.log(validationErrors)
@@ -54,19 +50,18 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
     router.get("/unanswered", (request, response) => {
 
         const userStatus = request.session.userStatus
+        isAnswered = false
 
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
-            console.log(questions)
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
                     const category = {name: question.category}
                     categories.push(category)
                 }
-                console.log(categories)
             }
-            response.render("questions.hbs", { userStatus, questions, categories })
+            response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -76,38 +71,38 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
     router.get("/answered", (request, response) => {
 
         const userStatus = request.session.userStatus
+        const isAnswered = true
 
         QuestionManager.getAllQuestionsWithAnswers(
         ).then(questions => {
-            console.log(questions)
             const categories = []
-            for(question in questions) {
-                console.log(question.category)
+            for(question of questions) {
                 if (!categories.includes(question.category)) {
                     const category = {name: question.category}
                     categories.push(category)
                 }
             }
-            response.render("questions.hbs", { userStatus, questions, categories })
+            response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 
-    router.get("/by-category/:category", (request, response) => {
+    router.get("/by-category/:category/:isAnswered", (request, response) => {
 
         const userStatus = request.session.userStatus
         const category = request.params.category
         var categories = []
 
+        const isAnswered = (request.params.isAnswered == "answered")
+
         QuestionManager.getAllCategories(
         ).then(fetchedCategories => {
             categories = fetchedCategories
-            return QuestionManager.getAnsweredQuestionsByCategory(category)
+            return QuestionManager.getQuestionsByCategory(category, isAnswered)
         }).then(questions => {
-            console.log(questions)
-            response.render("questions.hbs", { userStatus, questions, categories })
+            response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -181,8 +176,8 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
             content: request.body.content 
         }
         QuestionManager.createAnswer(answer
-        ).then(createdAnswer => {
-            answers = [createdAnswer]
+        ).then(answerId => {
+            answers = [answer]
             question.answers = answers
             const questions = [question]
             response.render("questions.hbs", { userStatus, questions })

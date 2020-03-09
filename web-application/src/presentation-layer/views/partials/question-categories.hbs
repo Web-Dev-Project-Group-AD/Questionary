@@ -5,7 +5,11 @@
                 <h4>Categories</h4>
                 <ul>
                     {{#each categories}}
-                        <li><a href="/questions/by-category/{{name}}">{{name}}</a></li>  
+                        {{#if ../isAnswered}}
+                            <li><a href="/questions/by-category/{{name}}/answered">{{name}}</a></li>  
+                        {{else}}    
+                            <li><a href="/questions/by-category/{{name}}/unanswered">{{name}}</a></li>  
+                        {{/if}}
                     {{/each}}
                 </ul>
             </div>

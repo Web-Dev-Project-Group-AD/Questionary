@@ -6,9 +6,7 @@ module.exports = ({ }) => {
 
 	router.get("/", (request, response) => {
 
-		const userStatus = request.session.userStatus
-
-		response.render("home.hbs", userStatus)
+		response.redirect("/questions/answered")
 	})
 
 	// router.get("/about", (request, response) => {

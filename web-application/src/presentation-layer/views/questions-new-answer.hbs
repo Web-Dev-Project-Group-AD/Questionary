@@ -3,25 +3,40 @@
 
         {{#if question}}
 
-            <div class="question">
+            <div class="medium-8 columns">
+                    
+                <div class="blog-post">
                 <h3>{{question.title}}</h3>
-                <br>
                 <p>{{question.description}}</p>
-                <br>
-                <p>Asked by: {{question.author}}</p>
-                <br>
+                    <div class="callout">
+                        <ul class="menu simple">
+                            <li><a href="/accounts/{{question.author}}">Asked by: {{question.author}}</a></li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
 
             <form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
                 <br>
-                <input type="text" name="content" placeholder="Answer" />
+                <input type="text" name="content" id="answerContent" placeholder="Answer"
+                    {{#if question.answer}}
+                        value="{{question.answer}}"
+                    {{/if}}
+                />
                 <br>
                 <input type="submit" class="btn" value="Submit answer" />
                 <br>
                 <input type="hidden" name="questionTitle" value="{{question.title}}" />
                 <input type="hidden" name="questionDescription" value="{{question.description}}" />
                 <input type="hidden" name="questionAuthor" value="{{question.author}}" />
-                <div id="error-message"></div>
+                <ul id="errorMessages">
+                    {{#if validationErrors}}
+                        {{#each validationErrors}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                    {{/if}}
+			    </ul>
             </form>
 
         {{else}}
@@ -34,3 +49,43 @@
 
     </div>
 </div>
+
+
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+
+		const form = document.querySelector("form")
+		form.addEventListener("submit", validateRegisterForm)
+
+		function validateRegisterForm(event) {
+
+            const ANSWER_CONTENT_MIN_LENGTH = 8
+            const ANSWER_CONTENT_MAX_LENGTH = 5000
+
+			const content = document.getElementById("answerContent").value
+			const errorMessages = []
+			const errorList = document.getElementById("errorMessages")
+
+			while (errorList.firstChild) {
+				errorList.removeChild(errorList.firstChild)
+			}
+
+			if (ANSWER_CONTENT_MIN_LENGTH > content.length) {
+				errorMessages.push("Answer needs to be atleast " + ANSWER_CONTENT_MIN_LENGTH + " characters long.")
+			} else if (content.length > ANSWER_CONTENT_MAX_LENGTH) {
+            	errorMessages.push("Answertion can not be longer than " + ANSWER_CONTENT_MAX_LENGTH + " characters.")
+            }
+
+			if (!errorMessages.length > 0) {
+				return true
+			} else {
+				for (error of errorMessages) {
+					var newError = document.createElement("LI")
+					newError.innerText = error
+					errorList.appendChild(newError)
+				}
+				event.preventDefault()
+			}
+		}
+	})
+</script>
