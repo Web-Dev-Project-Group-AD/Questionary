@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questionary</title>
-    <!-- <link rel="stylesheet" href="./styles.css"> -->
-    <!-- <script src="./routers/account-router.js"></script> -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="../routers/account-router.js"></script>
 </head>
 
 <body>
@@ -17,11 +17,12 @@
 
     <nav>
         <ul>
-            <li><a href="/api">Home</a></li>
+            <li><a href="/api/home-page">Home</a></li>
+            <li><a href="/api/accounts/sign-in">Sign in</a></li>
             <li><a href="/api/accounts/sign-up">Sign up</a></li>
-            <li><a href="/pets">View pets</a></li>
-            <li class="showIfLoggedIn"><a href="/create-pet">Create pet</a></li>
-            <li class="showIfLoggedOut"><a href="/login">Login</a></li>
+            <li><a href="/api/accounts">View pets</a></li>
+            <li class="showIfLoggedIn"><a href="/api/accounts/logout">Logout</a></li>
+            <li class="showIfLoggedOut"><a href="/api/accounts/sign-up-page">Sign up</a></li>
         </ul>
     </nav>
 
@@ -73,17 +74,17 @@
             </form>
         </div>
 
-        <div>
+        <div id="sign-up-page">
             <div class="content">
                 <h2>Sign Up</h2>
                 <p>Create a new account using the form below.</p>
             </div>
 
-            <form method="POST" action="/accounts/sign-up">
+            <form method="POST" action="/api/accounts/sign-up">
                 <br>
-                <input type="text" name="username" id="username" placeholder="Username" value="{{username}}" />
+                <input type="text" name="username" id="username" placeholder="Username"/>
                 <br>
-                <input type="text" name="email" id="email" placeholder="Email" value="{{email}}" />
+                <input type="text" name="email" id="email" placeholder="Email"/>
                 <br>
                 <input type="password" name="password" id="password1" placeholder="Password" />
                 <br>
@@ -92,7 +93,7 @@
                 <input type="submit" class="btn" value="Register" />
                 <br>
                 <ul id="errorMessages">
-                    <li>{{this}}</li>
+                    <li>here are the errror messages}</li>
                 </ul>
             </form>
 

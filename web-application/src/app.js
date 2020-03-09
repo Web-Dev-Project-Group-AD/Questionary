@@ -10,7 +10,7 @@ const restApiRoutes = require('./presentation-layer-rest-api/app')
 
 const app = express()
 
-app.use(restApiRoutes)
+app.use("/api", restApiRoutes)
 app.use(webAppRoutes)
 
 app.listen(8080)

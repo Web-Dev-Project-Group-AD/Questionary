@@ -1,7 +1,3 @@
-
-// Include all requires.
-//require("dotenv").config()
-
 const path = require("path")
 const express = require("express")
 const bodyParser = require("body-parser")
@@ -10,7 +6,6 @@ const bodyParser = require("body-parser")
 const container = require("../main")
 
 const VarRouter = container.resolve("VarRouter")
-//const generateToken = container.resolve("generateToken")
 const AccountRouterApi = container.resolve("AccountRouterApi")
 //const QuestionRouter = container.resolve("QuestionRouter")
 
@@ -23,10 +18,12 @@ const app = express()
 // Setup express Handlebars.
 //app.set("views", path.join(__dirname, "views"))
 
+app.use(express.static("static-files"))
+
 //app.engine("hbs", handlebars.engine)
 
 // Handle static files in the layout folder.
-app.use(express.static(path.join(__dirname, "./layout")))
+//app.use(express.static(path.join(__dirname, "./layout")))
 
 // Handles parsing data from the request body.
 app.use(bodyParser.json())
@@ -43,16 +40,18 @@ app.use(function (request, response, next) {
 
 //app.use(express.static("views"))
 
-// If the request is for a resource not found in the static folder,
-// send back the index.html file, and let client-side JS show the
-// correct page.
-app.use(function(request, response, next){
-	response.sendFile(__dirname+"/layout/index.html")
-})
+
 
 // Attach all routers.
 app.use("/api", VarRouter)
 app.use("/api/accounts", AccountRouterApi)
+
+// If the request is for a resource not found in the static folder,
+// send back the index.html file, and let client-side JS show the
+// correct page.
+app.use(function(request, response, next){
+    response.sendFile(__dirname+"/static-files/index.html")
+})
 
 console.log("here we are in rest api")
 
