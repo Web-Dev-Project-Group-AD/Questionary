@@ -54,14 +54,12 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
-            console.log(questions)
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
                     const category = {name: question.category}
                     categories.push(category)
                 }
-                console.log(categories)
             }
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
         }).catch(error => {
@@ -77,10 +75,8 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
         QuestionManager.getAllQuestionsWithAnswers(
         ).then(questions => {
-            console.log(questions)
             const categories = []
-            for(question in questions) {
-                console.log(question.category)
+            for(question of questions) {
                 if (!categories.includes(question.category)) {
                     const category = {name: question.category}
                     categories.push(category)
