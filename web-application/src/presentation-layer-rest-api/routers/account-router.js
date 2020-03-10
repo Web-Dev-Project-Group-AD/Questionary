@@ -13,13 +13,16 @@ module.exports = ({ AccountManager, generateToken }) => {
         //response.render("contact.hbs")
         // response.status(200).json({ error: "No Profile Found" })
         const example = request.body.example
-        if(!example){
+        if (!example) {
+            console.log("response: ", "No Example given")
+
             response.status(400).json("No Example given")
+        } else{
+            response.status(200).json("Example is here")
         }
         //response.status(200).json("accounts-sign-up.hbs")
         //next()
         //response.render("accounts-sign-up.hbs")
-        //console.log("response: ", response)
         //'d2220207-05e8-472a-9138-e9dcb2963f06'
     })
 
@@ -36,10 +39,11 @@ module.exports = ({ AccountManager, generateToken }) => {
         ).then(createdAccount => {
 
             const userId = createdAccount.id
-            //const isAdmin = false
+            console.log(createdAccount)
+            const isAdmin = false
             //const userStatus = { signedIn, isAdmin, username, userId }
             //request.session.userStatus = userStatus
-            const token = generateToken.createToken(account)
+            const token = generateToken.createToken(createdAccount, isAdmin)
             console.log("token: ", token)
             response.setHeader('Location', '/sign-up/' + userId)
             response.status(201).json(token)

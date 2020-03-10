@@ -9,7 +9,7 @@ const VarRouter = container.resolve("VarRouter")
 const AccountRouterApi = container.resolve("AccountRouterApi")
 //const QuestionRouter = container.resolve("QuestionRouter")
 
-const sequelizeSync = container.resolve("sequelizeSync")
+//const sequelizeSync = container.resolve("sequelizeSync")
 //const handlebars = container.resolve("expressHandlebars")
 
 // Create the express application.
@@ -17,8 +17,6 @@ const app = express()
 
 // Setup express Handlebars.
 //app.set("views", path.join(__dirname, "views"))
-
-app.use(express.static("static-files"))
 
 //app.engine("hbs", handlebars.engine)
 
@@ -40,11 +38,14 @@ app.use(function (request, response, next) {
 
 //app.use(express.static("views"))
 
-
-
 // Attach all routers.
-app.use("/api", VarRouter)
-app.use("/api/accounts", AccountRouterApi)
+app.use(VarRouter)
+app.use("/accounts", AccountRouterApi)
+//app.use("/api/questions", AccountRouterApi)
+
+
+
+app.use(express.static(path.join(__dirname, "static-files")))
 
 // If the request is for a resource not found in the static folder,
 // send back the index.html file, and let client-side JS show the

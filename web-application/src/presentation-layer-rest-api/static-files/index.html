@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questionary</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="../routers/account-router.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="navigation-handler.js"></script>
+
+
 </head>
 
 <body>
@@ -17,42 +19,45 @@
 
     <nav>
         <ul>
-            <li><a href="/api/home-page">Home</a></li>
-            <li><a href="/api/accounts/sign-in">Sign in</a></li>
-            <li><a href="/api/accounts/sign-up">Sign up</a></li>
-            <li><a href="/api/accounts">View pets</a></li>
-            <li class="showIfLoggedIn"><a href="/api/accounts/logout">Logout</a></li>
-            <li class="showIfLoggedOut"><a href="/api/accounts/sign-up-page">Sign up</a></li>
+            <li><a href="/api">Questionary</a></li>
+            <li><a href="/api/accounts">View Accounts</a></li>
+            <!-- <li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign in</a></li>-->
+            <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
+            <!--<li class="showIfLoggedIn"><a href="/api/accounts/logout">Logout</a></li>-->
         </ul>
     </nav>
 
     <main>
 
-        <div id="home-page">
-            <h1>Home</h1>
-            <p>This is the home page...</p>
-        </div>
-
-        <div id="about-page">
-            <h1>About</h1>
-            <p>This is the about page...</p>
-        </div>
-
-        <div id="pets-page">
-            <h1>Pets</h1>
+        <div id="accounts-page">
+            <h1>Accounts</h1>
             <ul>
 
             </ul>
         </div>
 
-        <div id="pet-page">
-            <h1>Pet</h1>
+        <div id="user-page">
+            <h1>Account</h1>
             <div>Name: <span class="name"></span></div>
             <div>Id: <span class="id"></span></div>
         </div>
 
-        <div id="create-pet-page">
+        <!-- <div id="create-user-page">
             <h1>Create Pet</h1>
+            <form action="">
+                <div>
+                    Name: <input type="text" class="name">
+                </div>
+                <input type="submit" value="Create">
+            </form>
+        </div> -->
+
+        <div id="sign-up-page">
+            <div class="content">
+                <h2>Sign Up</h2>
+                <p>Create a new account using the form below.</p>
+            </div>
+
             <form action="">
                 <div>
                     Name: <input type="text" class="name">
@@ -61,63 +66,42 @@
             </form>
         </div>
 
-        <div id="login-page">
+        <!-- <div id="sign-in-page">
             <h1>Login</h1>
             <form action="">
                 <div>
-                    Username: <input type="text" class="username">
+                    Username: <input type="text" class="name">
                 </div>
                 <div>
                     Password: <input type="text" class="password">
                 </div>
                 <input type="submit" value="Login">
             </form>
-        </div>
-
-        <div id="sign-up-page">
-            <div class="content">
-                <h2>Sign Up</h2>
-                <p>Create a new account using the form below.</p>
-            </div>
-
-            <form method="POST" action="/api/accounts/sign-up">
-                <br>
-                <input type="text" name="username" id="username" placeholder="Username"/>
-                <br>
-                <input type="text" name="email" id="email" placeholder="Email"/>
-                <br>
-                <input type="password" name="password" id="password1" placeholder="Password" />
-                <br>
-                <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
-                <br>
-                <input type="submit" class="btn" value="Register" />
-                <br>
-                <ul id="errorMessages">
-                    <li>here are the errror messages}</li>
-                </ul>
-            </form>
-
-        </div>
+        </div>-->
 
 
 
-        <div id="error-page">
+
+
+        <!--<div id="error-page">
             <h1>Error</h1>
             <p>Oups, something went wrong ^^'</p>
-        </div>
+        </div>-->
 
     </main>
 
-    <footer>
+    <!--<footer>
         Petto |
         Copyright 2020 Peter L-G |
-        <a href="/about">About</a>
-    </footer>
+        <a href="/api/about">About</a>
+    </footer>-->
 
 </body>
 
 </html>
 
+
+<!--
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -181,4 +165,4 @@
         }
 
     })
-</script>
+</script>-->

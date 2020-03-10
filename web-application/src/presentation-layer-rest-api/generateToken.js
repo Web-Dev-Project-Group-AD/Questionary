@@ -1,16 +1,15 @@
 const express = require('express')
-//const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 module.exports = ({ }) => {
 
-   const router = express.Router()
 
    const secretKey = "175342C7638E1D173B45FCC2EC97E"
 
-   function createToken(account) {
+   function createToken(account, isAdmin) {
       var claims = {
          sub: account.id,
-         admin: account.admin,
+         admin: isAdmin,
       }
       var token = jwt.sign(claims, secretKey)
       return token
@@ -30,5 +29,5 @@ module.exports = ({ }) => {
       })
    }
 
-   return router
+   return {createToken, checkToken}
 }
