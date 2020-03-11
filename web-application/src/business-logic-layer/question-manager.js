@@ -20,6 +20,32 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
+		updateQuestion(questionUpdate) {
+			return new Promise((resolve, reject) => {
+				const validationErrors = QuestionValidator.getErrorsUpdateQuestion(questionUpdate)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.updateQuestion(questionUpdate
+				).then(returnId => {
+					resolve(returnId)
+				}).catch(errors => {
+					reject(errors)
+				})
+			})
+		},
+
+        deleteQuestionById(author, id) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.deleteQuestionById(author, id
+				).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
 		getAllUnansweredQuestions() {
 			return new Promise((resolve, reject) => {
 				QuestionRepository.getQuestionsByAnswerStatus(false

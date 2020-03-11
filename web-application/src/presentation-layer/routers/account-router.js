@@ -27,7 +27,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             request.session.userStatus = userStatus
 
             console.log(username, " signed in")
-            response.render("home.hbs", { userStatus })
+            response.redirect("/")
         }).catch(validationErrors => {
 
             console.log(validationErrors)

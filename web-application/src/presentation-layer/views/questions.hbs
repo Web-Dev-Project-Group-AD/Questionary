@@ -2,29 +2,42 @@
     <div class="row" id="content">
         
         {{#if questions}}
-
             {{#each questions}}
+
                 <div class="medium-8 columns">
-                    
                     <div class="blog-post">
                         <h3>{{title}}</h3>
                         <p>{{description}}</p>
                         <div class="callout">
                             <ul class="menu simple">
-                                <li><a href="/accounts/{{author}}">Asked by: {{author}}</a></li>
+                                <li><a href="#">Asked by: {{author}}</a></li>
                             </ul>
                         </div>
                     </div>
 
                     {{#if ../userStatus}}
+                        {{#ifEquals ../userStatus.username author}}
+                            <form method="GET" name="editQuestion" action="/questions/by-id/{{../id}}/edit">
+                                <input type="hidden" name="title" value="{{../title}}" />
+                                <input type="hidden" name="description" value="{{../description}}" />
+                                <input type="hidden" name="author" value="{{../author}}" />
+                                <input type="submit" class="btn" value="Edit" />
+                                <br>
+                            </form>
+
+                            <form method="POST" name="deleteQuestion" action="/questions/by-id/{{../id}}/delete">
+                                <input type="submit" class="btn" value="Delete" />
+                            </form>
+                        {{/ifEquals}}
+
                         {{#ifNot ../userStatus.username author}}
-                            <form method="GET" name="new answer" action="/questions/by-id/{{../id}}/new-answer">
+                            <form method="GET" name="newAnswer" action="/questions/by-id/{{../id}}/new-answer">
                                 <input type="hidden" name="title" value="{{../title}}" />
                                 <input type="hidden" name="description" value="{{../description}}" />
                                 <input type="hidden" name="author" value="{{../author}}" />
                                 <input type="submit" class="btn" value="Post new answer" />
                                 <br>
-                            </form>
+                            </form> 
                         {{/ifNot}}
                     {{/if}}
 
@@ -38,16 +51,12 @@
                             </div>
                         {{/each}}
                     {{/if}}
-                    
+
                 </div>
 
             {{/each}}
-
-
         {{else}}
-
             <h3>No content.</h3>
-
         {{/if}}
 
         {{> question-categories}}

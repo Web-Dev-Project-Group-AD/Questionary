@@ -33,9 +33,6 @@ module.exports = ({ sequelize, AccountModel, QuestionModel }) => {
         createdAt: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW,
-        },
-        lastEdited: {
-            type: Sequelize.DATE,
         }
     })
 
