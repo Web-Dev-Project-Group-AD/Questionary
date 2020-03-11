@@ -21,13 +21,19 @@
         <ul>
             <li><a href="/api">Questionary</a></li>
             <li><a href="/api/accounts">View Accounts</a></li>
-            <!-- <li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign in</a></li>-->
+            <li><a href="/api/accounts/sign-in">Sign in</a></li>
+            <!--<li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign in</a></li>-->
             <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
             <!--<li class="showIfLoggedIn"><a href="/api/accounts/logout">Logout</a></li>-->
         </ul>
     </nav>
 
     <main>
+
+        <div id="home-page">
+            <h1>Home</h1>
+            <p>This is the home page...</p>
+        </div>
 
         <div id="accounts-page">
             <h1>Accounts</h1>
@@ -59,34 +65,40 @@
             </div>
 
             <form action="">
-                <div>
-                    Name: <input type="text" class="name">
-                </div>
-                <input type="submit" value="Create">
+                <br>
+                <input type="text" name="username" id="username" placeholder="Username">
+                <br>
+                <input type="password" name="password" id="password1" placeholder="Password" />
+                <br>
+                <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
+                <br>
+                <input type="submit" class="btn" value="Register">
             </form>
         </div>
 
-        <!-- <div id="sign-in-page">
-            <h1>Login</h1>
+        <div id="sign-in-page">
+            <div class="content">
+                <h1>Login</h1>
+            </div>
             <form action="">
                 <div>
-                    Username: <input type="text" class="name">
+                    Mail-Adresse: <input type="text" class="username">
                 </div>
                 <div>
                     Password: <input type="text" class="password">
                 </div>
                 <input type="submit" value="Login">
             </form>
-        </div>-->
+        </div>
 
 
 
 
 
-        <!--<div id="error-page">
+        <div id="error-page">
             <h1>Error</h1>
             <p>Oups, something went wrong ^^'</p>
-        </div>-->
+        </div>
 
     </main>
 

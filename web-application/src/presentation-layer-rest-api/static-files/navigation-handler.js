@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     changeToPage(location.pathname)
 
     if (localStorage.accessToken) {
+        console.log("localStorage.accessToken", localStorage.accessToken)
         login(localStorage.accessToken)
         console.log("localStorage.accessToken", localStorage.accessToken)
     } else {
@@ -22,7 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#sign-up-page form").addEventListener("submit", function (event) {
         event.preventDefault()
 
-        const name = document.querySelector("#sign-up-page .name").value
+        const name = document.querySelector("#sign-up-page .username").value
+
+        //name = reqest.body.username
 
         const { username, email, password, passwordRepeated } = request.body
         const account = { username, email, password, passwordRepeated }
@@ -34,13 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // "Authorization": "Bearer " + localStorage.accessToken
+                "Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
         }
         ).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             // TODO: Update the view somehow.
+            console.log("respons.body: ", response.body)
             console.log("response_signUp: ", response)
         }).catch(function (error) {
             // TODO: Update the view and display error.
@@ -49,11 +53,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     })
 
-    /*document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
+    document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
 
         const username = document.querySelector("#sign-in-page .username").value
         const password = document.querySelector("#sign-in-page .password").value
+
+        console.log("username and password:", username, password)
 
         fetch(
             "http://localhost:8080/api/accounts/sign-in", {
@@ -65,16 +71,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         ).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
-            return response.json()
+            return response.json(400)
         }).then(function (body) {
             // TODO: Read out information about the user account from the id_token.
             login(body.access_token)
-            console.log(accessToken)
+            console.log("signIn_fetch_accessToken:", accessToken)
+            return
         }).catch(function (error) {
-            console.log(error)
+            console.log("signIn_fetch_error", error)
+            return
+
         })
 
-    })*/
+    })
 
 })
 
@@ -104,16 +113,17 @@ function changeToPage(url) {
     } else if (url == "/api/accounts") {
         document.getElementById("accounts-page").classList.add("current-page")
         fetchAllAccounts()
-    } else if (url == "/api/sign-in") {
+    } else if (url == "/api/accounts/sign-in") {
         document.getElementById("sign-in-page").classList.add("current-page")
     } else if (new RegExp("^/api/accounts/[0-9]+$").test(url)) {
-        document.getElementById("user-page").classList.add("current-page")
+        document.getElementById("sign-in-page").classList.add("current-page")
         const id = url.split("/")[2]
         fetchUser(id)
-    } else if (url == "/api/sign-up") {
+    } else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
     } else {
         document.getElementById("error-page").classList.add("current-page")
+        console.log("error-page is shown")
     }
 
 }
@@ -132,6 +142,7 @@ function fetchAllAccounts() {
             const li = document.createElement("li")
             const anchor = document.createElement("a")
             anchor.innerText = account.name
+            console.log(account.id)
             anchor.setAttribute("href", '/api/accounts/' + account.id)
             li.appendChild(anchor)
             ul.append(li)
@@ -152,7 +163,7 @@ function fetchUser(id) {
     }).then(function (account) {
         const nameSpan = document.querySelector("#user-page .name")
         const idSpan = document.querySelector("#user-page .id")
-        nameSpan.innerText = account.name
+        nameSpan.innerText = account.username
         idSpan.innerText = account.id
     }).catch(function (error) {
         console.log(error)

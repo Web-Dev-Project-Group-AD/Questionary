@@ -3,16 +3,20 @@ const jwt = require('jsonwebtoken')
 
 module.exports = ({ }) => {
 
-
    const secretKey = "175342C7638E1D173B45FCC2EC97E"
 
    function createToken(account, isAdmin) {
-      var claims = {
+
+      const payload = { id: account.id }
+      const accessToken = jwt.sign(payload, secretKey)
+
+      const claims = {
          sub: account.id,
+         username: account.username,
          admin: isAdmin,
       }
-      var token = jwt.sign(claims, secretKey)
-      return token
+      var idToken = jwt.sign(claims, secretKey)
+      return { accessToken, idToken }
    }
 
    function checkToken(token) {
@@ -29,5 +33,5 @@ module.exports = ({ }) => {
       })
    }
 
-   return {createToken, checkToken}
+   return { createToken, checkToken }
 }
