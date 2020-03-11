@@ -66,7 +66,6 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-
         createAnswer(answer) {
             return new Promise((resolve, reject) => {
                 AnswerModel.create({
@@ -125,8 +124,6 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-        
-
         getAnswersByAnswerAuthor(author) {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
@@ -153,11 +150,44 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-        getAnswersByQuestionIds(questionIds) {
+        updateQuestion(questionUpdate) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.update({
+                    title: questionUpdate.title,
+                    description: questionUpdate.description
+                }, {
+                    where: {
+                        author: questionUpdate.author,
+                        id: questionUpdate.id 
+                    }
+                }).then(result => {
+                    resolve(result.lastId)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        deleteQuestionById(author, id) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.destroy({
+                    where: { 
+                        author: author,
+                        id: id 
+                    }
+                }).then(() => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        getAnswersByQuestionIds(ids) {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
                     raw: true,
-                    where: { questionId: questionIds }
+                    where: { questionId: ids }
                 }).then(answers => {
                     resolve(answers)
                 }).catch(error => {

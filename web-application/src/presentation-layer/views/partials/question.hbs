@@ -11,22 +11,28 @@
     </div>
 
     {{#if ../userStatus}}
+        {{#ifEquals ../userStatus.username author}}
+            <form method="GET" name="editQuestion" action="/questions/by-id/{{../id}}/edit">
+                <input type="hidden" name="title" value="{{../title}}" />
+                <input type="hidden" name="description" value="{{../description}}" />
+                <input type="hidden" name="author" value="{{../author}}" />
+                <input type="submit" class="btn" value="Edit" />
+                <br>
+            </form>
+
+            <form method="POST" name="deleteQuestion" action="/questions/by-id/{{../id}}/delete">
+                <input type="submit" class="btn" value="Delete" />
+            </form>
+        {{/ifEquals}}
+
         {{#ifNot ../userStatus.username author}}
-            <form method="GET" name="new answer" action="/questions/by-id/{{../id}}/new-answer">
+            <form method="GET" name="newAnswer" action="/questions/by-id/{{../id}}/new-answer">
                 <input type="hidden" name="title" value="{{../title}}" />
                 <input type="hidden" name="description" value="{{../description}}" />
                 <input type="hidden" name="author" value="{{../author}}" />
                 <input type="submit" class="btn" value="Post new answer" />
                 <br>
             </form> 
-        {{else}}
-            <form method="GET" name="edit question" action="/questions/by-id/{{../id}}/edit">
-                <input type="hidden" name="title" value="{{../title}}" />
-                <input type="hidden" name="description" value="{{../description}}" />
-                <input type="hidden" name="author" value="{{../author}}" />
-                <input type="submit" class="btn" value="Edit question" />
-                <br>
-            </form>
         {{/ifNot}}
     {{/if}}
 
