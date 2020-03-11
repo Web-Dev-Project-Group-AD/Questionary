@@ -9,6 +9,47 @@ const ANSWER_CONTENT_MIN_LENGTH = 8
 const ANSWER_CONTENT_MAX_LENGTH = 5000
 
 
+function getErrorsQuestionCategory(category) {
+
+    const errors = []
+
+    if (!category) {
+        errors.push("Category is missing.")
+    } else if (category.length < QUESTION_CATEGORY_MIN_LENGTH) {
+        errors.push("Category name is too short.")
+    } else if (QUESTION_CATEGORY_MAX_LENGTH < category.length) {
+        errors.push("Category name is too long.")
+    }
+
+    return errors
+}
+
+function getErrorsQuestionTitle(title) {
+
+    const errors = []
+
+    if (!title) {
+        errors.push("Question is missing.")
+    } else if (title.length < QUESTION_TITLE_MIN_LENGTH) {
+        errors.push("Question is too short.")
+    } else if (QUESTION_TITLE_MAX_LENGTH < title.length) {
+        errors.push("Question is too long.")
+    }
+
+    return errors
+
+}
+
+function getErrorsQuestionDescription(description) {
+
+    const errors = []
+
+    if (description && QUESTION_DESCRIPTION_MAX_LENGTH < description.length) {
+        errors.push("Description is too long.")
+    }
+
+    return errors
+}
 
 module.exports = () => {
 
@@ -18,28 +59,19 @@ module.exports = () => {
 
             const errors = []
 
-            if (!question.hasOwnProperty("title")) {
-                errors.push("Question is missing.")
-            } else if (question.title.length < QUESTION_TITLE_MIN_LENGTH) {
-                errors.push("Question is too short.")
-            } else if (QUESTION_TITLE_MAX_LENGTH < question.title.length) {
-                errors.push("Question is too long.")
-            }
+            errors.push.apply(errors, getErrorsQuestionCategory(question.category))
+            errors.push.apply(errors, getErrorsQuestionTitle(question.title))
+            errors.push.apply(errors, getErrorsQuestionDescription(question.description))
 
-            
-            if (question.hasOwnProperty("description") &&
-                QUESTION_DESCRIPTION_MAX_LENGTH < question.description.length) {
-                errors.push("Description is too long.")
-            }
+            return errors
+        },
 
-            
-            if (!question.hasOwnProperty("category")) {
-                errors.push("Category is missing.")
-            } else if (question.category.length < QUESTION_CATEGORY_MIN_LENGTH) {
-                errors.push("Category name is too short.")
-            } else if (QUESTION_CATEGORY_MAX_LENGTH < question.category.length) {
-                errors.push("Category name is too long.")
-            }
+        getErrorsUpdateQuestion(question) {
+
+            const errors = []
+
+            errors.push.apply(errors, getErrorsQuestionTitle(question.title))
+            errors.push.apply(errors, getErrorsQuestionDescription(question.description))
 
             return errors
         },
@@ -58,9 +90,6 @@ module.exports = () => {
 
             return errors
         }
-
-        
-
 
     }
 
