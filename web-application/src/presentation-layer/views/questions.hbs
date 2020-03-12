@@ -1,39 +1,65 @@
-{{#if questions}}
+<div name="questions">
+    <div class="row" id="content">
+        
+        {{#if questions}}
+            {{#each questions}}
 
-    {{#each questions}}
-        <div class="question">
-            <h3>{{title}}</h3>
-            <br>
-            <p>{{description}}</p>
-            <br>
-            <p>Asked by: {{author}}</p>
-            <br>
-        </div>
-    {{/each}}
+                <div class="medium-8 columns">
+                    <div class="blog-post">
+                        <h3>{{title}}</h3>
+                        <p>{{description}}</p>
+                        <div class="callout">
+                            <ul class="menu simple">
+                                <li><a href="#">Asked by: {{author}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
 
-    {{#ifNot ../userStatus.username author}}
-        <form method="GET" action="/questions/by-question-id/{{id}}/">
-            <input type="hidden" name="title" value="{{title}}" />
-            <input type="hidden" name="description" value="{{description}}" />
-            <input type="hidden" name="author" value="{{author}}" />
-            <input type="submit" class="btn" value="Post new answer" />
-            <br>
-        </form>
-    {{/ifNot}}
+                    {{#if ../userStatus}}
+                        {{#ifEquals ../userStatus.username author}}
+                            <form method="GET" name="editQuestion" action="/questions/by-id/{{../id}}/edit">
+                                <input type="hidden" name="title" value="{{../title}}" />
+                                <input type="hidden" name="description" value="{{../description}}" />
+                                <input type="hidden" name="author" value="{{../author}}" />
+                                <input type="submit" class="btn" value="Edit" />
+                                <br>
+                            </form>
 
-    {{#if answers}}
-        {{#each answers}}
-            <div class="answer">
-                <p>Answer: {{content}}</p>
-                <br>
-                <p>Author: {{author}}</p>
-                <br>
-            </div>
-        {{/each}}
-    {{/if}}
+                            <form method="POST" name="deleteQuestion" action="/questions/by-id/{{../id}}/delete">
+                                <input type="submit" class="btn" value="Delete" />
+                            </form>
+                        {{/ifEquals}}
 
-{{else}}
+                        {{#ifNot ../userStatus.username author}}
+                            <form method="GET" name="newAnswer" action="/questions/by-id/{{../id}}/new-answer">
+                                <input type="hidden" name="title" value="{{../title}}" />
+                                <input type="hidden" name="description" value="{{../description}}" />
+                                <input type="hidden" name="author" value="{{../author}}" />
+                                <input type="submit" class="btn" value="Post new answer" />
+                                <br>
+                            </form> 
+                        {{/ifNot}}
+                    {{/if}}
 
-    <h3>No content.</h3>
+                    {{#if answers}}
+                        {{#each answers}}
+                            <div class="answer">
+                                <p>Answer: {{content}}</p>
+                                <br>
+                                <p>Author: {{author}}</p>
+                                <br>
+                            </div>
+                        {{/each}}
+                    {{/if}}
 
-{{/if}}
+                </div>
+
+            {{/each}}
+        {{else}}
+            <h3>No content.</h3>
+        {{/if}}
+
+        {{> question-categories}}
+
+    </div>
+</div>

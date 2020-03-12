@@ -52,12 +52,26 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
+        questionUpdateAnswerStatus(id, isAnswered) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.update({
+                    isAnswered: isAnswered
+                }, {
+                    where: { id: id }
+                }).then(result => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
         createAnswer(answer) {
             return new Promise((resolve, reject) => {
                 AnswerModel.create({
-                    author: answer.username,
+                    author: answer.author,
                     questionId: answer.questionId,
-                    answer: answer.content
+                    content: answer.content
                 }).then(result => {
                     resolve(result.lastid)
                 }).catch(error => {
@@ -110,8 +124,6 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-        
-
         getAnswersByAnswerAuthor(author) {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
@@ -130,27 +142,72 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 QuestionModel.findAll({
                     raw: true,
                     where: { id: id }
-                }).then(questions => {
-                    resolve(questions[0])
+                }).then(question => {
+                    resolve(question)
                 }).catch(error => {
                     reject(error)
                 })
             })
         },
 
-        getAnswersByQuestionIds(questionIds) {
+        updateQuestion(questionUpdate) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.update({
+                    title: questionUpdate.title,
+                    description: questionUpdate.description
+                }, {
+                    where: {
+                        author: questionUpdate.author,
+                        id: questionUpdate.id 
+                    }
+                }).then(result => {
+                    resolve(result.lastId)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        deleteQuestionById(author, id) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.destroy({
+                    where: { 
+                        author: author,
+                        id: id 
+                    }
+                }).then(() => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        getAnswersByQuestionIds(ids) {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
                     raw: true,
-                    where: { questionId: questionIds }
+                    where: { questionId: ids }
                 }).then(answers => {
                     resolve(answers)
                 }).catch(error => {
                     reject(error)
                 })
             })
-        }
+        },
 
+        getAllCategories() {
+            return new Promise((resolve, reject) => {
+                QuestionCategoryModel.findAll({
+                    raw: true,
+                }).then(categories => {
+                    resolve(categories)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+
+        }
         
 
     }

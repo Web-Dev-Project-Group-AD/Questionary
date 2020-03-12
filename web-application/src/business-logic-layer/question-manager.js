@@ -12,10 +12,36 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				QuestionRepository.createQuestionCategory(question.category
 				).then(() => {
 					return QuestionRepository.createQuestion(question)
-				}).then(createdquestion => {
-					resolve(createdquestion)
+				}).then(questionId => {
+					resolve(questionId)
 				}).catch(errors => {
 					reject(errors)
+				})
+			})
+		},
+
+		updateQuestion(questionUpdate) {
+			return new Promise((resolve, reject) => {
+				const validationErrors = QuestionValidator.getErrorsUpdateQuestion(questionUpdate)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.updateQuestion(questionUpdate
+				).then(returnId => {
+					resolve(returnId)
+				}).catch(errors => {
+					reject(errors)
+				})
+			})
+		},
+
+        deleteQuestionById(author, id) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.deleteQuestionById(author, id
+				).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
 				})
 			})
 		},
@@ -31,15 +57,17 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-		createAnswer(answerObject) {
+		createAnswer(answer) {
 			return new Promise((resolve, reject) => {
-				const validationErrors = QuestionValidator.getErrorsNewAnswer(answerObject)
+				const validationErrors = QuestionValidator.getErrorsNewAnswer(answer)
 				if (validationErrors.length > 0) {
 					return reject(validationErrors)
 				}
-				QuestionRepository.createAnswer(answerObject
-				).then(createdAnswerObject => {
-					resolve(createdAnswerObject)
+				QuestionRepository.questionUpdateAnswerStatus(answer.questionId, true
+				).then(() => {
+				return QuestionRepository.createAnswer(answer)
+				}).then(answerId => {
+					resolve(answerId)
 				}).catch(errors => {
 					reject(errors)
 				})
@@ -54,18 +82,20 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				).then(fetchedQuestions => {
 					questions = fetchedQuestions
 					return QuestionRepository.getAllAnswers()
-				}).then(answers => {
-					const questionList = []
+				}).then(fetchedAnswers => {
+					const questionsAndAnswers = []
+					
 					for (question of questions) {
-						const answerList = []
-						for (answer of answers) {
+						const answers = []
+						for (answer of fetchedAnswers) {
 							if (question.id == answer.questionId) {
-								answerList.push(answer)
+								answers.push(answer)
 							}
 						}
-						questionList.push({ question, answerList })
+						question.answers = answers
+						questionsAndAnswers.push(question)
 					}
-					resolve(questionList)
+					resolve(questionsAndAnswers)
 				}).catch(error => {
 					reject(error)
 				})
@@ -83,25 +113,35 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-		getAnsweredQuestionsByCategory(category) {
+		getQuestionsByCategory(category, isAnswered) {
 			return new Promise((resolve, reject) => {
 				var questions = []
-				QuestionRepository.getQuestionsByCategory(category
+				QuestionRepository.getQuestionsByCategory(category, isAnswered
 				).then(fetchedQuestions => {
-					const questionIds = []
-					for (question of questions) {
-						questionIds.push(question.id)
-					}
 					questions = fetchedQuestions
-					return QuestionRepository.getAnswersByQuestionIds(questionIds)
-				}).then(answers => {
+					console.log("fetchedQuestions: ", fetchedQuestions)
+					if (!isAnswered) {
+						return resolve(questions)
+					} else {
+						const questionIds = []
+						for (question of questions) {
+							questionIds.push(question.id)
+						}
+						return QuestionRepository.getAnswersByQuestionIds(questionIds)					
+					}
+				}).then(fetchedAnswers => {
+					console.log("fetchedAnswers: ", fetchedAnswers)
+
 					const questionsAndAnswers = []
 					for (question of questions) {
-						for (answer of answers) {
+						const answers = []
+						for (answer of fetchedAnswers) {
 							if (answer.questionId == question.id) {
-								questionsAndAnswers.push({ question, answer })
+								answers.push(answer)
 							}
+							question.answers = answers
 						}
+						questionsAndAnswers.push(question)
 					}
 					resolve(questionsAndAnswers)
 				}).catch(error => {
@@ -112,23 +152,26 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 
 		getQuestionsByAnswerAuthor(author) {
 			return new Promise((resolve, reject) => {
-				var answers = []
+				var allAnswers = []
 				QuestionRepository.getAnswersByAuthor(author
 				).then(fetchedAnswers => {
 					const questionIds = []
 					for (answer of fetchedAnswers) {
 						questionIds.push(answer.questionId)
 					}
-					answers = fetchedAnswers
-					return QuestionRepository.getAnswersByQuestionIds(questionIds)
+					allAnswers = fetchedAnswers
+					return QuestionRepository.getQuestionsById(questionIds)
 				}).then(questions => {
 					const questionsAndAnswers = []
 					for (question of questions) {
-						for (answer of answers) {
+						const answers = []
+						for (answer of allAnswers) {
 							if (answer.questionId == question.id) {
-								questionsAndAnswers.push({ question, answer })
+								answers.push(answer)
 							}
 						}
+						question.answers = answers
+						questionsAndAnswers.push(question)
 					}
 					resolve(questionsAndAnswers)
 				}).catch(error => {
@@ -148,8 +191,20 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 						question = fetchedQuestion
 						return getAnswersByQuestionIds(id)
 					}
-				}).then(answer => {
-					resolve({ question, answer })
+				}).then(answers => {
+					question.answers = answers
+					resolve([question])
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getAllCategories() {
+			return new Promise((resolve, reject) => {
+			QuestionRepository.getAllCategories(
+				).then(categories => {
+					resolve(categories)
 				}).catch(error => {
 					reject(error)
 				})

@@ -18,16 +18,16 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
-        ).then(createdAccount => {
+        ).then(accountId => {
 
-            const userId = createdAccount.id
+            const userId = accountId
             const signedIn = true
             const isAdmin = false
             const userStatus = { signedIn, isAdmin, username, userId }
             request.session.userStatus = userStatus
 
             console.log(username, " signed in")
-            response.render("home.hbs", { userStatus })
+            response.redirect("/")
         }).catch(validationErrors => {
 
             console.log(validationErrors)
@@ -49,10 +49,11 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         const account = { email, password }
 
         AccountManager.signInAccount(account
-        ).then((returnedAccount) => {
+        ).then(returnedAccount => {
 
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
+            const username = returnedAccount.username
             const userStatus = { isAdmin, username, userId }
             request.session.userStatus = userStatus
 
@@ -86,7 +87,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
                 return response.render("error.hbs", { userStatus })
             }
             response.clearCookie("signIn")
-            return response.render("home.hbs")
+            response.redirect("/")
         })
 
     })

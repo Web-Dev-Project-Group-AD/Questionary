@@ -1,0 +1,11 @@
+<div name="editQuestion">
+    <form method="POST" action="/questions/by-id/{{question.id}}/edit">
+        <input type="text" name="questionTitle" placeholder="Question" value="{{question.title}}" />
+        <br>
+        <input type="text" name="questionDescription" placeholder="Description" value="{{question.description}}" />
+        <br>
+        <input type="submit" class="btn" value="Submit question" />
+        <br>
+        <div id="error-message"></div>
+    </form>
+</div>

@@ -6,9 +6,7 @@ module.exports = ({ }) => {
 
 	router.get("/", (request, response) => {
 
-		const userStatus = request.session.userStatus
-
-		response.render("home.hbs", userStatus)
+		response.redirect("/questions/answered")
 	})
 
 	// router.get("/about", (request, response) => {
@@ -30,6 +28,13 @@ module.exports = ({ }) => {
 		const userStatus = request.session.userStatus
 
 		response.status(401).render("statuscode-401.hbs", userStatus)
+	})
+
+	router.get("/404", (request, response) =>{
+
+		const userStatus = request.session.userStatus
+
+		response.status(404).render("statuscode-404.hbs", userStatus)
 	})
 
 	router.get("/500", (request, response) =>{
