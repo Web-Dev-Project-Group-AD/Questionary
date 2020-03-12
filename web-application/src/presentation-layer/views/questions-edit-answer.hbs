@@ -1,0 +1,50 @@
+<div name="editAnswer">
+    <div class="row" id="content">
+
+        {{#if question}}
+
+            <div class="medium-8 columns">
+                    
+                <div class="blog-post">
+                    <h3>{{question.title}}</h3>
+                    <p>{{question.description}}</p>
+                    <div class="callout">
+                        <ul class="menu simple">
+                            <li><a href="/accounts/{{question.author}}">Asked by: {{question.author}}</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <form class="editAnswer" method="POST" action="/questions/by-id/{{question.id}}/edit-answer">
+                <br>
+                <input type="text" name="content" id="answerContent" placeholder="Answer"
+                    {{#if question.answer}}
+                        value="{{question.answer}}"
+                    {{/if}}
+                />
+                <br>
+                <input type="submit" class="btn" value="Submit answer" />
+                <br>
+                <input type="hidden" name="questionTitle" value="{{question.title}}" />
+                <input type="hidden" name="questionDescription" value="{{question.description}}" />
+                <input type="hidden" name="questionAuthor" value="{{question.author}}" />
+
+                <ul id="errorMessages">
+                    {{#if validationErrors}}
+                        {{#each validationErrors}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                    {{/if}}
+			    </ul>
+            </form>
+
+        {{else}}
+            <h3>Question does not exist.</h3>
+        {{/if}}
+
+    </div>
+</div>
+
+<script src="../views/client-validation/answer-validator.js"></script>
