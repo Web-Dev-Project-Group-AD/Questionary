@@ -75,6 +75,32 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 
 		},
 
+		updateAnswer(answerUpdate) {
+			return new Promise((resolve, reject) => {
+				const validationErrors = QuestionValidator.getErrorsUpdateAnswer(answerUpdate)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.updateQuestion(questionUpdate
+				).then(returnId => {
+					resolve(returnId)
+				}).catch(errors => {
+					reject(errors)
+				})
+			})
+		},
+
+		deleteAnswerById(author, id) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.deleteAnswerById(author, id
+				).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
 		getAllQuestionsWithAnswers() {
 			return new Promise((resolve, reject) => {
 				var questions = []
@@ -119,7 +145,6 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				QuestionRepository.getQuestionsByCategory(category, isAnswered
 				).then(fetchedQuestions => {
 					questions = fetchedQuestions
-					console.log("fetchedQuestions: ", fetchedQuestions)
 					if (!isAnswered) {
 						return resolve(questions)
 					} else {
@@ -130,8 +155,6 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 						return QuestionRepository.getAnswersByQuestionIds(questionIds)					
 					}
 				}).then(fetchedAnswers => {
-					console.log("fetchedAnswers: ", fetchedAnswers)
-
 					const questionsAndAnswers = []
 					for (question of questions) {
 						const answers = []

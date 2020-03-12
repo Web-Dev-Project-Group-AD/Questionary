@@ -12,7 +12,6 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     defaults: {
                         name: category
                     }
-                    
                 }).then(result => {
                     console.log(result.lastid)
                     resolve(result.lastid)
@@ -79,6 +78,39 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 })
             })
         },
+
+        updateAnswer(answerUpdate) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.update({
+                    content: answerUpdate.answer,
+                }, {
+                    where: {
+                        author: answerUpdate.author,
+                        id: answerUpdate.id 
+                    }
+                }).then(result => {
+                    resolve(result.lastId)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        deleteQuestionById(author, id) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.destroy({
+                    where: { 
+                        author: author,
+                        id: id 
+                    }
+                }).then(() => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
 
         getAllAnswers() {
             return new Promise((resolve, reject) => {
