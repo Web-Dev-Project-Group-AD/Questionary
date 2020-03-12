@@ -12,7 +12,7 @@ module.exports = ({ }) => {
 
       const claims = {
          sub: account.id,
-         username: account.username,
+         email: account.email,
          admin: isAdmin,
       }
       var idToken = jwt.sign(claims, secretKey)

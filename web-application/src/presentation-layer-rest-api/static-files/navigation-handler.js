@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
 
-        const username = document.querySelector("#sign-in-page .username").value
+        const email = document.querySelector("#sign-in-page .email").value
         const password = document.querySelector("#sign-in-page .password").value
 
-        console.log("username and password:", username, password)
+        console.log("email and password:", email, password)
 
         fetch(
             "http://localhost:8080/api/accounts/sign-in", {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
-            body: "grant_type=password&username=" + username + "&password=" + password
+            body: "grant_type=password&email=" + email + "&password=" + password
         }
         ).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.

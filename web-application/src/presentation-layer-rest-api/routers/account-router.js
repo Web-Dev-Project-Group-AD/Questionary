@@ -85,7 +85,7 @@ module.exports = ({ AccountManager, generateToken }) => {
     })
 
 
-    const correctUsername = "kunzsusanne@gmx.com"
+    const correctEmail = "kunzsusanne456@gmx.com"
     const correctPassword = "password"
     const serverSecret = "175342C7638E1D173B45FCC2EC97E"
 
@@ -98,8 +98,10 @@ module.exports = ({ AccountManager, generateToken }) => {
     router.post('/sign-in', function (request, response) {
 
         const { email, password } = request.body
+        console.log("request.body_signIn: ", request.body)
+
         const account = { email, password }
-        console.log("account_sign_in_mail_pw: ", email, password)
+        console.log("account_sign_in_mail_pw: ", account, email, password)
 
         const grantType = request.body.grant_type
         console.log("grantType_signIn: ", grantType)
@@ -117,7 +119,7 @@ module.exports = ({ AccountManager, generateToken }) => {
             const isAdmin = false
             const userId = returnedAccount.id
 
-            console.log(returnedAccount.username, returnedAccount.email, " signed in_returnedAccount")
+            console.log("signed in_returnedAccount_account_email: ", returnedAccount.email)
 
             /*if (grantType != 'password') {
                 response.status(400).json({
@@ -126,8 +128,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                 })
             }*/
 
-            if (grantType != "hallo123456") {
-                //if (grantType != 'password') {
+            if (grantType != "password") {
                 response.status(400).json({
                     'status': '400',
                     'error': "unsupported_grant_type"
@@ -161,7 +162,7 @@ module.exports = ({ AccountManager, generateToken }) => {
             })
 */
 
-            if (username == correctUsername && password == correctPassword) {
+            if (email == correctEmail && password == correctPassword) {
                 console.log("if email and password right here.")
 
                 // TODO: Put user authorization info in the access token.
@@ -173,7 +174,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                 // Try to use the standard claims:
                 // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
                 const idToken = jwt.sign(
-                    { sub: returnedAccount.id, username: returnedAccount.email },
+                    { sub: returnedAccount.id, email: returnedAccount.email },
                     "lkjlkjlkjljlk"
                 )
 
