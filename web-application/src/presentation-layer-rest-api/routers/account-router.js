@@ -1,4 +1,5 @@
 const express = require('express')
+const jwt = require('jsonwebtoken')
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
@@ -9,28 +10,51 @@ module.exports = ({ AccountManager, generateToken }) => {
     const router = express.Router()
     //const generateToken = generateToken
 
-    router.get("/sign-up", (request, response, next) => {
+    //const correctEmail = "susannekunz@gmail.com"
+    //const correctPassword = "password"
+    const serverSecret = "175342C7638E1D173B45FCC2EC97E"
+
+    /*router.get("/sign-up", (request, response) => {
+
+        const { username, email, password, passwordRepeated } = request.body
+        const account = { username, email, password, passwordRepeated }
+
+        console.log("get_signUp_account", account)
+
         //response.render("contact.hbs")
         // response.status(200).json({ error: "No Profile Found" })
-        const example = request.body.example
-        if (!example) {
-            console.log("response: ", "No Example given")
+        // const example = request.body.example
+        if (!account) {
+            console.log("response: ", "No account given")
 
-            response.status(400).json("No Example given")
+            response.status(400).json(account)
+            return
         } else {
-            response.status(200).json("Example is here")
+            response.status(200).json(account)
+            return
         }
         //response.status(200).json("accounts-sign-up.hbs")
         //next()
         //response.render("accounts-sign-up.hbs")
         //'d2220207-05e8-472a-9138-e9dcb2963f06'
-    })
+    })*/
 
     router.post("/sign-up", (request, response) => {
 
-        //const authorizationHeader = request.get('authorization')
-        //const accessToken = authorizationHeader.substr("Bearer ".length)
+        try {
 
+            //const authorizationHeader = request.get('authorization')
+            //const accessToken = authorizationHeader.substr("Bearer ".length)
+
+            // TODO: Better to use jwt.verify asynchronously.
+            //const payload = jwt.verify(accessToken, serverSecret)
+
+            // Use payload to implement authorization...
+
+        } catch (e) {
+            response.status(401).end()
+            return
+        }
 
         const { username, email, password, passwordRepeated } = request.body
         const account = { username, email, password, passwordRepeated }
@@ -38,77 +62,52 @@ module.exports = ({ AccountManager, generateToken }) => {
         AccountManager.createAccount(account
         ).then(createdAccount => {
 
+            const isAdmin = createdAccount.isAdmin
             const userId = createdAccount.id
-            console.log(createdAccount)
-            const isAdmin = false
-            //const userStatus = { signedIn, isAdmin, username, userId }
-            //request.session.userStatus = userStatus
+            console.log("restapi_signup_id_mail: ", createdAccount.id, createdAccount.isAdmin)
+
             const token = generateToken.createToken(createdAccount, isAdmin)
             console.log("token123: ", token)
-            response.setHeader('Location', '/sign-up/' + userId)
-            response.status(201).json(token)
-
             console.log(username, " signed in123")
-            //response.render("home.hbs")
-            return
+            response.setHeader('Location', '/sign-up/' + userId)
+            response.status(201).json(token).end()
+            // return
 
         }).catch(validationErrors => {
 
             console.log("validationErrors: ", validationErrors)
             if (validationErrors) {
                 response.status(400).json(validationErrors)
-                //response.render("error.hbs")
                 return
             } else {
-                //response.render("accounts-sign-up.hbs", { validationErrors, username, email })
-                response.status(500).json(error)
-                return
+                response.status(500).json(error).end()
+                //return
             }
         })
 
-        /*const missingParameters = reqhandler.checkRequestParams({ requiredBody: ['username', 'email', 'password'], request: request })
-    if (missingParameters) {
-        response.status(400).json(missingParameters)
-        return
-    }
-
-    db.addUser(account).then(result => {
-        const userId = result.insertId
-        const token = auth.createToken(userId)
-        response.setHeader('Location', '/users/' + userId)
-        response.status(201).json(token)
-        return
-    }).catch(error => {
-        response.status(500).json(error)
-        return
-    })*/
     })
 
 
-    const correctEmail = "susannekunz@gmail.com"
-    const correctPassword = "password"
-    const serverSecret = "175342C7638E1D173B45FCC2EC97E"
 
 
     // Implemented per OAuth 2.0 (Resource Owner Password Credentials Grant):
     // OpenID Connect also implemented (ID token).
-    // POST /accounts/log-in
+    // POST /accounts/sign-in
     // Content-Type: application/x-www-form-urlencoded
-    // Body: grant_type=password&username=?&password=?
+    // Body: grant_type=password&email=?&password=?
     router.post('/sign-in', function (request, response) {
 
         const { email, password } = request.body
-        console.log("request.body_signIn: ", request.body)
+        console.log("request.body.email_signIn: ", request.body.email)
 
         const account = { email, password }
         console.log("sign_in_mail_pw: ", email, password)
-        console.log("account_sign_in: ", account)
 
         const grantType = request.body.grant_type
         console.log("grantType_signIn: ", grantType)
 
         /*const accessToken = jwt.sign(payload, serverSecret)
-
+    
         const idToken = jwt.sign({
             'sub': account.id,
             'preferred_username': account.username
@@ -117,23 +116,15 @@ module.exports = ({ AccountManager, generateToken }) => {
         AccountManager.signInAccount(account
         ).then((returnedAccount) => {
 
-            console.log("returnedAccount_signIn: ", returnedAccount)
+            console.log("restapi_signup_id_mail: ", returnedAccount.id, returnedAccount.isAdmin)
 
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
             const username = returnedAccount.username
 
-
             console.log("signed in_account_isAdmin: ", isAdmin)
             console.log("signed in_account_username: ", username)
             console.log("signed in_returnedAccount_account_email: ", returnedAccount.email)
-
-            /*if (grantType != 'password') {
-                response.status(400).json({
-                    'status': '400',
-                    'error': 'unsupported_grant_type',
-                })
-            }*/
 
             if (grantType != "password") {
                 response.status(400).json({
@@ -158,55 +149,50 @@ module.exports = ({ AccountManager, generateToken }) => {
                 }
             }*/
 
-            /*response.setHeader('Location', '/accounts/' + userId)
-            //response.status(201).json(accessToken)
+            console.log("before payload")
+            // TODO: Put user authorization info in the access token.
+            const payload = { sub: returnedAccount.id }
+            // TODO: Better to use jwt.sign asynchronously.
 
-            console.log(username, " signed in")
+            const claims = {
+                sub: returnedAccount.id,
+                email: returnedAccount.email,
+                admin: returnedAccount.isAdmin,
+            }
+
+            const accessToken = jwt.sign(claims, serverSecret)
+
+            // TODO: Put user info in the id token.
+            // Try to use the standard claims:
+            // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+            const idToken = jwt.sign(
+                { sub: returnedAccount.id, email: returnedAccount.email },
+                serverSecret
+            )
+
+            //const idToken = generateToken.createToken(returnedAccount, isAdmin)
+            console.log("id_token: ", idToken)
+            console.log("access_token: ", access_token)
+
+            localStorage.accessToken = access_token
+
+            response.setHeader('Location', '/sign-in/' + userId)
 
             response.status(200).json({
-                'access_token': accessToken,
-                'id_token': idToken
+                access_token: accessToken,
+                id_token: idToken,
+                //expires_in: 3600,
             })
-*/
 
-            if (email == correctEmail && password == correctPassword) {
-                console.log("if_email and password right here.")
+            console.log(mail, " signed in hier is great")
 
-                // TODO: Put user authorization info in the access token.
-                const payload = { id: returnedAccount.id }
-                // TODO: Better to use jwt.sign asynchronously.
-                const accessToken = jwt.sign(payload, serverSecret)
+            return
 
-                // TODO: Put user info in the id token.
-                // Try to use the standard claims:
-                // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-                const idToken = jwt.sign(
-                    { sub: returnedAccount.id, email: returnedAccount.email },
-                    "lkjlkjlkjljlk"
-                )
-
-                //const idToken = generateToken.createToken(returnedAccount, isAdmin)
-                console.log("id_token: ", idToken)
-                console.log("access_token: ", access_token)
-
-                localStorage.accessToken = access_token
-
-
-                response.setHeader('Location', '/sign-in/' + userId)
-
-                response.status(201).json({
-                    access_token: accessToken,
-                    id_token: idToken
-                })
-
-                console.log(mail, " signed in hier is great")
-
-                return
-
-            } /*else {
-                response.status(400).json({ error: "invalid_grant" })
-                return
-            }*/
+            // }
+            /*else {
+                 response.status(400).json({ error: "invalid_grant" })
+                 return
+             }*/
 
 
 
@@ -283,7 +269,7 @@ module.exports = ({ AccountManager, generateToken }) => {
      
             }*/
 
-
+        return
     })
 
 

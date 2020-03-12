@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // TODO: Avoid using this long lines of code.
     document.querySelector("#sign-up-page form").addEventListener("submit", function (event) {
         event.preventDefault()
+        console.log("navigation-handler_sign_up")
 
         const name = document.querySelector("#sign-up-page .username").value
 
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.accessToken
+                // "Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
         }
@@ -45,7 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             // TODO: Update the view somehow.
             console.log("respons.body: ", response.body)
-            console.log("response_signUp: ", response)
+            console.log("response_signUp_header: ", response.headers)
+            console.log("response_signUp_localStorage.accessToken: ", localStorage.accessToken)
         }).catch(function (error) {
             // TODO: Update the view and display error.
             console.log("error_signUp:", error)
@@ -55,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
+        console.log("navigation-handler_sign_in")
 
         const email = document.querySelector("#sign-in-page .email").value
         const password = document.querySelector("#sign-in-page .password").value
@@ -68,12 +71,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/x-www-form-urlencoded"
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
             body: "grant_type=password&email=" + email + "&password=" + password
-        }
-        ).then(function (response) {
+        }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             return response.json(400)
         }).then(function (body) {
             // TODO: Read out information about the user account from the id_token.
+            console.log("signIn_fetch_body.accessToken:", body.accessToken)
             login(body.access_token)
             console.log("signIn_fetch_accessToken:", accessToken)
             return
@@ -136,6 +139,7 @@ function fetchAllAccounts() {
         // TODO: Check status code to see if it succeeded. Display errors if it failed.
         return response.json()
     }).then(function (accounts) {
+        console.log("accounts_fetchAllAcc: ", accounts)
         const ul = document.querySelector("#accounts-page ul")
         ul.innerText = ""
         for (const account of accounts) {
@@ -158,9 +162,11 @@ function fetchUser(id) {
     fetch(
         "http://localhost:8080/api/accounts/" + id
     ).then(function (response) {
+        console.log("fetchUser_id:", id)
         // TODO: Check status code to see if it succeeded. Display errors if it failed.
         return response.json()
     }).then(function (account) {
+        console.log("account_fetchAccById: ", account)
         const nameSpan = document.querySelector("#user-page .name")
         const idSpan = document.querySelector("#user-page .id")
         nameSpan.innerText = account.username
