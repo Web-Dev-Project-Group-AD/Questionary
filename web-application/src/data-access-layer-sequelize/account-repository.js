@@ -41,8 +41,9 @@ module.exports = ({ AccountModel }) => {
 
         getAllAccounts() {
             return new Promise((resolve, reject) => {
-                AccountModel.findAll(
-                ).then(accounts => {
+                AccountModel.findAll({
+                    raw: true
+                }).then(accounts => {
                     resolve(accounts)
                 }).catch(error => {
                     console.log(error)

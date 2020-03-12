@@ -92,16 +92,16 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
     })
 
-    router.get("/", SessionAuthenticator.authenticateAdmin, (request, response) => {
-        
+    router.get("/", /*SessionAuthenticator.authenticateAdmin,*/(request, response) => {
+
         const userStatus = request.session.userStatus
 
         AccountManager.getAllAccounts(
         ).then(accounts => {
 
-            const model = { accounts: accounts }
+            console.log(accounts)
 
-            response.render("accounts-list-all.hbs", { model, userStatus })
+            response.render("accounts-list-all.hbs", { accounts, userStatus })
         }).catch(error => {
             console.log(error)
             response.render("error.hbs", { userStatus })
@@ -115,7 +115,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
         AccountManager.getAccountByUsername(username
         ).then(account => {
-            
+
             const model = { account: account }
 
             response.render("accounts-show-one.hbs", { model, userStatus })
