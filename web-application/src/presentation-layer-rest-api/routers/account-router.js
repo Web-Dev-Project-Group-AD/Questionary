@@ -85,7 +85,7 @@ module.exports = ({ AccountManager, generateToken }) => {
     })
 
 
-    const correctEmail = "kunzsusanne456@gmx.com"
+    const correctEmail = "susannekunz@gmail.com"
     const correctPassword = "password"
     const serverSecret = "175342C7638E1D173B45FCC2EC97E"
 
@@ -101,7 +101,8 @@ module.exports = ({ AccountManager, generateToken }) => {
         console.log("request.body_signIn: ", request.body)
 
         const account = { email, password }
-        console.log("account_sign_in_mail_pw: ", account, email, password)
+        console.log("sign_in_mail_pw: ", email, password)
+        console.log("account_sign_in: ", account)
 
         const grantType = request.body.grant_type
         console.log("grantType_signIn: ", grantType)
@@ -116,9 +117,15 @@ module.exports = ({ AccountManager, generateToken }) => {
         AccountManager.signInAccount(account
         ).then((returnedAccount) => {
 
-            const isAdmin = false
-            const userId = returnedAccount.id
+            console.log("returnedAccount_signIn: ", returnedAccount)
 
+            const isAdmin = returnedAccount.isAdmin
+            const userId = returnedAccount.id
+            const username = returnedAccount.username
+
+
+            console.log("signed in_account_isAdmin: ", isAdmin)
+            console.log("signed in_account_username: ", username)
             console.log("signed in_returnedAccount_account_email: ", returnedAccount.email)
 
             /*if (grantType != 'password') {
@@ -136,7 +143,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                 return
             }
 
-            if (0 < errors.length) {
+            /*if (0 < errors.length) {
                 if (errors.includes('databaseError')) {
                     response.status(500).json({
                         'status': '500',
@@ -149,7 +156,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                         'message': errors
                     })
                 }
-            }
+            }*/
 
             /*response.setHeader('Location', '/accounts/' + userId)
             //response.status(201).json(accessToken)
@@ -163,7 +170,7 @@ module.exports = ({ AccountManager, generateToken }) => {
 */
 
             if (email == correctEmail && password == correctPassword) {
-                console.log("if email and password right here.")
+                console.log("if_email and password right here.")
 
                 // TODO: Put user authorization info in the access token.
                 const payload = { id: returnedAccount.id }
@@ -184,33 +191,41 @@ module.exports = ({ AccountManager, generateToken }) => {
 
                 localStorage.accessToken = access_token
 
-                response.setHeader('Location', '/sign-up/' + userId)
 
-                response.status(200).json({
+                response.setHeader('Location', '/sign-in/' + userId)
+
+                response.status(201).json({
                     access_token: accessToken,
                     id_token: idToken
                 })
 
+                console.log(mail, " signed in hier is great")
+
                 return
 
-            } else {
+            } /*else {
                 response.status(400).json({ error: "invalid_grant" })
                 return
-            }
+            }*/
+
+
 
 
         }).catch((errorMessage) => {
 
-            console.log(errorMessage)
+            console.log("signIn_errorMessages: ", errorMessage)
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
 
                 //console.log("errormessage_login", errorMessage)
-                response.status(400).json({ error: errorMessage })
+                response.status(400).json(errorMessage)
+                //response.status(400).json({ error: errorMessage })
                 return
                 // response.render("error.hbs")
             } else {
                 //console.log("errormessage_login and username:", errorMessage, username)
-                response.status(400).json({ error: "errormessage_login" + errorMessage, email })
+                response.status(500).json(error)
+
+                // response.status(500).json({ error: "errormessage_login" + errorMessage, email })
                 return
                 // response.render("accounts-sign-in.hbs", { errorMessage, email })
             }
@@ -218,7 +233,7 @@ module.exports = ({ AccountManager, generateToken }) => {
 
 
         /*accountManager.loginAccount(account, function (errors, account) {
- 
+     
             if (grantType != 'password') {
                 response.status(400).json({
                     'status': '400',
@@ -240,35 +255,33 @@ module.exports = ({ AccountManager, generateToken }) => {
                 }
             }
             else {
- 
+     
                 const userId = account.id
                 console.log(createdAccount)
- 
+     
                 const isAdmin = false
                 const token = generateToken.createToken(createdAccount, isAdmin)
                 console.log("token: ", token)
- 
+     
                 response.setHeader('Location', '/sign-up/' + userId)
                 response.status(201).json(token)
-    
+     
                 console.log(username, " signed in")
- 
+     
                 const payload = { id: account.id }s
                 const accessToken = jwt.sign(payload, serverSecret)
- 
+     
                 const idToken = jwt.sign({
                     'sub': account.id,
                     'preferred_username': account.mail
                 }, 'aasdfsghfgkhhkj')
- 
+     
                 response.status(200).json({
                     'access_token': accessToken,
                     'id_token': idToken
                 })
- 
+     
             }*/
-
-        return
 
 
     })
