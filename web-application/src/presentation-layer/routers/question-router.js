@@ -103,8 +103,6 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    
-
     router.get("/unanswered", (request, response) => {
 
         const userStatus = request.session.userStatus
@@ -247,11 +245,11 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
                 if (question) {
                     response.render("questions-new-answer.hbs", { userStatus, question })
                 } else {
-                    response.redirect("/404")
+                    response.status(404).render("statuscode-404.hbs", { userStatus })
                 }
             }).catch(error => {
                 console.log(error)
-                response.redirect("/500")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             })
         }
     })
@@ -315,17 +313,15 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
                 question = returnedQuestion
                 return QuestionManager.getAnswerById(answerId)
             }).then(answer => {
-                if (question) {
+                if (question && answer) {
                     question.answer = answer
-                    console.log("get db editAnswer question: ", question)
-
                     response.render("questions-edit-answer.hbs", { userStatus, question })
                 } else {
-                    response.redirect("/404")
+                    response.status(404).render("statuscode-404.hbs", { userStatus })
                 }
             }).catch(error => {
                 console.log(error)
-                response.redirect("/500")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             })
         }
     })

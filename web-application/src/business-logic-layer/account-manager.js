@@ -101,7 +101,6 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 			})
 		},
 
-
 		deleteAccountById(id) {
 			return new Promise((resolve, reject) => {
 				AccountRepository.deleteAccountById(id

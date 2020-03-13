@@ -1,3 +1,8 @@
+const ERROR_MSG_CREATE_UNIQUE_QUESTION = "Question already exists."
+const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const SEQUELIZE_ERROR_UNIQUE_QUESTION = "title must be unique"
+
+
 
 module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
 
@@ -27,7 +32,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(categories => {
                     resolve(categories)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -41,8 +46,16 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     description: question.description,
                 }).then(result => {
                     resolve(result.id)
-                }).catch(error => {
-                    reject(error)
+                }).catch(errorList => {
+                    const errors = []
+                    for (error of errorList.errors) {
+                        if (err.message == SEQUELIZE_ERROR_UNIQUE_QUESTION) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_QUESTION) 
+                        } else {
+                            errors.push(ERROR_MSG_DATABASE_GENERAL)
+                        }
+                    }
+                    reject(errors)
                 })
             })
         },
@@ -55,7 +68,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(question => {
                     resolve(question)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -70,7 +83,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -86,7 +99,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -101,7 +114,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -118,8 +131,16 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     }
                 }).then(result => {
                     resolve(result.id)
-                }).catch(error => {
-                    reject(error)
+                }).catch(errorList => {
+                    const errors = []
+                    for (error of errorList.errors) {
+                        if (err.message == SEQUELIZE_ERROR_UNIQUE_QUESTION) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_QUESTION) 
+                        } else {
+                            errors.push(ERROR_MSG_DATABASE_GENERAL)
+                        }
+                    }
+                    reject(errors)
                 })
             })
         },
