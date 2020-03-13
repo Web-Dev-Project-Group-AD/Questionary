@@ -1,4 +1,4 @@
-<div name="newAnswer">
+<div name="editAnswer">
     <div class="row" id="content">
 
         {{#if question}}
@@ -17,11 +17,11 @@
 
             </div>
 
-            <form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
+            <form class="editAnswer" method="POST" action="/questions/by-id/{{question.id}}/edit-answer/{{question.answer.id}}">
                 <br>
                 <input type="text" name="content" id="answerContent" placeholder="Answer"
                     {{#if question.answer}}
-                        value="{{question.answer}}"
+                        value="{{question.answer.content}}"
                     {{/if}}
                 />
                 <br>
@@ -30,6 +30,7 @@
                 <input type="hidden" name="questionTitle" value="{{question.title}}" />
                 <input type="hidden" name="questionDescription" value="{{question.description}}" />
                 <input type="hidden" name="questionAuthor" value="{{question.author}}" />
+
                 <ul id="errorMessages">
                     {{#if validationErrors}}
                         {{#each validationErrors}}
@@ -40,12 +41,8 @@
             </form>
 
         {{else}}
-
             <h3>Question does not exist.</h3>
-
         {{/if}}
-
-        {{> question-categories}}
 
     </div>
 </div>

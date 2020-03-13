@@ -36,8 +36,8 @@ module.exports = ({ sequelize, AccountModel, QuestionModel }) => {
         }
     })
 
-    AnswerModel.hasOne(QuestionModel, { foreignKey: "id", sourceKey: "questionId", constraints: false });
-    AnswerModel.belongsTo(QuestionModel, { foreignKey: "id" });
+    // AnswerModel.hasOne(QuestionModel, { foreignKey: "id", sourceKey: "questionId", constraints: false });
+    // AnswerModel.belongsTo(QuestionModel, { foreignKey: "id" });
 
       
 

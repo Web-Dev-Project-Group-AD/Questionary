@@ -20,26 +20,31 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-		updateQuestion(questionUpdate) {
+		getAllCategories() {
 			return new Promise((resolve, reject) => {
-				const validationErrors = QuestionValidator.getErrorsUpdateQuestion(questionUpdate)
-				if (validationErrors.length > 0) {
-					return reject(validationErrors)
-				}
-				QuestionRepository.updateQuestion(questionUpdate
-				).then(returnId => {
-					resolve(returnId)
-				}).catch(errors => {
-					reject(errors)
+			QuestionRepository.getAllCategories(
+				).then(categories => {
+					resolve(categories)
+				}).catch(error => {
+					reject(error)
 				})
 			})
 		},
 
-        deleteQuestionById(author, id) {
+		getQuestionById(id) {
+			var question = null
 			return new Promise((resolve, reject) => {
-				QuestionRepository.deleteQuestionById(author, id
-				).then(() => {
-					resolve()
+				QuestionRepository.getQuestionById(id
+				).then(fetchedQuestion => {
+					if (!fetchedQuestion.isAnswered) {
+						return resolve(fetchedQuestion)
+					} else {
+						question = fetchedQuestion
+						return getAnswersByQuestionIds(id)
+					}
+				}).then(answers => {
+					question.answers = answers
+					resolve([question])
 				}).catch(error => {
 					reject(error)
 				})
@@ -55,24 +60,6 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 					reject(error)
 				})
 			})
-		},
-
-		createAnswer(answer) {
-			return new Promise((resolve, reject) => {
-				const validationErrors = QuestionValidator.getErrorsNewAnswer(answer)
-				if (validationErrors.length > 0) {
-					return reject(validationErrors)
-				}
-				QuestionRepository.questionUpdateAnswerStatus(answer.questionId, true
-				).then(() => {
-				return QuestionRepository.createAnswer(answer)
-				}).then(answerId => {
-					resolve(answerId)
-				}).catch(errors => {
-					reject(errors)
-				})
-			})
-
 		},
 
 		getAllQuestionsWithAnswers() {
@@ -119,7 +106,6 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				QuestionRepository.getQuestionsByCategory(category, isAnswered
 				).then(fetchedQuestions => {
 					questions = fetchedQuestions
-					console.log("fetchedQuestions: ", fetchedQuestions)
 					if (!isAnswered) {
 						return resolve(questions)
 					} else {
@@ -130,8 +116,6 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 						return QuestionRepository.getAnswersByQuestionIds(questionIds)					
 					}
 				}).then(fetchedAnswers => {
-					console.log("fetchedAnswers: ", fetchedAnswers)
-
 					const questionsAndAnswers = []
 					for (question of questions) {
 						const answers = []
@@ -180,31 +164,69 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 			})
 		},
 
-		getQuestionById(id) {
-			var question = null
+		updateQuestion(questionUpdate) {
 			return new Promise((resolve, reject) => {
-				QuestionRepository.getQuestionById(id
-				).then(fetchedQuestion => {
-					if (!question.isAnswered) {
-						return resolve(fetchedQuestion)
-					} else {
-						question = fetchedQuestion
-						return getAnswersByQuestionIds(id)
-					}
-				}).then(answers => {
-					question.answers = answers
-					resolve([question])
+				const validationErrors = QuestionValidator.getErrorsUpdateQuestion(questionUpdate)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.updateQuestion(questionUpdate
+				).then(returnId => {
+					resolve(returnId)
+				}).catch(errors => {
+					reject(errors)
+				})
+			})
+		},
+
+        deleteQuestionById(author, id) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.deleteQuestionById(author, id
+				).then(() => {
+					resolve()
 				}).catch(error => {
 					reject(error)
 				})
 			})
 		},
 
-		getAllCategories() {
+		createAnswer(answer) {
 			return new Promise((resolve, reject) => {
-			QuestionRepository.getAllCategories(
-				).then(categories => {
-					resolve(categories)
+				const validationErrors = QuestionValidator.getErrorsNewAnswer(answer)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.questionUpdateAnswerStatus(answer.questionId, true
+				).then(() => {
+					return QuestionRepository.createAnswer(answer)
+				}).then(answerId => {
+					resolve(answerId)
+				}).catch(errors => {
+					reject(errors)
+				})
+			})
+		},
+
+		updateAnswer(answerUpdate) {
+			return new Promise((resolve, reject) => {
+				const validationErrors = QuestionValidator.getErrorsUpdateAnswer(answerUpdate)
+				if (validationErrors.length > 0) {
+					return reject(validationErrors)
+				}
+				QuestionRepository.updateAnswer(answerUpdate
+				).then(returnId => {
+					resolve(returnId)
+				}).catch(errors => {
+					reject(errors)
+				})
+			})
+		},
+
+		deleteAnswerById(author, id) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.deleteAnswerById(author, id
+				).then(() => {
+					resolve()
 				}).catch(error => {
 					reject(error)
 				})

@@ -1,0 +1,39 @@
+<div name="questions">
+    <div class="row" id="content">
+        
+        {{#if questions}}
+            {{#each questions}}
+
+                <div class="medium-8 columns">
+                    <div class="blog-post">
+                        <h3>{{title}}</h3>
+                        <p>{{description}}</p>
+                        <div class="callout">
+                            <ul class="menu simple">
+                                <li><a href="#">Asked by: {{author}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {{#if answers}}
+                        {{#each answers}}
+                            <div class="answer">
+                                <p>Answer: {{content}}</p>
+                                <br>
+                                <p>Author: {{author}}</p>
+                                <br>
+                            </div>
+                        {{/each}}
+                    {{/if}}
+
+                </div>
+
+            {{/each}}
+        {{else}}
+            <h3>No content.</h3>
+        {{/if}}
+
+        {{> question-categories}}
+
+    </div>
+</div>
