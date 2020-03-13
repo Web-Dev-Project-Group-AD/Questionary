@@ -2,7 +2,7 @@ module.exports = () => {
 
     return {
 
-        authenticateUser: (request, response, next) => {
+        authorizeUser: (request, response, next) => {
             if (request.session.userStatus) {
                 next()
             } else {
@@ -10,11 +10,12 @@ module.exports = () => {
             }
         },
 
-        authenticateAdmin: (request, response, next) => {
+        authorizeAdmin: (request, response, next) => {
             if (request.session.userStatus && request.session.userStatus.isAdmin) {
                 next()
             } else {
-                response.redirect("/401")
+                const userStatus = request.session.userStatus
+                response.status(401).render("statuscode-401.hbs", { userStatus })
             }
         }
     }

@@ -3,11 +3,11 @@ const express = require("express")
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 
 
-module.exports = ({ QuestionManager, SessionAuthenticator }) => {
+module.exports = ({ QuestionManager, SessionAuthorizer }) => {
 
     const router = express.Router()
 
-    router.get("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
+    router.get("/new-post", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
@@ -20,7 +20,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.post("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
+    router.post("/new-post", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = request.session.userStatus.username
@@ -95,7 +95,6 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
                     categories.push(category)
                 }
             }
-            console.log("questions: ", questions)
             response.render("questions.hbs", { userStatus, questions, categories })
         }).catch(error => {
             console.log(error)
@@ -165,7 +164,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.get("/by-id/:questionId/edit", (request, response) => {
+    router.get("/by-id/:questionId/edit", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const id = request.params.questionId
         const userStatus = request.session.userStatus
@@ -188,7 +187,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         }
     })
 
-    router.post("/by-id/:questionId/edit", (request, response) => {
+    router.post("/by-id/:questionId/edit", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const question = { 
@@ -211,7 +210,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.post("/by-id/:questionId/delete", (request, response) => {
+    router.post("/by-id/:questionId/delete", SessionAuthorizer.authorizeUser, (request, response) => {
         const userStatus = request.session.userStatus
         const author = userStatus.username
         const id = request.params.questionId
@@ -226,7 +225,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
     })
 
 
-    router.get("/by-id/:questionId/new-answer", (request, response) => {
+    router.get("/by-id/:questionId/new-answer", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const id = request.params.questionId
@@ -254,7 +253,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         }
     })
 
-    router.post("/by-id/:questionId/new-answer", (request, response) => {
+    router.post("/by-id/:questionId/new-answer", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         var question = { 
@@ -287,7 +286,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
             
-    router.get("/by-id/:questionId/edit-answer/:answerId", (request, response) => {
+    router.get("/by-id/:questionId/edit-answer/:answerId", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const questionId = request.params.questionId
@@ -326,7 +325,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         }
     })
 
-    router.post("/by-id/:questionId/edit-answer/:answerId", (request, response) => {
+    router.post("/by-id/:questionId/edit-answer/:answerId", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const answer = { 
@@ -358,7 +357,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     }) 
 
-    router.post("/by-id/:questionId/delete-answer/:answerId", (request, response) => {
+    router.post("/by-id/:questionId/delete-answer/:answerId", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = userStatus.username
