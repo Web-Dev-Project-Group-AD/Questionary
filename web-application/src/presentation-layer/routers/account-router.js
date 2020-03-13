@@ -162,6 +162,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
     router.post("/delete", (request, response) => {
         const id = request.session.userStatus.userId
 
+
         AccountManager.deleteAccountById(id
         ).then(() => {
             return request.session.destroy()

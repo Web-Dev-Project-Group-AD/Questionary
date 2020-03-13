@@ -41,3 +41,10 @@ Dockerfile postgre:
 FROM postgres:11.7
 
 COPY initialize-postgres-db.sql /docker-entrypoint-initdb.d/
+
+
+Dockerfile nginx:
+
+FROM nginx:1.16.1
+
+COPY spa /usr/share/nginx/html

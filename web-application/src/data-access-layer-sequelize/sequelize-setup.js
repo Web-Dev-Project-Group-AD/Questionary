@@ -3,7 +3,7 @@ const Sequelize = require("sequelize")
 const POSTGRES_DB = "postgres"
 const POSTGRES_USER = "admin"
 const POSTGRES_PASSWORD = "password1"
-const POSTGRES_HOST = "192.168.99.100"
+const POSTGRES_HOST = "postgres"
 
 const sequelize = new Sequelize(
 
