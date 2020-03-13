@@ -24,8 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault()
         console.log("navigation-handler_sign_up")
 
-        const name = document.querySelector("#sign-up-page .username").value
-
+        //const name = document.querySelector("#sign-up-page .username").value
         //name = reqest.body.username
 
         const { username, email, password, passwordRepeated } = request.body
