@@ -21,6 +21,11 @@
         <div class="top-bar-right">
             <ul class="menu">
                 {{#if userStatus}}
+                    <li>
+                        <a href="/accounts/by-name/{{userStatus.username}}">
+                            <small>Signed in as {{userStatus.username}}</small>
+                        </a>
+                    </li>
                     <li><a href="/accounts/sign-out">Sign out</a></li>
                 {{else}}
                     <li><a href="/accounts/sign-in">Sign In</a></li>
@@ -41,7 +46,6 @@
     <script>
         $(document).foundation();
     </script>
-
 
 </body>
 

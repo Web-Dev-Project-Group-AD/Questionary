@@ -32,7 +32,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
-                response.render("error.hbs")
+                response.redirect("/500")
             } else {
                 response.render("accounts-sign-up.hbs", { validationErrors, username, email })
             }
@@ -50,6 +50,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
         AccountManager.signInAccount(account
         ).then(returnedAccount => {
+
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
             const username = returnedAccount.username
@@ -82,14 +83,14 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         request.session.destroy(error => {
             if (error) {
                 console.log(error)
-                return response.render("error.hbs", { userStatus })
+                return response.redirect("/500")
             }
             response.clearCookie("signIn")
             response.redirect("/accounts/sign-in")
         })
     })
 
-    router.get("/", /*SessionAuthenticator.authenticateAdmin,*/ (request, response) => {
+    router.get("/all", /*SessionAuthenticator.authenticateAdmin,*/ (request, response) => {
         
         const userStatus = request.session.userStatus
 
@@ -101,24 +102,75 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             response.render("accounts-list-all.hbs", { accounts, userStatus })
         }).catch(error => {
             console.log(error)
-            response.render("error.hbs", { userStatus })
+            response.redirect("/500")
         })
     })
 
-    router.get("/:username", (request, response) => {
+    router.get("/by-name/:username", (request, response) => {
 
         const userStatus = request.session.userStatus
         const username = request.params.username
 
         AccountManager.getAccountByUsername(username
         ).then(account => {
-
-            const model = { account: account }
-
-            response.render("accounts-show-one.hbs", { model, userStatus })
+            response.render("accounts-show-one.hbs", { account, userStatus })
         }).catch(error => {
             console.log(error)
-            response.render("error.hbs", { userStatus })
+            response.redirect("/500")
+        })
+    })
+
+    router.get("/edit", (request, response) => {
+
+        const userStatus = request.session.userStatus
+
+        response.render("accounts-edit.hbs", { userStatus })
+    })
+
+    router.post("/edit-password", (request, response) => {
+        
+        const userStatus = request.session.userStatus
+        const username = userStatus.username
+        const account = {
+            id: userStatus.userId,
+            username: username,
+            oldPassword: request.body.oldPassword,
+            password: request.body.password,
+            passwordRepeated: request.body.passwordRepeated
+        }
+        console.log("edit-password: ", account)
+        AccountManager.updatePassword(account
+        ).then(accountId => {
+            console.log("Password updated successfully.")
+            return response.redirect("/accounts/by-name/" + username)
+        }).catch(validationErrors => {
+            console.log(validationErrors)
+            if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
+                response.redirect("/500")
+            } else {
+                response.render("accounts-edit.hbs", { validationErrors, userStatus })
+            }
+        })
+    })
+
+    router.get("/delete", (request, response) => {
+        const userStatus = request.session.userStatus
+
+        response.render("accounts-delete.hbs", { userStatus })
+    })
+
+    router.post("/delete", (request, response) => {
+        const id = request.session.userStatus.userId
+
+
+        AccountManager.deleteAccountById(id
+        ).then(() => {
+            return request.session.destroy()
+        }).then(() => {
+            response.clearCookie("signIn").redirect("/accounts/sign-in")
+        }).catch(error => {
+            console.log(error)
+            response.redirect("/500")
         })
     })
 

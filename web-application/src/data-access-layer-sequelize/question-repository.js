@@ -47,11 +47,11 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-        getQuestionById(id) {
+        getQuestionsByIds(ids) {
             return new Promise((resolve, reject) => {
                 QuestionModel.findAll({
                     raw: true,
-                    where: { id: id }
+                    where: { id: ids }
                 }).then(question => {
                     resolve(question)
                 }).catch(error => {
@@ -167,7 +167,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-        getAnswersByAnswerAuthor(author) {
+        getAnswersByAuthor(author) {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
                     raw: true,

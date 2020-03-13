@@ -17,8 +17,8 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 					throw errors
 				}
 				bcrypt.hash(account.password, saltRounds
-				).then(hash => {
-					account.password = hash
+				).then(hashedPassword => {
+					account.password = hashedPassword
 					return AccountRepository.createAccount(account)
 				}).then(createdAccount => {
 					resolve(createdAccount)
@@ -28,22 +28,22 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 			})
 		},
 
-		getAllAccounts() {
+		getAccountByUsername(username) {
 			return new Promise((resolve, reject) => {
-				AccountRepository.getAllAccounts(
-				).then(accounts => {
-					resolve(accounts)
+				AccountRepository.getAccountByUsername(username
+				).then(account => {
+					resolve(account)
 				}).catch(error => {
 					reject(error)
 				})
 			})
 		},
 
-		getAccountByUsername(username) {
+		getAllAccounts() {
 			return new Promise((resolve, reject) => {
-				AccountRepository.getAccountByUsername(username
-				).then(account => {
-					resolve(account)
+				AccountRepository.getAllAccounts(
+				).then(accounts => {
+					resolve(accounts)
 				}).catch(error => {
 					reject(error)
 				})
@@ -76,11 +76,42 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 			})
 		},
 
-		getValidationConstraints: () => {
-			const validationConstraints = AccountValidator.getValidationConstraints()
-			return validationConstraints
-		}
+		updatePassword(account) {
+			return new Promise((resolve, reject) => {
+				const errors = AccountValidator.getErrorsUpdatePassword(account)
+				if (errors.length > 0) {
+					throw errors
+				}
+				AccountRepository.getAccountByUsername(account.username
+				).then(returnedAccount => {
+					return bcrypt.compare(account.oldPassword, returnedAccount.password)
+				}).then(isValidPassword => {
+					if (!isValidPassword) {
+						throw "Incorrect password."
+					} else {
+						return bcrypt.hash(account.password, saltRounds)
+					}
+				}).then(hashedPassword => {
+					return AccountRepository.updatePassword(account.id, hashedPassword)
+				}).then(returnedId => {
+					resolve(returnedId)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
 
+
+		deleteAccountById(id) {
+			return new Promise((resolve, reject) => {
+				AccountRepository.deleteAccountById(id
+				).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		}
 	}
 
 }

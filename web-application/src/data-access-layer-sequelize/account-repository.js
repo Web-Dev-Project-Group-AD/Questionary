@@ -21,10 +21,9 @@ module.exports = ({ AccountModel }) => {
                     email: account.email,
                     password: account.password
                 }).then(result => {
-                    resolve(result.lastid)
+                    resolve(result.id)
                 }).catch(errorList => {
                     const errors = []
-
                     for (error of errorList.errors) {
                         if (error.message == SEQUELIZE_ERROR_UNIQUE_USERNAME) {
                             errors.push(ERROR_MSG_CREATE_UNIQUE_USERNAME)
@@ -35,6 +34,35 @@ module.exports = ({ AccountModel }) => {
                         }
                     }
                     reject(errors)
+                })
+            })
+        },
+
+        getAccountByUsername(username) {
+            return new Promise((resolve, reject) => {
+                AccountModel.findOne({
+                    raw: true,
+                    where: { username: username }
+                }).then(account => {
+                    resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
+        getAccountByEmail(email) {
+            return new Promise((resolve, reject) => {
+                AccountModel.findOne({
+                    raw: true,
+                    where: { email: email }
+                }).then(account => {
+                    console.log(account)
+                    resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -52,12 +80,16 @@ module.exports = ({ AccountModel }) => {
             })
         },
 
-        getAccountByUsername(username) {
+        updatePassword(id, password) {
             return new Promise((resolve, reject) => {
-                AccountModel.findOne({
-                    where: { username: username }
-                }).then(account => {
-                    resolve(account)
+                AccountModel.update({
+                    password: password
+                }, {
+                    where: {
+                        id: id
+                    }
+                }).then(result => {
+                    resolve(result.id)
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
@@ -65,20 +97,20 @@ module.exports = ({ AccountModel }) => {
             })
         },
 
-        getAccountByEmail(email) {
+        deleteAccountById(id) {
             return new Promise((resolve, reject) => {
-                AccountModel.findOne({
-                    where: { email: email }
-                }).then(account => {
-                    console.log(account)
-                    resolve(account)
+                AccountModel.destroy({
+                    where: {
+                        id: id
+                    }
+                }).then(() => {
+                    resolve()
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         }
-
     }
 }
 
