@@ -50,6 +50,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
         AccountManager.signInAccount(account
         ).then(returnedAccount => {
+
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
             const username = returnedAccount.username
@@ -150,7 +151,26 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
                 response.render("accounts-edit.hbs", { validationErrors, userStatus })
             }
         })
+    })
 
+    router.get("/delete", (request, response) => {
+        const userStatus = request.session.userStatus
+
+        response.render("accounts-delete.hbs", { userStatus })
+    })
+
+    router.post("/delete", (request, response) => {
+        const id = request.session.userStatus.userId
+
+        AccountManager.deleteAccountById(id
+        ).then(() => {
+            return request.session.destroy()
+        }).then(() => {
+            response.clearCookie("signIn").redirect("/accounts/sign-in")
+        }).catch(error => {
+            console.log(error)
+            response.redirect("/500")
+        })
     })
 
     return router

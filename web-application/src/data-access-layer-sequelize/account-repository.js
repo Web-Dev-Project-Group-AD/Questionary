@@ -95,8 +95,22 @@ module.exports = ({ AccountModel }) => {
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
-        }
+        },
 
+        deleteAccountById(id) {
+            return new Promise((resolve, reject) => {
+                AccountModel.destroy({
+                    where: {
+                        id: id
+                    }
+                }).then(() => {
+                    resolve()
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        }
     }
 }
 
