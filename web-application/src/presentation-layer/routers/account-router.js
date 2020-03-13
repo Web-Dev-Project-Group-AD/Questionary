@@ -50,7 +50,6 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
         AccountManager.signInAccount(account
         ).then(returnedAccount => {
-
             const isAdmin = returnedAccount.isAdmin
             const userId = returnedAccount.id
             const username = returnedAccount.username
@@ -58,9 +57,8 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             request.session.userStatus = userStatus
 
             console.log(username, " signed in")
-            response.render("home.hbs")
+            response.redirect("/")
         }).catch((errorMessage) => {
-
             console.log(errorMessage)
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
                 response.render("error.hbs")
@@ -87,20 +85,19 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
                 return response.render("error.hbs", { userStatus })
             }
             response.clearCookie("signIn")
-            response.redirect("/")
+            response.redirect("/accounts/sign-in")
         })
-
     })
 
-    router.get("/", /*SessionAuthenticator.authenticateAdmin,*/(request, response) => {
-
+    router.get("/", /*SessionAuthenticator.authenticateAdmin,*/ (request, response) => {
+        
         const userStatus = request.session.userStatus
 
         AccountManager.getAllAccounts(
         ).then(accounts => {
 
             console.log(accounts)
-
+           
             response.render("accounts-list-all.hbs", { accounts, userStatus })
         }).catch(error => {
             console.log(error)
