@@ -34,7 +34,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 		getQuestionById(id) {
 			var question = null
 			return new Promise((resolve, reject) => {
-				QuestionRepository.getQuestionById(id
+				QuestionRepository.getQuestionsByIds(id
 				).then(fetchedQuestion => {
 					if (!fetchedQuestion.isAnswered) {
 						return resolve(fetchedQuestion)
@@ -144,7 +144,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 						questionIds.push(answer.questionId)
 					}
 					allAnswers = fetchedAnswers
-					return QuestionRepository.getQuestionsById(questionIds)
+					return QuestionRepository.getQuestionsByIds(questionIds)
 				}).then(questions => {
 					const questionsAndAnswers = []
 					for (question of questions) {

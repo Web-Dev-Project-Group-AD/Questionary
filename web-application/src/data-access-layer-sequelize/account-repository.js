@@ -41,6 +41,7 @@ module.exports = ({ AccountModel }) => {
         getAccountByUsername(username) {
             return new Promise((resolve, reject) => {
                 AccountModel.findOne({
+                    raw: true,
                     where: { username: username }
                 }).then(account => {
                     resolve(account)
@@ -54,6 +55,7 @@ module.exports = ({ AccountModel }) => {
         getAccountByEmail(email) {
             return new Promise((resolve, reject) => {
                 AccountModel.findOne({
+                    raw: true,
                     where: { email: email }
                 }).then(account => {
                     console.log(account)

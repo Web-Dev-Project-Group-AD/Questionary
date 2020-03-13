@@ -79,6 +79,32 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
+    router.get("/by-answer-author/:author", (request, response) => {
+
+        const userStatus = request.session.userStatus
+        const author = request.params.author
+
+        console.log("author: ", author)
+
+        QuestionManager.getQuestionsByAnswerAuthor(author
+        ).then(questions => {
+            const categories = []
+            for(question of questions) {
+                if (!categories.includes(question.category)) {
+                    const category = {name: question.category}
+                    categories.push(category)
+                }
+            }
+            console.log("questions: ", questions)
+            response.render("questions.hbs", { userStatus, questions, categories })
+        }).catch(error => {
+            console.log(error)
+            response.status(500).render("statuscode-500.hbs", { userStatus })
+        })
+    })
+
+    
+
     router.get("/unanswered", (request, response) => {
 
         const userStatus = request.session.userStatus
