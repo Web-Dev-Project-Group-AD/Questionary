@@ -21,10 +21,9 @@ module.exports = ({ AccountModel }) => {
                     email: account.email,
                     password: account.password
                 }).then(result => {
-                    resolve(result.lastid)
+                    resolve(result.id)
                 }).catch(errorList => {
                     const errors = []
-
                     for (error of errorList.errors) {
                         if (error.message == SEQUELIZE_ERROR_UNIQUE_USERNAME) {
                             errors.push(ERROR_MSG_CREATE_UNIQUE_USERNAME)
@@ -35,19 +34,6 @@ module.exports = ({ AccountModel }) => {
                         }
                     }
                     reject(errors)
-                })
-            })
-        },
-
-        getAllAccounts() {
-            return new Promise((resolve, reject) => {
-                AccountModel.findAll({
-                    raw: true
-                }).then(accounts => {
-                    resolve(accounts)
-                }).catch(error => {
-                    console.log(error)
-                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -72,6 +58,36 @@ module.exports = ({ AccountModel }) => {
                 }).then(account => {
                     console.log(account)
                     resolve(account)
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
+        getAllAccounts() {
+            return new Promise((resolve, reject) => {
+                AccountModel.findAll({
+                    raw: true
+                }).then(accounts => {
+                    resolve(accounts)
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
+        updatePassword(id, password) {
+            return new Promise((resolve, reject) => {
+                AccountModel.update({
+                    password: password
+                }, {
+                    where: {
+                        id: id
+                    }
+                }).then(result => {
+                    resolve(result.id)
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)

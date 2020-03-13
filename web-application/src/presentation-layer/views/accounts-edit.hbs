@@ -1,0 +1,22 @@
+<div name="editAccount">
+
+    <form class="editPassword" method="POST" action="/accounts/edit-password">
+        <br>
+        <input type="password" name="oldPassword" id="oldPassword" placeholder="Old password" />
+        <br>
+        <input type="password" name="password" id="password" placeholder="New password" />
+        <br>
+        <input type="password" name="passwordRepeated" id="passwordRepeated" placeholder="Repeat new password" />
+        <br>
+        <input type="submit" class="btn" value="Submit" />
+        <br>
+        <ul id="errorMessages">
+            {{#if validationErrors}}
+                {{#each validationErrors}}
+                    <li>{{this}}</li>
+                {{/each}}
+            {{/if}}
+        </ul>
+    </form>
+
+</div>
