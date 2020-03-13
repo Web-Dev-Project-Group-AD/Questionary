@@ -43,8 +43,11 @@ module.exports = ({ AccountManager, generateToken }) => {
 
         try {
 
-            //const authorizationHeader = request.get('authorization')
-            //const accessToken = authorizationHeader.substr("Bearer ".length)
+            const authorizationHeader = request.get('authorization')
+            const accessToken = authorizationHeader.substr("Bearer ".length)
+
+            console.log("authorizationHeader", authorizationHeader)
+            console.log("signUp_accessToken", accessToken)
 
             // TODO: Better to use jwt.verify asynchronously.
             //const payload = jwt.verify(accessToken, serverSecret)
@@ -96,6 +99,13 @@ module.exports = ({ AccountManager, generateToken }) => {
     // Content-Type: application/x-www-form-urlencoded
     // Body: grant_type=password&email=?&password=?
     router.post('/sign-in', function (request, response) {
+
+        /*const authorizationHeader = request.get('authorization')
+        const accessToken = authorizationHeader.substr("Bearer ".length)
+
+        console.log("authorizationHeader", authorizationHeader)
+        console.log("signUp_accessToken", accessToken)*/
+
 
         const { email, password } = request.body
         console.log("request.body.email_signIn: ", request.body.email)
@@ -177,9 +187,12 @@ module.exports = ({ AccountManager, generateToken }) => {
             console.log("id_token: ", idToken)
             console.log("accessToken: ", accessToken)
 
-            console.log(localStorage.accessToken)
+            const authorizationHeader = request.get('authorization')
+            //accessToken = authorizationHeader.substr("Bearer ".length)
 
-            localStorage.accessToken = accessToken
+            console.log("accessToken_afterauthHeade: ", authorizationHeader)
+
+            //localStorage.accessToken = accessToken
 
             response.setHeader('Location', '/sign-in/' + userId)
 
@@ -189,7 +202,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                 //expires_in: 3600,
             })
 
-            console.log(mail, " signed in hier is great")
+            console.log(email, " signed in hier is great")
 
             return
 

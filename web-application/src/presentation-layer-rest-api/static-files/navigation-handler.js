@@ -38,7 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // "Authorization": "Bearer " + localStorage.accessToken
+                "Authorization": localStorage.accessToken
+                //"Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
         }
@@ -68,17 +69,21 @@ document.addEventListener("DOMContentLoaded", function () {
             "http://localhost:8080/api/accounts/sign-in", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": localStorage.accessToken
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
+            console.log("localStorage_fetch: ", localStorage)
+            console.log("localStorage.accessToken_fetch: ", localStorage.accessToken)
             return response.json(400)
         }).then(function (body) {
             // TODO: Read out information about the user account from the id_token.
-            console.log("signIn_fetch_body.accessToken:", body.accessToken)
+            console.log("signIn_fetch_body.accessToken:", body)
+            console.log("signIn_fetch_body.accessToken:", body.access_token)
             login(body.access_token)
-            console.log("signIn_fetch_accessToken:", accessToken)
+            console.log("signIn_fetch_accessToken:", body.access_token)
             return
         }).catch(function (error) {
             console.log("signIn_fetch_error", error)
