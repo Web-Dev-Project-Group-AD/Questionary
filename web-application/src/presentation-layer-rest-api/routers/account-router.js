@@ -62,11 +62,11 @@ module.exports = ({ AccountManager, generateToken }) => {
         AccountManager.createAccount(account
         ).then(createdAccount => {
 
-            const isAdmin = createdAccount.isAdmin
-            const userId = createdAccount.id
-            console.log("restapi_signup_id_mail: ", createdAccount.id, createdAccount.isAdmin)
+            const isAdmin = false
+            const userId = account
+            console.log("restapi_signup_id_mail: ", account, isAdmin)
 
-            const token = generateToken.createToken(createdAccount, isAdmin)
+            const token = generateToken.createToken(account, isAdmin)
             console.log("token123: ", token)
             console.log(username, " signed in123")
             response.setHeader('Location', '/sign-up/' + userId)
@@ -166,15 +166,20 @@ module.exports = ({ AccountManager, generateToken }) => {
             // Try to use the standard claims:
             // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
             const idToken = jwt.sign(
-                { sub: returnedAccount.id, email: returnedAccount.email },
+                {
+                    sub: returnedAccount.id,
+                    email: returnedAccount.email
+                },
                 serverSecret
             )
 
             //const idToken = generateToken.createToken(returnedAccount, isAdmin)
             console.log("id_token: ", idToken)
-            console.log("access_token: ", access_token)
+            console.log("accessToken: ", accessToken)
 
-            localStorage.accessToken = access_token
+            console.log(localStorage.accessToken)
+
+            localStorage.accessToken = accessToken
 
             response.setHeader('Location', '/sign-in/' + userId)
 
