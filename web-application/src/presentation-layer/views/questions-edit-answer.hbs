@@ -17,11 +17,11 @@
 
             </div>
 
-            <form class="editAnswer" method="POST" action="/questions/by-id/{{question.id}}/edit-answer">
+            <form class="editAnswer" method="POST" action="/questions/by-id/{{question.id}}/edit-answer/{{question.answer.id}}">
                 <br>
                 <input type="text" name="content" id="answerContent" placeholder="Answer"
                     {{#if question.answer}}
-                        value="{{question.answer}}"
+                        value="{{question.answer.content}}"
                     {{/if}}
                 />
                 <br>

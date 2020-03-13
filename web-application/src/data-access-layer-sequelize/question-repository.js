@@ -13,8 +13,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                         name: category
                     }
                 }).then(result => {
-                    console.log(result.lastid)
-                    resolve(result.lastid)
+                    resolve(result.id)
                 }).catch(error => {
                     reject(error)
                 })
@@ -29,7 +28,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     title: question.title,
                     description: question.description,
                 }).then(result => {
-                    resolve(result.lastid)
+                    resolve(result.id)
                 }).catch(error => {
                     reject(error)
                 })
@@ -72,7 +71,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     questionId: answer.questionId,
                     content: answer.content
                 }).then(result => {
-                    resolve(result.lastid)
+                    resolve(result.id)
                 }).catch(error => {
                     reject(error)
                 })
@@ -82,14 +81,14 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
         updateAnswer(answerUpdate) {
             return new Promise((resolve, reject) => {
                 AnswerModel.update({
-                    content: answerUpdate.answer,
+                    content: answerUpdate.content,
                 }, {
                     where: {
                         author: answerUpdate.author,
                         id: answerUpdate.id 
                     }
                 }).then(result => {
-                    resolve(result.lastId)
+                    resolve(result.id)
                 }).catch(error => {
                     reject(error)
                 })
@@ -193,7 +192,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                         id: questionUpdate.id 
                     }
                 }).then(result => {
-                    resolve(result.lastId)
+                    resolve(result.id)
                 }).catch(error => {
                     reject(error)
                 })
@@ -240,7 +239,6 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
 
         }
-        
 
     }
 

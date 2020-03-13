@@ -53,7 +53,7 @@
 
                             {{#ifEquals @root.userStatus.username author}}
                                 <form method="GET" name="editAnswer" action="/questions/by-id/{{../../id}}/edit-answer/{{../id}}">
-                                    <input type="hidden" name="answerContent" value="{{../content}}" />
+                                    <input type="hidden" name="content" value="{{../content}}" />
                                     <input type="hidden" name="questionTitle" value="{{../../title}}" />
                                     <input type="hidden" name="questionDescription" value="{{../../description}}" />
                                     <input type="hidden" name="questionAuthor" value="{{../../author}}" />

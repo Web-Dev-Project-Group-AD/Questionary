@@ -65,14 +65,13 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				}
 				QuestionRepository.questionUpdateAnswerStatus(answer.questionId, true
 				).then(() => {
-				return QuestionRepository.createAnswer(answer)
+					return QuestionRepository.createAnswer(answer)
 				}).then(answerId => {
 					resolve(answerId)
 				}).catch(errors => {
 					reject(errors)
 				})
 			})
-
 		},
 
 		updateAnswer(answerUpdate) {
@@ -81,7 +80,7 @@ module.exports = function ({ QuestionValidator, QuestionRepository }) {
 				if (validationErrors.length > 0) {
 					return reject(validationErrors)
 				}
-				QuestionRepository.updateQuestion(questionUpdate
+				QuestionRepository.updateAnswer(answerUpdate
 				).then(returnId => {
 					resolve(returnId)
 				}).catch(errors => {
