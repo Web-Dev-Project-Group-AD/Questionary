@@ -30,6 +30,10 @@ module.exports = ({ }) => {
 		response.render("statuscode-500.hbs")
 	})*/
 
+	/*router.get("/", (request, response) => {
+		response.status(200).json("Hello")
+	})*/
+
 	return router
 
 }

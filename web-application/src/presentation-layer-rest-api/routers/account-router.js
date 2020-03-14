@@ -23,11 +23,12 @@ module.exports = ({ AccountManager, generateToken }) => {
             const userId = account
             console.log("restapi_signup_id_mail: ", account, isAdmin)
 
-            const token = generateToken.createToken(account, isAdmin)
-            console.log("token123: ", token)
+           // const token = generateToken.createToken(account, isAdmin)
+            //console.log("token123: ", token)
             console.log(username, " signed in123")
             response.setHeader('Location', '/sign-up/' + userId)
-            response.status(201).json(token).end()
+            response.status(201).json().end()
+           // response.status(201).json(token).end()
             // return
 
         }).catch(validationErrors => {
@@ -110,10 +111,10 @@ module.exports = ({ AccountManager, generateToken }) => {
             console.log("id_token: ", idToken)
             console.log("accessToken: ", accessToken)
 
-            const authorizationHeader = request.get('authorization')
+            //const authorizationHeader = request.get('authorization')
             //accessToken = authorizationHeader.substr("Bearer ".length)
 
-            console.log("accessToken_afterauthHeade: ", authorizationHeader)
+            //console.log("accessToken_afterauthHeade: ", authorizationHeader)
 
             response.setHeader('Location', '/sign-in/' + userId)
             response.status(200).json({
@@ -133,7 +134,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                 return
 
             } else {
-                response.status(500).json(error)
+                response.status(500).json(errorMessage)
                 return
             }
         })

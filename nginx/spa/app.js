@@ -1,6 +1,9 @@
 // TODO: Don't write all JS code in the same file.
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("addEventListener")
+
+    console.log("nginx_spa_here we are")
+
+    //const url = "http://localhost:8080/api/"
     changeToPage(location.pathname)
 
     if (localStorage.accessToken) {
@@ -37,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.accessToken
+                //"Authorization": localStorage.accessToken
                 //"Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
@@ -69,20 +72,19 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": localStorage.accessToken
+                "Authorization": "Bearer " + localStorage.accessToken
+                //"Authorization": localStorage.accessToken
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
-            console.log("localStorage_fetch: ", localStorage)
-            console.log("localStorage.accessToken_fetch: ", localStorage.accessToken)
+            
             return response.json(400)
         }).then(function (body) {
             // TODO: Read out information about the user account from the id_token.
             console.log("signIn_fetch_body.accessToken:", body)
             console.log("signIn_fetch_body.accessToken:", body.access_token)
             login(body.access_token)
-            console.log("signIn_fetch_accessToken:", body.access_token)
             return
         }).catch(function (error) {
             console.log("signIn_fetch_error", error)
@@ -115,7 +117,7 @@ function changeToPage(url) {
 
     // TODO: Optimally this information can be put in an array instead of having a long list of if-else if statements.
     // TODO: Factor out common code in all branches.
-    if (url == "/api") {
+    if (url == "/") {
         document.getElementById("home-page").classList.add("current-page")
     } else if (url == "/api/accounts") {
         document.getElementById("accounts-page").classList.add("current-page")
