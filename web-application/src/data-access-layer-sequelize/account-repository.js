@@ -113,24 +113,3 @@ module.exports = ({ AccountModel }) => {
         }
     }
 }
-
-// Sequelize example functions
-
-/*
-AccountModel.findById(accountId).then(function (databaseAccount) { }).catch(function (error) { })
-
-
-AccountModel.findAll({
-    where: { username: accountName }
-}).then(function (databaseAccounts) { }).catch(function (error) { })
-
-AccountModel.update({
-    username: newUsername
-}, {
-    where: { id: accountId }
-}).then(function (updatedAccounts) { }).catch(function (error) { })
-
-AccountModel.destroy({
-    where: { username: accountName }
-}).then(function () { }).catch(function (error) { })
-*/

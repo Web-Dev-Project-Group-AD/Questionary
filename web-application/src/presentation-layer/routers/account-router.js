@@ -4,7 +4,7 @@ const ERROR_MSG_DATABASE_GENERAL = "Database error."
 const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
 const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
-module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) => {
+module.exports = ({ AccountManager, SessionAuthorizer, SessionRedirector }) => {
 
     const router = express.Router()
 
@@ -32,7 +32,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
 
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
-                response.redirect("/500")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
                 response.render("accounts-sign-up.hbs", { validationErrors, username, email })
             }
@@ -62,35 +62,35 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         }).catch((errorMessage) => {
             console.log(errorMessage)
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
-                response.render("error.hbs")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
                 response.render("accounts-sign-in.hbs", { errorMessage, email })
             }
         })
     })
 
-    router.get("/sign-out", SessionAuthenticator.authenticateUser, (request, response) => {
+    router.get("/sign-out", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
         response.render("accounts-sign-out.hbs", { userStatus })
     })
 
-    router.post("/sign-out", SessionAuthenticator.authenticateUser, (request, response) => {
+    router.post("/sign-out", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
         request.session.destroy(error => {
             if (error) {
                 console.log(error)
-                return response.redirect("/500")
+                return response.status(500).render("statuscode-500.hbs", { userStatus })
             }
             response.clearCookie("signIn")
             response.redirect("/accounts/sign-in")
         })
     })
 
-    router.get("/all", /*SessionAuthenticator.authenticateAdmin,*/ (request, response) => {
+    router.get("/all", /*SessionAuthorizer.authorizeAdmin,*/ (request, response) => {
         
         const userStatus = request.session.userStatus
 
@@ -102,7 +102,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             response.render("accounts-list-all.hbs", { accounts, userStatus })
         }).catch(error => {
             console.log(error)
-            response.redirect("/500")
+            response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 
@@ -116,18 +116,18 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             response.render("accounts-show-one.hbs", { account, userStatus })
         }).catch(error => {
             console.log(error)
-            response.redirect("/500")
+            response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 
-    router.get("/edit", (request, response) => {
+    router.get("/edit", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
         response.render("accounts-edit.hbs", { userStatus })
     })
 
-    router.post("/edit-password", (request, response) => {
+    router.post("/edit-password", SessionAuthorizer.authorizeUser, (request, response) => {
         
         const userStatus = request.session.userStatus
         const username = userStatus.username
@@ -138,7 +138,6 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             password: request.body.password,
             passwordRepeated: request.body.passwordRepeated
         }
-        console.log("edit-password: ", account)
         AccountManager.updatePassword(account
         ).then(accountId => {
             console.log("Password updated successfully.")
@@ -146,20 +145,20 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
-                response.redirect("/500")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
                 response.render("accounts-edit.hbs", { validationErrors, userStatus })
             }
         })
     })
 
-    router.get("/delete", (request, response) => {
+    router.get("/delete", SessionAuthorizer.authorizeUser, (request, response) => {
         const userStatus = request.session.userStatus
 
         response.render("accounts-delete.hbs", { userStatus })
     })
 
-    router.post("/delete", (request, response) => {
+    router.post("/delete", SessionAuthorizer.authorizeUser, (request, response) => {
         const id = request.session.userStatus.userId
 
 
@@ -170,7 +169,7 @@ module.exports = ({ AccountManager, SessionAuthenticator, SessionRedirector }) =
             response.clearCookie("signIn").redirect("/accounts/sign-in")
         }).catch(error => {
             console.log(error)
-            response.redirect("/500")
+            response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 

@@ -3,11 +3,11 @@ const express = require("express")
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 
 
-module.exports = ({ QuestionManager, SessionAuthenticator }) => {
+module.exports = ({ QuestionManager, SessionAuthorizer }) => {
 
     const router = express.Router()
 
-    router.get("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
+    router.get("/new-post", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
@@ -20,7 +20,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.post("/new-post", SessionAuthenticator.authenticateUser, (request, response) => {
+    router.post("/new-post", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = request.session.userStatus.username
@@ -67,11 +67,8 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         const author = request.params.author
         var categories = []
 
-        QuestionManager.getAllCategories(
-        ).then(fetchedCategories => {
-            categories = fetchedCategories
-            return QuestionManager.getQuestionsByAuthor(author)
-        }).then(questions => {
+        QuestionManager.getQuestionsByAuthor(author
+        ).then(questions => {
             response.render("questions.hbs", { userStatus, questions, categories })
         }).catch(error => {
             console.log(error)
@@ -91,11 +88,9 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
-                    const category = {name: question.category}
-                    categories.push(category)
+                    categories.push(question.category)
                 }
             }
-            console.log("questions: ", questions)
             response.render("questions.hbs", { userStatus, questions, categories })
         }).catch(error => {
             console.log(error)
@@ -103,20 +98,17 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    
-
     router.get("/unanswered", (request, response) => {
 
         const userStatus = request.session.userStatus
-        isAnswered = false
+        const isAnswered = false
 
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
-                    const category = {name: question.category}
-                    categories.push(category)
+                    categories.push(question.category)
                 }
             }
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
@@ -136,8 +128,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
-                    const category = {name: question.category}
-                    categories.push(category)
+                    categories.push(question.category)
                 }
             }
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
@@ -151,13 +142,15 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
 
         const userStatus = request.session.userStatus
         const category = request.params.category
-        var categories = []
-
+        const categories = []
         const isAnswered = (request.params.isAnswered == "answered")
 
         QuestionManager.getAllCategories(
         ).then(fetchedCategories => {
-            categories = fetchedCategories
+            for (fetchedCategory of fetchedCategories) {
+                console.log(fetchedCategory)
+                categories.push(fetchedCategory.name)
+            }
             return QuestionManager.getQuestionsByCategory(category, isAnswered)
         }).then(questions => {
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
@@ -167,10 +160,11 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.get("/by-id/:questionId/edit", (request, response) => {
+    router.get("/by-id/:questionId/edit", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const id = request.params.questionId
         const userStatus = request.session.userStatus
+
         if (request.query && userStatus.username == request.query.author) {
             const { title, description, author } = request.query
             const question = { id, title, description, author }
@@ -190,7 +184,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         }
     })
 
-    router.post("/by-id/:questionId/edit", (request, response) => {
+    router.post("/by-id/:questionId/edit", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const question = { 
@@ -213,7 +207,8 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
 
-    router.post("/by-id/:questionId/delete", (request, response) => {
+    router.post("/by-id/:questionId/delete", SessionAuthorizer.authorizeUser, (request, response) => {
+
         const userStatus = request.session.userStatus
         const author = userStatus.username
         const id = request.params.questionId
@@ -228,7 +223,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
     })
 
 
-    router.get("/by-id/:questionId/new-answer", (request, response) => {
+    router.get("/by-id/:questionId/new-answer", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const id = request.params.questionId
@@ -247,16 +242,16 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
                 if (question) {
                     response.render("questions-new-answer.hbs", { userStatus, question })
                 } else {
-                    response.redirect("/404")
+                    response.status(404).render("statuscode-404.hbs", { userStatus })
                 }
             }).catch(error => {
                 console.log(error)
-                response.redirect("/500")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             })
         }
     })
 
-    router.post("/by-id/:questionId/new-answer", (request, response) => {
+    router.post("/by-id/:questionId/new-answer", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         var question = { 
@@ -289,12 +284,13 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     })
             
-    router.get("/by-id/:questionId/edit-answer/:answerId", (request, response) => {
+    router.get("/by-id/:questionId/edit-answer/:answerId", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const questionId = request.params.questionId
         const answerId = request.params.answerId
-        var question = {}
+        var question = null
+
         if (request.query) {
             const answer = { 
                 id: answerId,
@@ -315,22 +311,20 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
                 question = returnedQuestion
                 return QuestionManager.getAnswerById(answerId)
             }).then(answer => {
-                if (question) {
+                if (question && answer) {
                     question.answer = answer
-                    console.log("get db editAnswer question: ", question)
-
                     response.render("questions-edit-answer.hbs", { userStatus, question })
                 } else {
-                    response.redirect("/404")
+                    response.status(404).render("statuscode-404.hbs", { userStatus })
                 }
             }).catch(error => {
                 console.log(error)
-                response.redirect("/500")
+                response.status(500).render("statuscode-500.hbs", { userStatus })
             })
         }
     })
 
-    router.post("/by-id/:questionId/edit-answer/:answerId", (request, response) => {
+    router.post("/by-id/:questionId/edit-answer/:answerId", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const answer = { 
@@ -362,7 +356,7 @@ module.exports = ({ QuestionManager, SessionAuthenticator }) => {
         })
     }) 
 
-    router.post("/by-id/:questionId/delete-answer/:answerId", (request, response) => {
+    router.post("/by-id/:questionId/delete-answer/:answerId", SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = userStatus.username
