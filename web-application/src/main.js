@@ -37,6 +37,7 @@ container.register("expressSession", awilix.asFunction(expressSession))
 
 // Business-logic-layer
 const AccountManager = require("./business-logic-layer/account-manager")
+const GoogleAuthManager = require("./business-logic-layer/google-auth-manager")
 const AccountValidator = require("./business-logic-layer/account-validator")
 const QuestionManager = require("./business-logic-layer/question-manager")
 const QuestionValidator = require("./business-logic-layer/question-validator")
@@ -46,6 +47,7 @@ const searchOptions = require("./business-logic-layer/search-options")
 const SearchManager = require("./business-logic-layer/search-manager")
 
 container.register("AccountManager", awilix.asFunction(AccountManager))
+container.register("GoogleAuthManager", awilix.asFunction(GoogleAuthManager))
 container.register("AccountValidator", awilix.asFunction(AccountValidator))
 container.register("QuestionManager", awilix.asFunction(QuestionManager))
 container.register("QuestionValidator", awilix.asFunction(QuestionValidator))

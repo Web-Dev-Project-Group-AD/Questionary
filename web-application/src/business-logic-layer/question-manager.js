@@ -1,5 +1,5 @@
 
-module.exports = function ({ QuestionValidator, QuestionRepository }) {
+module.exports = ({ QuestionValidator, QuestionRepository }) => {
 
 	return {
 
