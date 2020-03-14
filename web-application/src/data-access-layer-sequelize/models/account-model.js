@@ -26,5 +26,9 @@ module.exports = ({sequelize}) => sequelize.define('AccountModel', {
     createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
+    },
+    thirdParty: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
     }
 })

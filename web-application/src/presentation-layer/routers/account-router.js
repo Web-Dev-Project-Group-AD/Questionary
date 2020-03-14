@@ -1,10 +1,10 @@
-const express = require('express')
+const express = require("express")
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
 const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
-module.exports = ({ AccountManager, SessionAuthorizer, SessionRedirector }) => {
+module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, SessionRedirector }) => {
 
     const router = express.Router()
 
@@ -41,6 +41,41 @@ module.exports = ({ AccountManager, SessionAuthorizer, SessionRedirector }) => {
 
     router.get("/sign-in", SessionRedirector.redirectUser, (request, response) => {
         response.render("accounts-sign-in.hbs")
+    })
+
+    router.get("/sign-in/google", (request, response) => {
+        response.redirect(GoogleAuthManager.getGoogleUrl())
+    })
+
+    router.get("/oauth2callback", (request, response, next) => {
+        const code = request.query.code
+        var account = {}
+
+        GoogleAuthManager.getGoogleAccountByCode(code
+        ).then(googleAccount => {
+            account = googleAccount
+            return AccountManager.getAccountByEmail(account.email)
+        }).then(returnedAccount => {
+            if (returnedAccount) {
+                return returnedAccount.id
+            } else {
+                return AccountManager.createThirdPartyAccount(account)
+            }
+         }).then(userId => {
+
+            const userStatus = { 
+                isAdmin: false, 
+                username: account.username, 
+                userId 
+            }
+
+            request.session.userStatus = userStatus
+            console.log(userStatus.username, " signed in")
+            response.redirect("/")
+        }).catch(error => {
+            console.log(error)
+            response.status(500).render("statuscode-500.hbs", { userStatus })
+        })
     })
 
     router.post("/sign-in", SessionRedirector.redirectUser, (request, response) => {

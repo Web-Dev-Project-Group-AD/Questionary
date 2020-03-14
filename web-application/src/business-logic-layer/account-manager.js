@@ -20,18 +20,40 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 				).then(hashedPassword => {
 					account.password = hashedPassword
 					return AccountRepository.createAccount(account)
-				}).then(createdAccount => {
-					resolve(createdAccount)
+				}).then(accountId => {
+					resolve(accountId)
 				}).catch(errors => {
 					reject(errors)
 				})
 			})
 		},
 
+		createThirdPartyAccount(account) {
+            return new Promise ((resolve, reject) => {
+                AccountRepository.createThirdPartyAccount(account
+                ).then(accountId => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
 		getAccountByUsername(username) {
 			return new Promise((resolve, reject) => {
 				AccountRepository.getAccountByUsername(username
 				).then(account => {
+					resolve(account)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getAccountByEmail(email) {
+			return new Promise((resolve, reject) => {
+				AccountRepository.getAccountByEmail(email
+					).then(account => {
 					resolve(account)
 				}).catch(error => {
 					reject(error)
@@ -84,6 +106,9 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 				}
 				AccountRepository.getAccountByUsername(account.username
 				).then(returnedAccount => {
+					if	(returnedAccount.thirdParty) {
+						throw "Can not change third party account password."
+					}
 					return bcrypt.compare(account.oldPassword, returnedAccount.password)
 				}).then(isValidPassword => {
 					if (!isValidPassword) {

@@ -38,6 +38,22 @@ module.exports = ({ AccountModel }) => {
             })
         },
 
+        createThirdPartyAccount(account) {
+            return new Promise((resolve, reject) => {
+                AccountModel.create({
+                    username: account.username,
+                    email: account.email,
+                    password: "0",
+                    thirdParty: true
+                }).then(result => {
+                    resolve(result.id)
+                }).catch(error => {
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL) 
+                })
+            })   
+        },
+
         getAccountByUsername(username) {
             return new Promise((resolve, reject) => {
                 AccountModel.findOne({
