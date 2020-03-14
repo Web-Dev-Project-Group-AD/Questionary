@@ -1,5 +1,5 @@
-const ERROR_MSG_CREATE_UNIQUE_QUESTION = "Question already exists."
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const ERROR_MSG_CREATE_UNIQUE_QUESTION = "Question already exists."
 const SEQUELIZE_ERROR_UNIQUE_QUESTION = "title must be unique"
 
 
@@ -96,6 +96,18 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                         category: category,
                         isAnswered: isAnswered
                     }
+                }).then(questions => {
+                    resolve(questions)
+                }).catch(error => {
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
+        getAllQuestions() {
+            return new Promise((resolve, reject) => {
+                QuestionModel.findAll({
+                    raw: true
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {

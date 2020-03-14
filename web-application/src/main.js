@@ -42,6 +42,8 @@ const QuestionManager = require("./business-logic-layer/question-manager")
 const QuestionValidator = require("./business-logic-layer/question-validator")
 const SessionAuthorizer = require("./business-logic-layer/session-authorizer")
 const SessionRedirector = require("./business-logic-layer/session-redirector")
+const searchOptions = require("./business-logic-layer/search-options")
+const SearchManager = require("./business-logic-layer/search-manager")
 
 container.register("AccountManager", awilix.asFunction(AccountManager))
 container.register("AccountValidator", awilix.asFunction(AccountValidator))
@@ -49,7 +51,8 @@ container.register("QuestionManager", awilix.asFunction(QuestionManager))
 container.register("QuestionValidator", awilix.asFunction(QuestionValidator))
 container.register("SessionAuthorizer", awilix.asFunction(SessionAuthorizer))
 container.register("SessionRedirector", awilix.asFunction(SessionRedirector))
-
+container.register("searchOptions", awilix.asValue(searchOptions))
+container.register("SearchManager", awilix.asFunction(SearchManager))
 
 // Choose either Data-access-layer or Data-access-layer-sequelize
 
