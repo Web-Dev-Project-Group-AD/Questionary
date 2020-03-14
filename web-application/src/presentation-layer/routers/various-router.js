@@ -1,6 +1,6 @@
-const express = require('express')
+const express = require("express")
 
-module.exports = ({ }) => {
+module.exports = ({ SearchManager }) => {
 
 	const router = express.Router()
 
@@ -9,40 +9,25 @@ module.exports = ({ }) => {
 		response.redirect("/questions/answered")
 	})
 
-	// router.get("/about", (request, response) => {
-
-	// 	const userStatus = request.session.userStatus
-
-	// 	response.render("about.hbs", userStatus)
-	// })
-
-	// router.get("/contact", (request, response) => {
-
-	// 	const userStatus = request.session.userStatus
-
-	// 	response.render("contact.hbs", userStatus)
-	// })
-
-	router.get("/401", (request, response) =>{
-
+	router.get("/search", (request, response) => {
 		const userStatus = request.session.userStatus
-
-		response.status(401).render("statuscode-401.hbs", userStatus)
+		response.render("search.hbs", { userStatus })
 	})
 
-	router.get("/404", (request, response) =>{
-
+	router.get("/search-results", (request, response) => {
+		
 		const userStatus = request.session.userStatus
+		const searchQuery = request.query.searchQuery
 
-		response.status(404).render("statuscode-404.hbs", userStatus)
+		SearchManager.searchQuestions(searchQuery
+		).then(questions => {
+			response.render("questions.hbs", { userStatus, questions })
+		}).catch(error => {
+			console.log(error)
+			response.statusCode(500).render("500.hbs", { userStatus })
+		})
 	})
-
-	router.get("/500", (request, response) =>{
-
-		const userStatus = request.session.userStatus
-
-		response.status(500).render("statuscode-500.hbs", userStatus)
-	})
+	
 
 	return router
 

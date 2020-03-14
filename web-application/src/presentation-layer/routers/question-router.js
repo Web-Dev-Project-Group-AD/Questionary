@@ -67,11 +67,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
         const author = request.params.author
         var categories = []
 
-        QuestionManager.getAllCategories(
-        ).then(fetchedCategories => {
-            categories = fetchedCategories
-            return QuestionManager.getQuestionsByAuthor(author)
-        }).then(questions => {
+        QuestionManager.getQuestionsByAuthor(author
+        ).then(questions => {
             response.render("questions.hbs", { userStatus, questions, categories })
         }).catch(error => {
             console.log(error)
@@ -91,8 +88,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
-                    const category = {name: question.category}
-                    categories.push(category)
+                    categories.push(question.category)
                 }
             }
             response.render("questions.hbs", { userStatus, questions, categories })
@@ -105,15 +101,14 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
     router.get("/unanswered", (request, response) => {
 
         const userStatus = request.session.userStatus
-        isAnswered = false
+        const isAnswered = false
 
         QuestionManager.getAllUnansweredQuestions(
         ).then(questions => {
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
-                    const category = {name: question.category}
-                    categories.push(category)
+                    categories.push(question.category)
                 }
             }
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
@@ -133,8 +128,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
             const categories = []
             for(question of questions) {
                 if (!categories.includes(question.category)) {
-                    const category = {name: question.category}
-                    categories.push(category)
+                    categories.push(question.category)
                 }
             }
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
@@ -148,13 +142,15 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
 
         const userStatus = request.session.userStatus
         const category = request.params.category
-        var categories = []
-
+        const categories = []
         const isAnswered = (request.params.isAnswered == "answered")
 
         QuestionManager.getAllCategories(
         ).then(fetchedCategories => {
-            categories = fetchedCategories
+            for (fetchedCategory of fetchedCategories) {
+                console.log(fetchedCategory)
+                categories.push(fetchedCategory.name)
+            }
             return QuestionManager.getQuestionsByCategory(category, isAnswered)
         }).then(questions => {
             response.render("questions.hbs", { userStatus, questions, categories, isAnswered })
@@ -168,6 +164,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
 
         const id = request.params.questionId
         const userStatus = request.session.userStatus
+
         if (request.query && userStatus.username == request.query.author) {
             const { title, description, author } = request.query
             const question = { id, title, description, author }
@@ -211,6 +208,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
     })
 
     router.post("/by-id/:questionId/delete", SessionAuthorizer.authorizeUser, (request, response) => {
+
         const userStatus = request.session.userStatus
         const author = userStatus.username
         const id = request.params.questionId
@@ -291,7 +289,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer }) => {
         const userStatus = request.session.userStatus
         const questionId = request.params.questionId
         const answerId = request.params.answerId
-        var question = {}
+        var question = null
+
         if (request.query) {
             const answer = { 
                 id: answerId,
