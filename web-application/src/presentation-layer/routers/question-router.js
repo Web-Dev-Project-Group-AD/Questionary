@@ -13,7 +13,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         QuestionManager.getAllCategories(
         ).then(categories => {
-            response.render("questions-new-post.hbs", { userStatus, categories })
+            response.render("questions-new-post.hbs", 
+            { userStatus, categories, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -46,7 +47,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 ).then(categories => {
                     question.customCategory = request.body.customCategory
                     response.render("questions-new-post.hbs", 
-                    { userStatus, question, validationErrors, categories })
+                    { userStatus, question, validationErrors, categories, csrfToken: request.csrfToken() })
                 })
             }
         })
@@ -59,7 +60,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         QuestionManager.getQuestionById(id
         ).then(questions => {
-            response.render("questions.hbs", { userStatus, questions })
+            response.render("questions.hbs", 
+            { userStatus, questions, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -74,7 +76,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         QuestionManager.getQuestionsByAuthor(author
         ).then(questions => {
-            response.render("questions.hbs", { userStatus, questions, categories })
+            response.render("questions.hbs", 
+            { userStatus, questions, categories, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -94,7 +97,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                     categories.push(question.category)
                 }
             }
-            response.render("questions.hbs", { userStatus, questions, categories })
+            response.render("questions.hbs", 
+            { userStatus, questions, categories, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -115,7 +119,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 }
             }
             response.render("questions.hbs", 
-            { userStatus, questions, categories, isAnswered })
+            { userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -136,7 +140,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 }
             }
             response.render("questions.hbs", 
-            { userStatus, questions, categories, isAnswered })
+            { userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -159,7 +163,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             return QuestionManager.getQuestionsByCategory(category, isAnswered)
         }).then(questions => {
             response.render("questions.hbs", 
-            { userStatus, questions, categories, isAnswered })
+            { userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -179,12 +183,14 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 description: request.query.description, 
                 author: request.query.description
             }
-            return response.render("questions-edit.hbs", { userStatus, question })
+            return response.render("questions-edit.hbs", 
+            { userStatus, question, csrfToken: request.csrfToken() })
         } else {
             return QuestionManager.getQuestionById(id
             ).then(question => {
                 if (question.author == userStatus.username) {
-                    response.render("questions-edit.hbs", { userStatus, question })
+                    response.render("questions-edit.hbs", 
+                    { userStatus, question, csrfToken: request.csrfToken() })
                 } else {
                     response.status(401).render("statuscode-401.hbs", { userStatus })
                 }
@@ -215,7 +221,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
                 response.render("questions-edit.hbs", 
-                { validationErrors, userStatus, question })
+                { validationErrors, userStatus, question, csrfToken: request.csrfToken() })
             }
         })
     })
@@ -250,12 +256,14 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 description: request.query.questionDescription, 
                 author: request.query.questionAuthor 
             }
-            return response.render("questions-new-answer.hbs", { userStatus, question })
+            return response.render("questions-new-answer.hbs", 
+            { userStatus, question, csrfToken: request.csrfToken() })
         } else {
             return QuestionManager.getQuestionById(id
             ).then(question => {
                 if (question) {
-                    response.render("questions-new-answer.hbs", { userStatus, question })
+                    response.render("questions-new-answer.hbs", 
+                    { userStatus, question, csrfToken: request.csrfToken() })
                 } else {
                     response.status(404).render("statuscode-404.hbs", { userStatus })
                 }
@@ -289,14 +297,15 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             answers = [answer]
             question.answers = answers
             const questions = [question]
-            response.render("questions.hbs", { userStatus, questions })
+            response.render("questions.hbs", 
+            { userStatus, questions, csrfToken: request.csrfToken() })
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
                 response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
                 response.render("questions-new-answer.hbs", 
-                { validationErrors, userStatus, question })
+                { validationErrors, userStatus, question, csrfToken: request.csrfToken() })
             }
         })
     })
@@ -322,7 +331,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 author: request.query.questionAuthor,
                 answer: answer
             }
-            response.render("questions-edit-answer.hbs", { userStatus, question })
+            response.render("questions-edit-answer.hbs", 
+            { userStatus, question, csrfToken: request.csrfToken() })
         } else {
             QuestionManager.getQuestionById(questionId
             ).then(returnedQuestion => {
@@ -331,7 +341,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             }).then(answer => {
                 if (question && answer) {
                     question.answer = answer
-                    response.render("questions-edit-answer.hbs", { userStatus, question })
+                    response.render("questions-edit-answer.hbs", 
+                    { userStatus, question, csrfToken: request.csrfToken() })
                 } else {
                     response.status(404).render("statuscode-404.hbs", { userStatus })
                 }
@@ -363,7 +374,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             const answers = [answer]
             question.answers = answers
             const questions = [question]
-            response.render("questions.hbs", { userStatus, questions })
+            response.render("questions.hbs", 
+            { userStatus, questions, csrfToken: request.csrfToken() })
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
@@ -371,7 +383,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             } else {
                 question.answer = answer
                 response.render("questions-edit-answer.hbs", 
-                { validationErrors, userStatus, question })
+                { validationErrors, userStatus, question, csrfToken: request.csrfToken() })
             }
         })
     }) 

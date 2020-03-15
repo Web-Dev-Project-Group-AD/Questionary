@@ -16,7 +16,7 @@ module.exports = ({
 
     router.get("/sign-up", SessionRedirector.redirectUser, (request, response) => {
 
-        response.render("accounts-sign-up.hbs")
+        response.render("accounts-sign-up.hbs", { csrfToken: request.csrfToken() })
     })
 
     router.post("/sign-up", 
@@ -49,14 +49,14 @@ module.exports = ({
                 response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
                 response.render("accounts-sign-up.hbs", 
-                { validationErrors, username, email })
+                { validationErrors, username, email, csrfToken: request.csrfToken() })
             }
         })
     })
 
     router.get("/sign-in", SessionRedirector.redirectUser, (request, response) => {
 
-        response.render("accounts-sign-in.hbs")
+        response.render("accounts-sign-in.hbs", { csrfToken: request.csrfToken() })
     })
 
     router.get("/sign-in/google", SessionRedirector.redirectUser, (request, response) => {
@@ -117,7 +117,8 @@ module.exports = ({
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
                 response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
-                response.render("accounts-sign-in.hbs", { errorMessage, email })
+                response.render("accounts-sign-in.hbs", 
+                { errorMessage, email, csrfToken: request.csrfToken() })
             }
         })
     })
@@ -126,7 +127,8 @@ module.exports = ({
 
         const userStatus = request.session.userStatus
 
-        response.render("accounts-sign-out.hbs", { userStatus })
+        response.render("accounts-sign-out.hbs", 
+        { userStatus, csrfToken: request.csrfToken() })
     })
 
     router.post("/sign-out", 
@@ -175,7 +177,8 @@ module.exports = ({
 
         const userStatus = request.session.userStatus
 
-        response.render("accounts-edit.hbs", { userStatus })
+        response.render("accounts-edit.hbs", 
+        { userStatus, csrfToken: request.csrfToken() })
     })
 
     router.post("/edit-password", 
@@ -199,7 +202,8 @@ module.exports = ({
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
                 response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
-                response.render("accounts-edit.hbs", { validationErrors, userStatus })
+                response.render("accounts-edit.hbs", 
+                { validationErrors, userStatus, csrfToken: request.csrfToken() })
             }
         })
     })
@@ -207,7 +211,7 @@ module.exports = ({
     router.get("/delete", SessionAuthorizer.authorizeUser, (request, response) => {
         const userStatus = request.session.userStatus
 
-        response.render("accounts-delete.hbs", { userStatus })
+        response.render("accounts-delete.hbs", { userStatus, csrfToken: request.csrfToken() })
     })
 
     router.post("/delete", 
