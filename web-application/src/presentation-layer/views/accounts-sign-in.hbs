@@ -1,33 +1,33 @@
 <div class="content">
-	<h2>Sign In</h2>
+	<h3>Sign In</h3>
 	<p>Sign in using the form below.</p>
-</div>
 
-<form method="POST" action="/accounts/sign-in">
-	<br>
-	<input type="text" 
-		{{#if email}} 
-			value="{{email}}"
-		{{/if}}
-		name="email" id="email" placeholder="Email" />
-	<br>
-	<input type="password" name="password" id="password" placeholder="Password" />
-	<br>
-	<input type="submit" class="btn" value="Sign in" />
-</form>
-
-<div id="sign-up">
-<br>
-<p>
-	Not a user?
-	<a href="/accounts/sign-up">Sign up</a>
-</p>
-
-</div>
-
-<ul id="error-message">
-	{{#if errorMessage}} 
+	<form method="POST" action="/accounts/sign-in">
 		<br>
-		<li>{{errorMessage}}</li>
-	{{/if}}
-</ul>
+		<input type="text" 
+			{{#if email}} 
+				value="{{email}}"
+			{{/if}}
+			name="email" id="email" placeholder="Email" />
+		<br>
+		<input type="password" name="password" id="password" placeholder="Password" />
+		<br>
+		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+		<input type="submit" class="button" value="Sign in" />
+	</form>
+	<br>
+	<div id="sign-up">
+		<p>
+			Not a user?
+			<a href="/accounts/sign-up">Sign up</a>
+		</p>
+	</div>
+
+	<ul id="error-message">
+		{{#if errorMessage}} 
+			<br>
+			<li>{{errorMessage}}</li>
+		{{/if}}
+	</ul>
+
+</div>

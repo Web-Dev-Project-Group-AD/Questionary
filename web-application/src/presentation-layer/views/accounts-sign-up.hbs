@@ -20,7 +20,8 @@
 		<br>
 		<input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
 		<br>
-		<input type="submit" class="btn" value="Register" />
+		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+		<input type="submit" class="button" value="Register" />
 		<br>
 		<ul id="errorMessages">
 			{{#if validationErrors}}
