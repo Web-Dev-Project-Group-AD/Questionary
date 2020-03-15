@@ -8,6 +8,7 @@
         <br>
         <input type="password" name="passwordRepeated" id="passwordRepeated" placeholder="Repeat new password" />
         <br>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
         <input type="submit" class="btn" value="Submit" />
         <br>
         <ul id="errorMessages">

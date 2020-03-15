@@ -1,7 +1,9 @@
 <div name="signOut">
 	<h3>Sign out</h3>
 	<p>Confirm signing out</p>
-<form method="POST" action="/accounts/sign-out">
-	<input type="submit" class="btn" value="Sign out" />
-</form>
+
+	<form method="POST" action="/accounts/sign-out">
+		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+		<input type="submit" class="button" value="Sign out" />
+	</form>
 </div>

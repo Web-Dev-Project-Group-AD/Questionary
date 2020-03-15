@@ -32,7 +32,8 @@
 				{{/if}}
 			/>
 			<br>
-			<input type="submit" class="btn" value="Post question" />
+			<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+			<input type="submit" class="button" value="Post question" />
 			<br>
 			<ul id="errorMessages">
 				{{#if validationErrors}}

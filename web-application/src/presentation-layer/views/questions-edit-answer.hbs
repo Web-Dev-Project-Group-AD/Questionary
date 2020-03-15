@@ -25,11 +25,12 @@
                     {{/if}}
                 />
                 <br>
-                <input type="submit" class="btn" value="Submit answer" />
-                <br>
                 <input type="hidden" name="questionTitle" value="{{question.title}}" />
                 <input type="hidden" name="questionDescription" value="{{question.description}}" />
                 <input type="hidden" name="questionAuthor" value="{{question.author}}" />
+           		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                <input type="submit" class="button" value="Submit answer" />
+                <br>
 
                 <ul id="errorMessages">
                     {{#if validationErrors}}
