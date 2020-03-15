@@ -4,29 +4,43 @@ const ERROR_MSG_DATABASE_GENERAL = "Database error."
 const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
 const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
-module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, SessionRedirector }) => {
+module.exports = ({ 
+    AccountManager, 
+    GoogleAuthManager, 
+    SessionAuthorizer, 
+    SessionRedirector,
+    csrfProtection
+}) => {
 
     const router = express.Router()
 
     router.get("/sign-up", SessionRedirector.redirectUser, (request, response) => {
+
         response.render("accounts-sign-up.hbs")
     })
 
-    router.post("/sign-up", SessionRedirector.redirectUser, (request, response) => {
+    router.post("/sign-up", 
+    csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
-        const { username, email, password, passwordRepeated } = request.body
-        const account = { username, email, password, passwordRepeated }
+        const account = { 
+            username: request.body.username,
+            email: request.body.email, 
+            password: request.body.password, 
+            passwordRepeated: request.body.passwordRepeated
+        }
 
         AccountManager.createAccount(account
         ).then(accountId => {
 
-            const userId = accountId
-            const signedIn = true
-            const isAdmin = false
-            const userStatus = { signedIn, isAdmin, username, userId }
+            const userStatus = { 
+                signedIn: true, 
+                isAdmin: false, 
+                userId: accountId,
+                username: account.username
+            }
             request.session.userStatus = userStatus
 
-            console.log(username, " signed in")
+            console.log(account.username, " signed in")
             response.redirect("/")
         }).catch(validationErrors => {
 
@@ -34,20 +48,24 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
                 response.status(500).render("statuscode-500.hbs", { userStatus })
             } else {
-                response.render("accounts-sign-up.hbs", { validationErrors, username, email })
+                response.render("accounts-sign-up.hbs", 
+                { validationErrors, username, email })
             }
         })
     })
 
     router.get("/sign-in", SessionRedirector.redirectUser, (request, response) => {
+
         response.render("accounts-sign-in.hbs")
     })
 
-    router.get("/sign-in/google", (request, response) => {
+    router.get("/sign-in/google", SessionRedirector.redirectUser, (request, response) => {
+
         response.redirect(GoogleAuthManager.getGoogleUrl())
     })
 
     router.get("/oauth2callback", (request, response, next) => {
+
         const code = request.query.code
         var account = {}
 
@@ -62,13 +80,11 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
                 return AccountManager.createThirdPartyAccount(account)
             }
          }).then(userId => {
-
             const userStatus = { 
                 isAdmin: false, 
                 username: account.username, 
-                userId 
+                userId: userId
             }
-
             request.session.userStatus = userStatus
             console.log(userStatus.username, " signed in")
             response.redirect("/")
@@ -78,21 +94,23 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
         })
     })
 
-    router.post("/sign-in", SessionRedirector.redirectUser, (request, response) => {
+    router.post("/sign-in", 
+    csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
-        const { email, password } = request.body
-        const account = { email, password }
+        const account = { 
+            email: request.body.email,
+            password: request.body.password
+         }
 
         AccountManager.signInAccount(account
         ).then(returnedAccount => {
-
-            const isAdmin = returnedAccount.isAdmin
-            const userId = returnedAccount.id
-            const username = returnedAccount.username
-            const userStatus = { isAdmin, username, userId }
+            const userStatus = { 
+                isAdmin: returnedAccount.isAdmin, 
+                username: returnedAccount.username, 
+                userId: returnedAccount.id
+            }
             request.session.userStatus = userStatus
-
-            console.log(username, " signed in")
+            console.log(userStatus.username, " signed in")
             response.redirect("/")
         }).catch((errorMessage) => {
             console.log(errorMessage)
@@ -111,7 +129,8 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
         response.render("accounts-sign-out.hbs", { userStatus })
     })
 
-    router.post("/sign-out", SessionAuthorizer.authorizeUser, (request, response) => {
+    router.post("/sign-out", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
@@ -130,10 +149,7 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
         const userStatus = request.session.userStatus
 
         AccountManager.getAllAccounts(
-        ).then(accounts => {
-
-            console.log(accounts)
-           
+        ).then(accounts => {           
             response.render("accounts-list-all.hbs", { accounts, userStatus })
         }).catch(error => {
             console.log(error)
@@ -141,12 +157,12 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
         })
     })
 
-    router.get("/by-name/:username", (request, response) => {
+    router.get("/by-name/:accountName", (request, response) => {
 
         const userStatus = request.session.userStatus
-        const username = request.params.username
+        const accountName = request.params.accountName
 
-        AccountManager.getAccountByUsername(username
+        AccountManager.getAccountByUsername(accountName
         ).then(account => {
             response.render("accounts-show-one.hbs", { account, userStatus })
         }).catch(error => {
@@ -162,7 +178,8 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
         response.render("accounts-edit.hbs", { userStatus })
     })
 
-    router.post("/edit-password", SessionAuthorizer.authorizeUser, (request, response) => {
+    router.post("/edit-password", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
         
         const userStatus = request.session.userStatus
         const username = userStatus.username
@@ -193,9 +210,10 @@ module.exports = ({ AccountManager, GoogleAuthManager, SessionAuthorizer, Sessio
         response.render("accounts-delete.hbs", { userStatus })
     })
 
-    router.post("/delete", SessionAuthorizer.authorizeUser, (request, response) => {
-        const id = request.session.userStatus.userId
+    router.post("/delete", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
+        const id = request.session.userStatus.userId
 
         AccountManager.deleteAccountById(id
         ).then(() => {
