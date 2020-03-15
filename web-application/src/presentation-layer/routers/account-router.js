@@ -14,13 +14,12 @@ module.exports = ({
 
     const router = express.Router()
 
-    router.get("/sign-up", SessionRedirector.redirectUser, (request, response) => {
+    router.get("/sign-up", csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
         response.render("accounts-sign-up.hbs", { csrfToken: request.csrfToken() })
     })
 
-    router.post("/sign-up", 
-    csrfProtection, SessionRedirector.redirectUser, (request, response) => {
+    router.post("/sign-up", csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
         const account = { 
             username: request.body.username,
@@ -54,7 +53,7 @@ module.exports = ({
         })
     })
 
-    router.get("/sign-in", SessionRedirector.redirectUser, (request, response) => {
+    router.get("/sign-in", csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
         response.render("accounts-sign-in.hbs", { csrfToken: request.csrfToken() })
     })
@@ -123,7 +122,8 @@ module.exports = ({
         })
     })
 
-    router.get("/sign-out", SessionAuthorizer.authorizeUser, (request, response) => {
+    router.get("/sign-out", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
@@ -173,7 +173,8 @@ module.exports = ({
         })
     })
 
-    router.get("/edit", SessionAuthorizer.authorizeUser, (request, response) => {
+    router.get("/edit", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
@@ -208,7 +209,8 @@ module.exports = ({
         })
     })
 
-    router.get("/delete", SessionAuthorizer.authorizeUser, (request, response) => {
+    router.get("/delete", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
         const userStatus = request.session.userStatus
 
         response.render("accounts-delete.hbs", { userStatus, csrfToken: request.csrfToken() })

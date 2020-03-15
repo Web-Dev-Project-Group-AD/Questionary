@@ -1,6 +1,10 @@
-
 const csurf = require("csurf")
 
-const csrfProtection = csurf({ cookie: true })
+module.exports = ({ }) => {
 
-module.exports = csrfProtection
+    const csrfProtection = csurf({ cookie: true })
+
+    //csrf({ cookie: true, ignoreMethods: ['POST'] })
+
+    return csrfProtection
+} 

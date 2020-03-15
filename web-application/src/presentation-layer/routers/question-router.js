@@ -7,7 +7,8 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
     const router = express.Router()
 
-    router.get("/new-post", SessionAuthorizer.authorizeUser, (request, response) => {
+    router.get("/new-post", 
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
 
@@ -53,7 +54,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
-    router.get("/by-id/:questionId", (request, response) => {
+    router.get("/by-id/:questionId", csrfProtection, (request, response) => {
 
         const id = request.params.questionId
         const userStatus = request.session.userStatus
@@ -68,7 +69,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
-    router.get("/by-user/:author", (request, response) => {
+    router.get("/by-user/:author", csrfProtection, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = request.params.author
@@ -84,7 +85,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
-    router.get("/by-answer-author/:author", (request, response) => {
+    router.get("/by-answer-author/:author", csrfProtection, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = request.params.author
@@ -105,7 +106,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
-    router.get("/unanswered", (request, response) => {
+    router.get("/unanswered", csrfProtection, (request, response) => {
 
         const userStatus = request.session.userStatus
         const isAnswered = false
@@ -126,7 +127,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
-    router.get("/answered", (request, response) => {
+    router.get("/answered", csrfProtection, (request, response) => {
 
         const userStatus = request.session.userStatus
         const isAnswered = true
@@ -147,7 +148,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
-    router.get("/by-category/:category/:isAnswered", (request, response) => {
+    router.get("/by-category/:category/:isAnswered", csrfProtection, (request, response) => {
 
         const userStatus = request.session.userStatus
         const category = request.params.category
@@ -171,7 +172,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
     })
 
     router.get("/by-id/:questionId/edit", 
-    SessionAuthorizer.authorizeUser, (request, response) => {
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const id = request.params.questionId
         const userStatus = request.session.userStatus
@@ -244,7 +245,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
 
     router.get("/by-id/:questionId/new-answer", 
-    SessionAuthorizer.authorizeUser, (request, response) => {
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const id = request.params.questionId
@@ -311,7 +312,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
     })
             
     router.get("/by-id/:questionId/edit-answer/:answerId", 
-    SessionAuthorizer.authorizeUser, (request, response) => {
+    csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const questionId = request.params.questionId
