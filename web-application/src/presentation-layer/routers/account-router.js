@@ -86,7 +86,7 @@ module.exports = ({
             }
             request.session.userStatus = userStatus
             console.log(userStatus.username, " signed in")
-            response.redirect("/")
+            response.redirect("/questions/answered")
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -99,10 +99,10 @@ module.exports = ({
         const account = { 
             email: request.body.email,
             password: request.body.password
-         }
-
+        }
         AccountManager.signInAccount(account
         ).then(returnedAccount => {
+
             const userStatus = { 
                 isAdmin: returnedAccount.isAdmin, 
                 username: returnedAccount.username, 
@@ -110,7 +110,7 @@ module.exports = ({
             }
             request.session.userStatus = userStatus
             console.log(userStatus.username, " signed in")
-            response.redirect("/")
+            response.redirect("/questions/answered")
         }).catch((errorMessage) => {
             console.log(errorMessage)
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
@@ -219,9 +219,9 @@ module.exports = ({
     router.post("/delete", 
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
-        const id = request.session.userStatus.userId
+        const userStatus = request.session.userStatus
 
-        AccountManager.deleteAccountById(id
+        AccountManager.deleteAccountById(userStatus.userId
         ).then(() => {
             return request.session.destroy()
         }).then(() => {

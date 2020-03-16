@@ -2,7 +2,7 @@
 	<h3>Sign In</h3>
 	<p>Sign in using the form below.</p>
 
-	<form method="POST" action="/accounts/sign-in">
+	<form name="signIn" method="POST" action="/accounts/sign-in">
 		<br>
 		<input type="text" 
 			{{#if email}} 
@@ -16,18 +16,23 @@
 		<input type="submit" class="button" value="Sign in" />
 	</form>
 	<br>
-	<div id="sign-up">
+	<div name="getGoogleSignIn">
+		<a href="/accounts/sign-in/google">
+			<img src="/images/btn_google_signin_dark_pressed_web@2x.png" alt="Sign in with Google">
+		</a>
+	</div>
+	<br>
+	<div name="getSignUp">
 		<p>
 			Not a user?
-			<a href="/accounts/sign-up">Sign up</a>
+			<a class="button" href="/accounts/sign-up">Sign up</a>
 		</p>
 	</div>
-
-	<ul id="error-message">
+	<div name="errorMessage">
 		{{#if errorMessage}} 
 			<br>
-			<li>{{errorMessage}}</li>
+			{{errorMessage}}
 		{{/if}}
-	</ul>
+	</div>
 
 </div>

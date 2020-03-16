@@ -13,7 +13,7 @@ module.exports = ({ }) => {
         store: new RedisStore({ client: redisClient }),
         cookie: {
             maxAge: 2 * 60 * 60 * 1000, // Set maxAge of sessions to 2 hours.
-            sameSite: true,
+            sameSite: false,
             secure: false
         }
     })
