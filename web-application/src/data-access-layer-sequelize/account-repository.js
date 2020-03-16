@@ -43,8 +43,7 @@ module.exports = ({ AccountModel }) => {
                 AccountModel.create({
                     username: account.username,
                     email: account.email,
-                    password: "0",
-                    thirdParty: true
+                    password: "0"
                 }).then(result => {
                     resolve(result.id)
                 }).catch(error => {

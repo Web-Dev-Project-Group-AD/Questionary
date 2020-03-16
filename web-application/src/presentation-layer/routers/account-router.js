@@ -35,7 +35,8 @@ module.exports = ({
                 signedIn: true, 
                 isAdmin: false, 
                 userId: accountId,
-                username: account.username
+                username: account.username,
+                isThirdParty: false
             }
             request.session.userStatus = userStatus
 
@@ -82,7 +83,8 @@ module.exports = ({
             const userStatus = { 
                 isAdmin: false, 
                 username: account.username, 
-                userId: userId
+                userId: userId,
+                isThirdParty: true
             }
             request.session.userStatus = userStatus
             console.log(userStatus.username, " signed in")
@@ -106,7 +108,8 @@ module.exports = ({
             const userStatus = { 
                 isAdmin: returnedAccount.isAdmin, 
                 username: returnedAccount.username, 
-                userId: returnedAccount.id
+                userId: returnedAccount.id,
+                isThirdParty: false
             }
             request.session.userStatus = userStatus
             console.log(userStatus.username, " signed in")

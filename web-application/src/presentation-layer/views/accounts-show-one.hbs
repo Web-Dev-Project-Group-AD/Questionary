@@ -7,8 +7,10 @@
 
 		{{#if userStatus}}
 			{{#ifEquals account.username userStatus.username}}
+				{{#unless ../userStatus.isThirdParty}}
 					<a href="/accounts/edit/" class="button">Edit account</a>
 					<br>
+				{{/unless}}
 					<a href="/accounts/delete/" class="button">Delete account</a>
 			{{/ifEquals}}
 		{{/if}}
