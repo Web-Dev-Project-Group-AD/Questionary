@@ -158,7 +158,6 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         QuestionManager.getAllCategories(
         ).then(fetchedCategories => {
             for (fetchedCategory of fetchedCategories) {
-                console.log(fetchedCategory)
                 categories.push(fetchedCategory.name)
             }
             return QuestionManager.getQuestionsByCategory(category, isAnswered)
@@ -293,7 +292,6 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         QuestionManager.createAnswer(answer
         ).then(answerId => {
-            console.log("answerid: ", answerId)
             answer.id = answerId
             answers = [answer]
             question.answers = answers

@@ -32,7 +32,7 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
             return new Promise ((resolve, reject) => {
                 AccountRepository.createThirdPartyAccount(account
                 ).then(accountId => {
-                    resolve()
+                    resolve(accountId)
                 }).catch(error => {
                     reject(error)
                 })
