@@ -268,8 +268,39 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     reject(error)
                 })
             })
+        },
+
+        updateQuestionAuthor(author, newAuthor) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.update({
+                    author: newAuthor
+                }, {
+                    where: {
+                        author: author
+                    }
+                }).then(result => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        updateAnswerAuthor(author, newAuthor) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.update({
+                    author: newAuthor
+                }, {
+                    where: {
+                        author: author
+                    }
+                }).then(result => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
         }
-        
     }
 
 }

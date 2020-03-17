@@ -222,6 +222,19 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 			})
 		},
 
+		removeAuthor(author) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.updateAnswerAuthor(author, "Deleted user"
+				).then(() => {
+					return QuestionRepository.updateQuestionAuthor(author, "Deleted user")
+				}).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
 		deleteAnswerById(author, id) {
 			return new Promise((resolve, reject) => {
 				QuestionRepository.deleteAnswerById(author, id

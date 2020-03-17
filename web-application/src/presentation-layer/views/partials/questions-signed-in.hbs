@@ -5,12 +5,19 @@
             {{#each questions}}
 
                 <div class="medium-8 columns">
-                    <div class="blog-post">
+                    <div class="question blog-post">
                         <h3>{{title}}</h3>
                         <p>{{description}}</p>
                         <div class="callout">
                             <ul class="menu simple">
-                                <li><a href="#">Asked by: {{author}}</a></li>
+                                <li>
+                                    {{#ifNot author "Deleted account"}}
+                                        <a href="/accounts/by-name/{{author}}">Asked by: {{../author}}</a>
+                                    {{/ifNot}}
+                                    {{#ifEquals author "Deleted account"}}
+                                        Asked by: {{../author}}
+                                    {{/ifEquals}}
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -44,12 +51,22 @@
 
                     {{#if answers}}
                         {{#each answers}}
-                        
-                            <div class="answer">
+
+                            <div class="answer blog-post">
                                 <p>Answer: {{content}}</p>
-                                <br>
-                                <p>Author: {{author}}</p>
-                                <br>
+                                <p>{{description}}</p>
+                                <div class="callout">
+                                    <ul class="menu simple">
+                                        <li>
+                                            {{#ifNot author "Deleted user"}}
+                                                <a href="/accounts/by-name/{{author}}">Author: {{../author}}</a>
+                                            {{/ifNot}}
+                                            {{#ifEquals author "Deleted user"}}
+                                                Author: {{../author}}
+                                            {{/ifEquals}}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
 
                             {{#ifEquals @root.userStatus.username author}}

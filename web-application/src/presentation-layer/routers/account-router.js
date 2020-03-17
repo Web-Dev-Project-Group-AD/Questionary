@@ -6,7 +6,8 @@ const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
 module.exports = ({ 
     AccountManager, 
-    GoogleAuthManager, 
+    GoogleAuthManager,
+    QuestionManager, 
     SessionAuthorizer, 
     SessionRedirector,
     csrfProtection
@@ -223,9 +224,10 @@ module.exports = ({
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
-
-        AccountManager.deleteAccountById(userStatus.userId
+        QuestionManager.removeAuthor(userStatus.username
         ).then(() => {
+            return AccountManager.deleteAccountById(userStatus.userId)
+        }).then(() => {
             return request.session.destroy()
         }).then(() => {
             response.clearCookie("signIn").redirect("/accounts/sign-in")
