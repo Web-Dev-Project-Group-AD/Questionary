@@ -11,10 +11,10 @@
                         <div class="callout">
                             <ul class="menu simple">
                                 <li>
-                                    {{#ifNot author "Deleted account"}}
-                                        <a href="/accounts/by-name/{{author}}">Asked by: {{../author}}</a>
+                                    {{#ifNot author "Deleted user"}}
+                                        <a href="/accounts/by-name/{{../author}}">Asked by: {{../author}}</a>
                                     {{/ifNot}}
-                                    {{#ifEquals author "Deleted account"}}
+                                    {{#ifEquals author "Deleted user"}}
                                         Asked by: {{../author}}
                                     {{/ifEquals}}
                                 </li>
@@ -59,7 +59,7 @@
                                     <ul class="menu simple">
                                         <li>
                                             {{#ifNot author "Deleted user"}}
-                                                <a href="/accounts/by-name/{{author}}">Author: {{../author}}</a>
+                                                <a href="/accounts/by-name/{{../author}}">Author: {{../author}}</a>
                                             {{/ifNot}}
                                             {{#ifEquals author "Deleted user"}}
                                                 Author: {{../author}}
