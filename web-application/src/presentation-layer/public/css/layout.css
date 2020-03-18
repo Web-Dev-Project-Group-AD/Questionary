@@ -70,7 +70,7 @@ h1, h2, h3, h4 {
     padding: 0;
 }
 
-.top-bar a, a:visited {
+.top-bar a, .top-bar a:visited {
     color: #ffffff;
 }
 
@@ -85,10 +85,6 @@ h1, h2, h3, h4 {
 .top-bar .input-group {
 	margin-bottom: 0;
 }
-
-/* .top-bar li#searchBar {
-	vertical-align: middle;
-} */
 
 .row {
     margin-top: 80px;

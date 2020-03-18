@@ -1,36 +1,21 @@
-<div name="editAnswer">
-    <div class="row" id="content">
 
-        {{#if question}}
 
-            <div class="medium-8 columns">
-                    
-                <div class="blog-post">
-                    <h3>{{question.title}}</h3>
-                    <p>{{question.description}}</p>
-                    <div class="callout">
-                        <ul class="menu simple">
-                            <li><a href="/accounts/{{question.author}}">Asked by: {{question.author}}</a></li>
-                        </ul>
-                    </div>
-                </div>
-
+<div class="row" id="content">
+    {{#if answer}}
+        <div class="form-post">
+            <div class="medium-12 column">
+                <h3>Edit Answer</h3>
             </div>
+            <form method="POST" action="/questions/edit-answer/{{answer.id}}">
+                <div class="medium-12 column">
+                    <textarea rows="10" cols="50" name="content" id="answerContent" 
+                        placeholder="Answer">{{answer.content}}{{/if}}</textarea>
+                </div>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
 
-            <form class="editAnswer" method="POST" action="/questions/by-id/{{question.id}}/edit-answer/{{question.answer.id}}">
-                <br>
-                <input type="text" name="content" id="answerContent" placeholder="Answer"
-                    {{#if question.answer}}
-                        value="{{question.answer.content}}"
-                    {{/if}}
-                />
-                <br>
-                <input type="hidden" name="questionTitle" value="{{question.title}}" />
-                <input type="hidden" name="questionDescription" value="{{question.description}}" />
-                <input type="hidden" name="questionAuthor" value="{{question.author}}" />
-           		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
-                <input type="submit" class="button" value="Submit answer" />
-                <br>
+                <div class="small-6 column">
+                    <input type="submit" class="button" value="Submit edit">
+                </div>
 
                 <ul id="errorMessages">
                     {{#if validationErrors}}
@@ -38,14 +23,13 @@
                             <li>{{this}}</li>
                         {{/each}}
                     {{/if}}
-			    </ul>
+                </ul>
             </form>
-
-        {{else}}
-            <h3>Question does not exist.</h3>
-        {{/if}}
-
-    </div>
+        </div>
+    {{else}}
+        <h3>Question does not exist.</h3>
+    {{/if}}
 </div>
+
 
 <script src="../views/client-validation/answer-validator.js"></script>

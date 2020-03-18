@@ -5,16 +5,18 @@
         {{#each questions}}
             {{> question-template}}
                 
-            {{#ifNot ../userStatus.username author}}
-                <div class="medium-8 column">
-                    <form method="GET" action="/questions/by-id/{{../id}}/new-answer">
-                        <input type="hidden" name="questionTitle" value="{{../title}}" />
-                        <input type="hidden" name="questionDescription" value="{{../description}}" />
-                        <input type="hidden" name="questionAuthor" value="{{../author}}" />
-                        <input type="submit" class="button" value="Post new answer" />
-                    </form> 
-                </div>
-            {{/ifNot}}
+            {{#if ../userStatus}}
+                {{#ifNot ../userStatus.username author}}
+                    <div class="medium-8 column">
+                        <form method="GET" action="/questions/by-id/{{../id}}/new-answer">
+                            <input type="hidden" name="questionTitle" value="{{../title}}" />
+                            <input type="hidden" name="questionDescription" value="{{../description}}" />
+                            <input type="hidden" name="questionAuthor" value="{{../author}}" />
+                            <input type="submit" class="button" value="Post new answer" />
+                        </form> 
+                    </div>
+                {{/ifNot}}
+            {{/if}}
 
             {{#if answers}}
                 {{#each answers}}

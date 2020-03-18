@@ -1,22 +1,35 @@
-<div name="editQuestion">
-
+<div class="row" id="content">
     {{#if question}}
-
-        <form method="POST" action="/questions/by-id/{{question.id}}/edit">
-            <input type="text" name="questionTitle" placeholder="Question" value="{{question.title}}" />
-            <br>
-            <input type="text" name="questionDescription" placeholder="Description" value="{{question.description}}" />
-            <br>
-            <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-            <input type="submit" class="button" value="Submit question" />
-            <br>
-            <div id="error-message"></div>
-        </form>
-    
+        <div class="form-post">
+            <div class="medium-12 column">
+                <h3>Edit Question</h3>
+            </div>
+            <form name="question" method="POST" action="/questions/by-id/{{question.id}}/edit">
+                <div class="medium-12 column">
+                    <input type="text" name="title" id="questionTitle" placeholder="Question" 
+                        value="{{question.title}}" />
+                </div>
+                <div class="medium-12 column">
+                    <textarea rows="4" cols="50" name="description" id="questionDescription" 
+                        placeholder="Description (Optional)">{{question.description}}</textarea>
+                </div>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                <input type="submit" class="button" value="Submit edit" />
+            </form>
+        
+            <div class="medium-12 column">
+                <ul id="errorMessages">
+                    {{#if validationErrors}}
+                        {{#each validationErrors}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
     {{else}}
         <h3>Question does not exist.</h3>
     {{/if}}
-
 </div>
 
 <script src="../views/client-validation/question-validator.js"></script>

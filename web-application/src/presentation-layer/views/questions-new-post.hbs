@@ -1,3 +1,53 @@
+<div class="row" id="content">
+	<div class="form-post">
+		<div class="medium-12 column">
+			<h3>New Question</h3>
+		</div>
+		<form name="question" method="POST" action="/questions/new-post">
+			<div class="medium-12 column">
+				<input type="text" name="title" id="questionTitle" placeholder="Question" 
+					{{#if question}}
+						value="{{question.title}}"
+					{{/if}}
+				/>
+			</div>
+			<div class="medium-12 column">
+				<textarea rows="4" cols="50" name="description" id="questionDescription" placeholder="Description (Optional)"
+					>{{#if question}}{{question.description}}{{/if}}</textarea>
+			</div>
+			{{#if categories}}
+				<label for="categories">Choose a category:</label>
+				<select id="optionCategories" name="optionCategories">
+					{{#each categories}}
+						<option value="{{name}}">{{name}}</option>
+					{{/each}}
+				</select>
+				<label for="customCategory">Or create a custom category:</label>			
+			{{/if}}
+			<input type="text" name="customCategory" id="customCategory" placeholder="Custom category" 
+				{{#if question}}
+					value="{{question.customCategory}}"
+				{{/if}}
+			/>
+			<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+			<input type="submit" class="button" value="Submit question" />
+		</form>
+	
+		<div class="medium-12 column">
+			<ul id="errorMessages">
+				{{#if validationErrors}}
+					{{#each validationErrors}}
+						<li>{{this}}</li>
+					{{/each}}
+				{{/if}}
+			</ul>
+		</div>
+	
+	</div>
+</div>
+
+
+{{!-- 
 <div name="newQuestion">
 
 		<h3>New Question</h3>
@@ -45,6 +95,6 @@
 		</form>
 
 	</div>
-</div>
+</div> --}}
 
 <script src="../views/client-validation/question-validator.js"></script>
