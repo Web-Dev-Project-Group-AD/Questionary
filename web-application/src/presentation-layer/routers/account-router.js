@@ -22,9 +22,12 @@ module.exports = ({
 
     router.post("/sign-up", csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
+        const username = request.body.username
+        const email = request.body.email
+
         const account = { 
-            username: request.body.username,
-            email: request.body.email, 
+            username: username,
+            email: email, 
             password: request.body.password, 
             passwordRepeated: request.body.passwordRepeated
         }
@@ -99,8 +102,9 @@ module.exports = ({
     router.post("/sign-in", 
     csrfProtection, SessionRedirector.redirectUser, (request, response) => {
 
+        const email = request.body.email
         const account = { 
-            email: request.body.email,
+            email: email,
             password: request.body.password
         }
         AccountManager.signInAccount(account

@@ -1,38 +1,38 @@
-<div class="content">
-	<h3>Sign In</h3>
-	<p>Sign in using the form below.</p>
+<div class="row" id="content">
+	<div class="form-post form-sign-in">
 
-	<form name="signIn" method="POST" action="/accounts/sign-in">
-		<br>
-		<input type="text" 
-			{{#if email}} 
-				value="{{email}}"
-			{{/if}}
-			name="email" id="email" placeholder="Email" />
-		<br>
-		<input type="password" name="password" id="password" placeholder="Password" />
-		<br>
-		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
-		<input type="submit" class="button" value="Sign in" />
-	</form>
-	<br>
-	<div name="getGoogleSignIn">
-		<a href="/accounts/sign-in/google">
-			<img class="google" src="/images/btn_google_signin_dark_pressed_web@2x.png" alt="Sign in with Google">
-		</a>
-	</div>
-	<br>
-	<div name="getSignUp">
-		<p>
-			Not a user?
-			<a class="button" href="/accounts/sign-up">Sign up</a>
-		</p>
-	</div>
-	<div name="errorMessage">
-		{{#if errorMessage}} 
-			<br>
-			{{errorMessage}}
-		{{/if}}
-	</div>
+		<div class="medium-12 column">
+			<h3>Sign In</h3>
+		</div>
+		<form name="signIn" method="POST" action="/accounts/sign-in">
+			<div class="medium-8 column">
+				<input type="email" {{#if email}} value="{{email}}" {{/if}}
+				name="email" id="email" placeholder="Email" />
+			</div>
+			<div class="medium-8 column">
+				<input type="password" id="password" name="password" placeholder="Password" />
+			</div>
+			<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+			<div class="medium-8 column">
+				<input type="submit" class="button" value="Sign in">
+			</div>
+		</form>
 
+		<div class="medium-10 column link-sign-up">
+			<h4>Not a user?</h4>
+			<a id="sign-up" class="button" href="/accounts/sign-up">Sign up</a>
+			<a id="sign-in-google" href="/accounts/sign-in/google">
+			<img class="google" src="/images/btn_google_signin_dark_pressed_web@2x.png" alt="Sign in with google">
+			</a>
+		</div>
+
+		<div class="medium-10 column">
+			<div name="errorMessage">
+				{{#if errorMessage}} 
+					{{errorMessage}}
+				{{/if}}
+			</div>
+		</div>
+
+	</div>
 </div>
