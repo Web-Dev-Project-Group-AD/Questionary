@@ -1,3 +1,8 @@
+const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const ERROR_MSG_CREATE_UNIQUE_QUESTION = "Question already exists."
+const SEQUELIZE_ERROR_UNIQUE_QUESTION = "title must be unique"
+
+
 
 module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
 
@@ -27,7 +32,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(categories => {
                     resolve(categories)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -41,21 +46,29 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     description: question.description,
                 }).then(result => {
                     resolve(result.id)
-                }).catch(error => {
-                    reject(error)
+                }).catch(errorList => {
+                    const errors = []
+                    for (error of errorList.errors) {
+                        if (err.message == SEQUELIZE_ERROR_UNIQUE_QUESTION) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_QUESTION) 
+                        } else {
+                            errors.push(ERROR_MSG_DATABASE_GENERAL)
+                        }
+                    }
+                    reject(errors)
                 })
             })
         },
 
-        getQuestionById(id) {
+        getQuestionsByIds(ids) {
             return new Promise((resolve, reject) => {
                 QuestionModel.findAll({
                     raw: true,
-                    where: { id: id }
+                    where: { id: ids }
                 }).then(question => {
                     resolve(question)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -70,7 +83,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -86,7 +99,19 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
+        getAllQuestions() {
+            return new Promise((resolve, reject) => {
+                QuestionModel.findAll({
+                    raw: true
+                }).then(questions => {
+                    resolve(questions)
+                }).catch(error => {
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -101,7 +126,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -118,8 +143,16 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     }
                 }).then(result => {
                     resolve(result.id)
-                }).catch(error => {
-                    reject(error)
+                }).catch(errorList => {
+                    const errors = []
+                    for (error of errorList.errors) {
+                        if (err.message == SEQUELIZE_ERROR_UNIQUE_QUESTION) {
+                            errors.push(ERROR_MSG_CREATE_UNIQUE_QUESTION) 
+                        } else {
+                            errors.push(ERROR_MSG_DATABASE_GENERAL)
+                        }
+                    }
+                    reject(errors)
                 })
             })
         },
@@ -167,7 +200,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
-        getAnswersByAnswerAuthor(author) {
+        getAnswersByAuthor(author) {
             return new Promise((resolve, reject) => {
                 AnswerModel.findAll({
                     raw: true,
@@ -235,8 +268,39 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     reject(error)
                 })
             })
+        },
+
+        updateQuestionAuthor(author, newAuthor) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.update({
+                    author: newAuthor
+                }, {
+                    where: {
+                        author: author
+                    }
+                }).then(result => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        updateAnswerAuthor(author, newAuthor) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.update({
+                    author: newAuthor
+                }, {
+                    where: {
+                        author: author
+                    }
+                }).then(result => {
+                    resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
         }
-        
     }
 
 }

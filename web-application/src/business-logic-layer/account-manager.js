@@ -17,13 +17,46 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 					throw errors
 				}
 				bcrypt.hash(account.password, saltRounds
-				).then(hash => {
-					account.password = hash
+				).then(hashedPassword => {
+					account.password = hashedPassword
 					return AccountRepository.createAccount(account)
-				}).then(createdAccount => {
-					resolve(createdAccount)
+				}).then(accountId => {
+					resolve(accountId)
 				}).catch(errors => {
 					reject(errors)
+				})
+			})
+		},
+
+		createThirdPartyAccount(account) {
+            return new Promise ((resolve, reject) => {
+                AccountRepository.createThirdPartyAccount(account
+                ).then(accountId => {
+                    resolve(accountId)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+		getAccountByUsername(username) {
+			return new Promise((resolve, reject) => {
+				AccountRepository.getAccountByUsername(username
+				).then(account => {
+					resolve(account)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getAccountByEmail(email) {
+			return new Promise((resolve, reject) => {
+				AccountRepository.getAccountByEmail(email
+					).then(account => {
+					resolve(account)
+				}).catch(error => {
+					reject(error)
 				})
 			})
 		},
@@ -33,17 +66,6 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 				AccountRepository.getAllAccounts(
 				).then(accounts => {
 					resolve(accounts)
-				}).catch(error => {
-					reject(error)
-				})
-			})
-		},
-
-		getAccountByUsername(username) {
-			return new Promise((resolve, reject) => {
-				AccountRepository.getAccountByUsername(username
-				).then(account => {
-					resolve(account)
 				}).catch(error => {
 					reject(error)
 				})
@@ -76,11 +98,44 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 			})
 		},
 
-		getValidationConstraints: () => {
-			const validationConstraints = AccountValidator.getValidationConstraints()
-			return validationConstraints
-		}
+		updatePassword(account) {
+			return new Promise((resolve, reject) => {
+				const errors = AccountValidator.getErrorsUpdatePassword(account)
+				if (errors.length > 0) {
+					throw errors
+				}
+				AccountRepository.getAccountByUsername(account.username
+				).then(returnedAccount => {
+					if	(returnedAccount.thirdParty) {
+						throw "Can not change third party account password."
+					}
+					return bcrypt.compare(account.oldPassword, returnedAccount.password)
+				}).then(isValidPassword => {
+					if (!isValidPassword) {
+						throw "Incorrect password."
+					} else {
+						return bcrypt.hash(account.password, saltRounds)
+					}
+				}).then(hashedPassword => {
+					return AccountRepository.updatePassword(account.id, hashedPassword)
+				}).then(returnedId => {
+					resolve(returnedId)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
 
+		deleteAccountById(id) {
+			return new Promise((resolve, reject) => {
+				AccountRepository.deleteAccountById(id
+				).then(() => {
+					resolve()
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		}
 	}
 
 }

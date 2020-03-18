@@ -1,9 +1,7 @@
 const expressHandlebars = require("express-handlebars")
 const path = require("path")
 
-
 module.exports = ({ }) => {
-
 
     const handlebars = expressHandlebars.create({
         extname: "hbs",

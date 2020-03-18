@@ -7,7 +7,8 @@
             <br>
             <input type="text" name="questionDescription" placeholder="Description" value="{{question.description}}" />
             <br>
-            <input type="submit" class="btn" value="Submit question" />
+            <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+            <input type="submit" class="button" value="Submit question" />
             <br>
             <div id="error-message"></div>
         </form>

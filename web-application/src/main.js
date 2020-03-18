@@ -11,7 +11,10 @@ const AccountRouter = require("./presentation-layer/routers/account-router")
 const AccountRouterApi = require("./presentation-layer-rest-api/routers/account-router")
 const QuestionRouter = require("./presentation-layer/routers/question-router")
 const expressHandlebars = require("./presentation-layer/handlebars-setup")
-const expressSession = require("./presentation-layer/session-setup")
+const expressSession = require("./presentation-layer/sessions/session-setup")
+const SessionAuthorizer = require("./presentation-layer/sessions/session-authorizer")
+const SessionRedirector = require("./presentation-layer/sessions/session-redirector")
+const csrfProtection = require("./presentation-layer/csurf-setup")
 
 container.register("VariousRouter", awilix.asFunction(VariousRouter))
 container.register("VarRouter", awilix.asFunction(VarRouter))
@@ -22,22 +25,26 @@ container.register("AccountRouterApi", awilix.asFunction(AccountRouterApi))
 container.register("QuestionRouter", awilix.asFunction(QuestionRouter))
 container.register("expressHandlebars", awilix.asFunction(expressHandlebars))
 container.register("expressSession", awilix.asFunction(expressSession))
+container.register("SessionAuthorizer", awilix.asFunction(SessionAuthorizer))
+container.register("SessionRedirector", awilix.asFunction(SessionRedirector))
+container.register("csrfProtection", awilix.asFunction(csrfProtection))
 
 // Business-logic-layer
 const AccountManager = require("./business-logic-layer/account-manager")
+const GoogleAuthManager = require("./business-logic-layer/google-auth-manager")
 const AccountValidator = require("./business-logic-layer/account-validator")
 const QuestionManager = require("./business-logic-layer/question-manager")
 const QuestionValidator = require("./business-logic-layer/question-validator")
-const SessionAuthenticator = require("./business-logic-layer/session-authenticator")
-const SessionRedirector = require("./business-logic-layer/session-redirector")
+const searchOptions = require("./business-logic-layer/search-options")
+const SearchManager = require("./business-logic-layer/search-manager")
 
 container.register("AccountManager", awilix.asFunction(AccountManager))
+container.register("GoogleAuthManager", awilix.asFunction(GoogleAuthManager))
 container.register("AccountValidator", awilix.asFunction(AccountValidator))
 container.register("QuestionManager", awilix.asFunction(QuestionManager))
 container.register("QuestionValidator", awilix.asFunction(QuestionValidator))
-container.register("SessionAuthenticator", awilix.asFunction(SessionAuthenticator))
-container.register("SessionRedirector", awilix.asFunction(SessionRedirector))
-
+container.register("searchOptions", awilix.asValue(searchOptions))
+container.register("SearchManager", awilix.asFunction(SearchManager))
 
 // Choose either Data-access-layer or Data-access-layer-sequelize
 

@@ -1,27 +1,20 @@
-<div class="content">
-<h1>Account</h1>
-{{#if errors.length}}
-	<p>Oh no, something went wrong:</p>
-	<ul>
-		{{#each errors}}
-			<li>{{this}}</li>
-		{{/each}}
-	</ul>
-{{else}}
-	
+<div name="account">
+	<h3>Username: {{account.username}}</h3>
 	{{#if account}}
-		<dl>
-			
-			<dt>Id:</dt>
-			<dd>{{account.id}}</dd>
-			
-			<dt>Username:</dt>
-			<dd>{{account.username}}</dd>
-			
-		</dl>
+		
+		<a href="/questions/by-answer-author/{{account.username}}" class="button">Show all answers</a>	
+		<br>
+
+		{{#if userStatus}}
+			{{#ifEquals account.username userStatus.username}}
+				{{#unless ../userStatus.isThirdParty}}
+					<a href="/accounts/edit/" class="button">Edit account</a>
+					<br>
+				{{/unless}}
+					<a href="/accounts/delete/" class="button">Delete account</a>
+			{{/ifEquals}}
+		{{/if}}
 	{{else}}
 		<p>No, that account doesn't exist.</p>
 	{{/if}}
-	
-{{/if}}
 </div>

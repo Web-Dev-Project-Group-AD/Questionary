@@ -21,13 +21,18 @@
         <div class="top-bar-right">
             <ul class="menu">
                 {{#if userStatus}}
+                    <li>
+                        <a href="/accounts/by-name/{{userStatus.username}}">
+                            <small>Signed in as {{userStatus.username}}</small>
+                        </a>
+                    </li>
                     <li><a href="/accounts/sign-out">Sign out</a></li>
                 {{else}}
                     <li><a href="/accounts/sign-in">Sign In</a></li>
                 {{/if}}
                 <li><a href="/questions/new-post">New Question</a></li>
                 <li><a href="/questions/unanswered/">Answer</a></li>
-                <li><a href="/questions/search">Search</a></li>
+                <li><a href="/search">Search</a></li>
             </ul>
         </div>
     </div>
@@ -41,7 +46,6 @@
     <script>
         $(document).foundation();
     </script>
-
 
 </body>
 
