@@ -61,8 +61,9 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         QuestionManager.getQuestionById(id
         ).then(questions => {
+            const categories = [questions[0].category]
             response.render("questions.hbs", 
-            { userStatus, questions, csrfToken: request.csrfToken() })
+            { userStatus, questions, categories, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -73,10 +74,15 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         const userStatus = request.session.userStatus
         const author = request.params.author
-        var categories = []
 
         QuestionManager.getQuestionsByAuthor(author
         ).then(questions => {
+            const categories = []
+            for(question of questions) {
+                if (!categories.includes(question.category)) {
+                    categories.push(question.category)
+                }
+            }
             response.render("questions.hbs", 
             { userStatus, questions, categories, csrfToken: request.csrfToken() })
         }).catch(error => {
@@ -309,7 +315,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
             
-    router.get("/by-id/:questionId/edit-answer/:answerId", 
+    router.get("/edit-answer/:answerId", 
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
@@ -352,7 +358,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         }
     })
 
-    router.post("/by-id/:questionId/edit-answer/:answerId", 
+    router.post("/edit-answer/:answerId", 
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
@@ -361,20 +367,13 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             author: userStatus.username, 
             content: request.body.content
         }
-        var question = { 
-            id: request.params.questionId, 
-            title: request.body.questionTitle, 
-            description: request.body.questionDescription, 
-            author: request.body.questionAuthor
-        }
 
         QuestionManager.updateAnswer(answer
         ).then(answerId => {
             const answers = [answer]
             question.answers = answers
             const questions = [question]
-            response.render("questions.hbs", 
-            { userStatus, questions, csrfToken: request.csrfToken() })
+            response.redirect("/questions/by-answer-author/" + userStatus.username)
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
@@ -387,17 +386,16 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     }) 
 
-    router.post("/by-id/:questionId/delete-answer/:answerId", 
+    router.post("/delete-answer/:answerId", 
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
         const author = userStatus.username
         const answerId = request.params.answerId
-        const questionId = request.params.questionId
 
         QuestionManager.deleteAnswerById(author, answerId
         ).then(() => {
-            response.redirect("/questions/by-id/" + questionId)
+            response.redirect("/questions/by-answer-author/" + userStatus.username)
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
