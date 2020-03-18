@@ -58,7 +58,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         const id = request.params.questionId
         const userStatus = request.session.userStatus
-
+    
         QuestionManager.getQuestionById(id
         ).then(questions => {
             const categories = [questions[0].category]
@@ -189,6 +189,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 description: request.query.description, 
                 author: request.query.description
             }
+
             return response.render("questions-edit.hbs", 
             { userStatus, question, csrfToken: request.csrfToken() })
         } else {
@@ -214,13 +215,13 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         const question = { 
             author: userStatus.username,
             id: request.params.questionId, 
-            title: request.body.questionTitle, 
-            description: request.body.questionDescription
+            title: request.body.title, 
+            description: request.body.description
         }
        
         QuestionManager.updateQuestion(question
-        ).then(questionId => {
-            response.redirect("/questions/by-id/" + questionId)
+        ).then(returnedId => {
+            response.redirect("/questions/by-id/" + question.id)
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
