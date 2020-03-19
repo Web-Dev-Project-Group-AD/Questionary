@@ -1,0 +1,35 @@
+<div class="medium-8 columns">
+
+    <div class="answer blog-post">
+        <p>Answer: {{content}}</p>
+        <p>{{description}}</p>
+        <div class="callout">
+            <ul class="menu simple">
+                <li>
+                    {{#ifNot author "Deleted user"}}
+                        <a href="/accounts/by-name/{{../author}}">Author: {{../author}}</a>
+                    {{/ifNot}}
+                    {{#ifEquals author "Deleted user"}}
+                        Author: {{../author}}
+                    {{/ifEquals}}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    {{#if @root.userStatus}}
+        {{#ifEquals @root.userStatus.username author}}
+            <form method="GET" name="editAnswer" action="/questions/edit-answer/{{../id}}">
+                <input type="hidden" name="content" value="{{../content}}" />
+                <input type="hidden" name="questionId" value="{{../questionId}}" />
+                <input type="submit" class="button" value="Edit" />
+            </form>
+
+            <form method="POST" name="deleteAnswer" action="/questions/delete-answer/{{../id}}">
+                <input type="hidden" name="_csrf" value="{{@root.csrfToken}}" />
+                <input type="submit" class="button" value="Delete" />
+            </form>
+        {{/ifEquals}}
+    {{/if}}
+
+</div>

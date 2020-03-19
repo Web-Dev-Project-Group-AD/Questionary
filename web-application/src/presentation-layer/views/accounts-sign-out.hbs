@@ -1,9 +1,14 @@
-<div name="signOut">
-	<h3>Sign out</h3>
-	<p>Confirm signing out</p>
-
-	<form method="POST" action="/accounts/sign-out">
-		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
-		<input type="submit" class="button" value="Sign out" />
-	</form>
+<div class="row" id="content">
+	<div class="form-post">
+		<div class="medium-8 column">
+			<h3>Sign out</h3>
+			<p>Confirm signing out</p>
+		</div>
+        <div class="medium-12 column">
+			<form method="POST" action="/accounts/sign-out">
+				<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+				<input type="submit" class="button" value="Sign out" />
+			</form>
+        </div>
+	</div>
 </div>

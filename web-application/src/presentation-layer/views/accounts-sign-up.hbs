@@ -1,37 +1,44 @@
-<div name="newAccount">
-
-	<h3>New Account</h3>
-
-	<form method="POST" action="/accounts/sign-up">
-		<br>
-		<input type="text" name="username" id="username" placeholder="Username" 
-			{{#if username}}
-				value="{{username}}"
-			{{/if}} 
-		/>
-		<br>
-		<input type="text" name="email" id="email" placeholder="Email" 
-			{{#if email}}
-				value="{{email}}"
-			{{/if}} 
-		/>
-		<br>
-		<input type="password" name="password" id="password1" placeholder="Password" />
-		<br>
-		<input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
-		<br>
-		<input type="hidden" name="_csrf" value="{{csrfToken}}" />
-		<input type="submit" class="button" value="Register" />
-		<br>
-		<ul id="errorMessages">
-			{{#if validationErrors}}
-				{{#each validationErrors}}
-					<li>{{this}}</li>
-				{{/each}}
-			{{/if}}
-		</ul>
-	</form>
-
+<div class="row" id="content">
+	<div class="form-post form-sign-up">
+		<div class="medium-8 column">
+			<h3>New Account</h3>
+		</div>
+		<form method="POST" action="/accounts/sign-up">
+			<div class="small-6 column">
+				<input id="email" name="email" type="email" placeholder="Email"
+					{{#if email}}
+						value="{{email}}"
+					{{/if}} 
+				/>
+			</div>
+			<div class="small-6 column">
+				<input id="username" name="username" type="text" placeholder="Username" 
+					{{#if username}}
+						value="{{username}}"
+					{{/if}} 
+				/>
+			</div>
+			<div class="small-6 column">
+				<input id="password1" name="password" type="password" placeholder="Password" />
+			</div>
+			<div class="small-6 column">
+				<input id="password2" name="passwordRepeated" type="password" placeholder="Repeat password" />
+			</div>
+			<input type="hidden" name="_csrf" value="{{csrfToken}}" />
+			<div class="small-6 column">
+				<input type="submit" class="button" value="Sign up">
+			</div>
+		</form>
+		<div class="medium-8 column">
+			<ul id="errorMessages">
+				{{#if validationErrors}}
+					{{#each validationErrors}}
+						<li>{{this}}</li>
+					{{/each}}
+				{{/if}}
+			</ul>
+		</div>
+	</div>
 </div>
 
 <script src="../views/client-validation/account-validator.js"></script>

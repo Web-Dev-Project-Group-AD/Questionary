@@ -11,12 +11,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
         createQuestionCategory(category) {
             return new Promise((resolve, reject) => {
                 QuestionCategoryModel.findOrCreate({
-                    where: {
-                        name: category
-                    },
-                    defaults: {
-                        name: category
-                    }
+                    where: { name: category },
+                    defaults: { name: category }
                 }).then(result => {
                     resolve(result.id)
                 }).catch(error => {
@@ -49,7 +45,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).catch(errorList => {
                     const errors = []
                     for (error of errorList.errors) {
-                        if (err.message == SEQUELIZE_ERROR_UNIQUE_QUESTION) {
+                        if (error.message == SEQUELIZE_ERROR_UNIQUE_QUESTION) {
                             errors.push(ERROR_MSG_CREATE_UNIQUE_QUESTION) 
                         } else {
                             errors.push(ERROR_MSG_DATABASE_GENERAL)
@@ -60,13 +56,26 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
+        getQuestionById(id) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.findOne({
+                    raw: true,
+                    where: { id: id }
+                }).then(question => {
+                    resolve(question)
+                }).catch(error => {
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
         getQuestionsByIds(ids) {
             return new Promise((resolve, reject) => {
                 QuestionModel.findAll({
                     raw: true,
                     where: { id: ids }
-                }).then(question => {
-                    resolve(question)
+                }).then(questions => {
+                    resolve(questions)
                 }).catch(error => {
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
@@ -77,9 +86,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             return new Promise((resolve, reject) => {
                 QuestionModel.findAll({
                     raw: true,
-                    where: {
-                        author: author
-                    }
+                    where: { author: author }
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
@@ -120,9 +127,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             return new Promise((resolve, reject) => {
                 QuestionModel.findAll({
                     raw: true,
-                    where: {
-                        isAnswered: isAnswered,
-                    }
+                    where: { isAnswered: isAnswered }
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
@@ -194,6 +199,19 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     content: answer.content
                 }).then(result => {
                     resolve(result.id)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        getAnswerById(id) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.findOne({
+                    raw: true,
+                    where: { id: id },
+                }).then(answer => {
+                    resolve(answer)
                 }).catch(error => {
                     reject(error)
                 })
@@ -272,12 +290,10 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
 
         updateQuestionAuthor(author, newAuthor) {
             return new Promise((resolve, reject) => {
-                QuestionModel.update({
-                    author: newAuthor
+                QuestionModel.update({ 
+                    author: newAuthor 
                 }, {
-                    where: {
-                        author: author
-                    }
+                    where: { author: author }
                 }).then(result => {
                     resolve()
                 }).catch(error => {
@@ -288,12 +304,10 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
 
         updateAnswerAuthor(author, newAuthor) {
             return new Promise((resolve, reject) => {
-                AnswerModel.update({
-                    author: newAuthor
+                AnswerModel.update({ 
+                    author: newAuthor 
                 }, {
-                    where: {
-                        author: author
-                    }
+                    where: { author: author }
                 }).then(result => {
                     resolve()
                 }).catch(error => {
@@ -302,5 +316,4 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         }
     }
-
 }

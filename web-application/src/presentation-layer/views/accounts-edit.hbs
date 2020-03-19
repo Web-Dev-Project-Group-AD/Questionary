@@ -1,23 +1,33 @@
-<div name="editAccount">
-
-    <form class="editPassword" method="POST" action="/accounts/edit-password">
-        <br>
-        <input type="password" name="oldPassword" id="oldPassword" placeholder="Old password" />
-        <br>
-        <input type="password" name="password" id="password" placeholder="New password" />
-        <br>
-        <input type="password" name="passwordRepeated" id="passwordRepeated" placeholder="Repeat new password" />
-        <br>
-        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-        <input type="submit" class="btn" value="Submit" />
-        <br>
-        <ul id="errorMessages">
-            {{#if validationErrors}}
-                {{#each validationErrors}}
-                    <li>{{this}}</li>
-                {{/each}}
-            {{/if}}
-        </ul>
-    </form>
-
+<div class="row" id="content">
+    <div class="form-post">
+        <div class="medium-8 column">
+			<h3>Change Password</h3>
+		</div>
+        <div class="medium-8 column">
+            <form method="POST" action="/accounts/edit-password">
+   			    <div class="medium-8 column">
+                    <input type="password" name="oldPassword" id="oldPassword" placeholder="Old password" />
+   			    </div>
+                <div class="medium-8 column">
+                    <input type="password" name="password" id="password" placeholder="New password" />
+                </div>
+                <div class="medium-8 column">
+                    <input type="password" name="passwordRepeated" id="passwordRepeated" placeholder="Repeat new password" />
+                </div>
+                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+      			<div class="medium-8 column">
+                    <input type="submit" class="button" value="Submit" />
+      			</div>
+            </form>
+            <div class="small-6 column">
+                <ul id="errorMessages">
+                    {{#if validationErrors}}
+                        {{#each validationErrors}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
