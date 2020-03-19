@@ -56,13 +56,26 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             })
         },
 
+        getQuestionById(id) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.findOne({
+                    raw: true,
+                    where: { id: id }
+                }).then(question => {
+                    resolve(question)
+                }).catch(error => {
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
         getQuestionsByIds(ids) {
             return new Promise((resolve, reject) => {
                 QuestionModel.findAll({
                     raw: true,
                     where: { id: ids }
-                }).then(question => {
-                    resolve(question)
+                }).then(questions => {
+                    resolve(questions)
                 }).catch(error => {
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
@@ -186,6 +199,19 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     content: answer.content
                 }).then(result => {
                     resolve(result.id)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        getAnswerById(id) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.findOne({
+                    raw: true,
+                    where: { id: id },
+                }).then(answer => {
+                    resolve(answer)
                 }).catch(error => {
                     reject(error)
                 })

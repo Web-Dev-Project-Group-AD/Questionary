@@ -21,6 +21,7 @@
         {{#ifEquals @root.userStatus.username author}}
             <form method="GET" name="editAnswer" action="/questions/edit-answer/{{../id}}">
                 <input type="hidden" name="content" value="{{../content}}" />
+                <input type="hidden" name="questionId" value="{{../questionId}}" />
                 <input type="submit" class="button" value="Edit" />
             </form>
 

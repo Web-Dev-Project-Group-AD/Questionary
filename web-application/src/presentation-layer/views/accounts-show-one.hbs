@@ -1,7 +1,6 @@
 <div name="account">
-	<h3>Username: {{account.username}}</h3>
 	{{#if account}}
-		
+		<h3>Username: {{account.username}}</h3>
 		<a href="/questions/by-answer-author/{{account.username}}" class="button">Show all answers</a>	
 		<br>
 
@@ -15,6 +14,6 @@
 			{{/ifEquals}}
 		{{/if}}
 	{{else}}
-		<p>No, that account doesn't exist.</p>
+		<h3>User does not exist.</h3>
 	{{/if}}
 </div>

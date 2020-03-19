@@ -1,14 +1,16 @@
-<div name="accounts">
-	<h3>All User Accounts</h3>
-	
-	{{#if accounts}}
-		<ul>
-			{{#each accounts}}
-				<li><a href="/accounts/{{username}}">{{username}}</a></li>
-			{{/each}}
-		</ul>
-	{{else}}
-		<p>No accounts exist yet.</p>
-	{{/if}}
-	
+<div class="row" id="content">
+    <div class="medium-8 column">
+		<h3>All User Accounts</h3>
+		{{#if accounts}}
+			<ul>
+				{{#each accounts}}
+					{{#ifNot username "Deleted user"}}
+						<li><a href="/accounts/by-name/{{../username}}">{{../username}}</a></li>
+					{{/ifNot}}
+				{{/each}}
+			</ul>
+		{{else}}
+			<p>No accounts exist yet.</p>
+		{{/if}}
+    </div>
 </div>

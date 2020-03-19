@@ -1,16 +1,33 @@
 
 
 <div class="row" id="content">
-    {{#if answer}}
+    {{#if question}}
+        <div class="medium-8 columns">
+            <div class="question blog-post">
+                <h3>{{question.title}}</h3>
+                <p>{{question.description}}</p>
+                <div class="callout">
+                    <ul class="menu simple">
+                        <li><a href="/accounts/{{question.author}}">Asked by: {{question.author}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="form-post">
             <div class="medium-12 column">
                 <h3>Edit Answer</h3>
             </div>
-            <form method="POST" action="/questions/edit-answer/{{answer.id}}">
+            <form method="POST" action="/questions/edit-answer/{{question.answer.id}}">
                 <div class="medium-12 column">
                     <textarea rows="10" cols="50" name="content" id="answerContent" 
-                        placeholder="Answer">{{answer.content}}{{/if}}</textarea>
+                        placeholder="Answer">{{question.answer.content}}</textarea>
                 </div>
+                <input type="hidden" name="questionId" value="{{question.id}}" />
+                <input type="hidden" name="questionTitle" value="{{question.title}}" />
+                <input type="hidden" name="questionDescription" value="{{question.description}}" />
+                <input type="hidden" name="questionAuthor" value="{{question.author}}" />
+
                 <input type="hidden" name="_csrf" value="{{csrfToken}}" />
 
                 <div class="small-6 column">

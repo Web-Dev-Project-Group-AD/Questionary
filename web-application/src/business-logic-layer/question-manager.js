@@ -32,19 +32,46 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 		},
 
 		getQuestionById(id) {
-			var question = null
 			return new Promise((resolve, reject) => {
 				QuestionRepository.getQuestionsByIds(id
+				).then(question => {
+					resolve(question)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getQuestionAnswered(questionId) {
+			var question = null
+			return new Promise((resolve, reject) => {
+				QuestionRepository.getQuestionsByIds(questionId
 				).then(fetchedQuestion => {
 					if (!fetchedQuestion.isAnswered) {
 						return resolve(fetchedQuestion)
 					} else {
 						question = fetchedQuestion
-						return getAnswersByQuestionIds(id)
+						return QuestionRepository.getAnswersByQuestionIds(questionId)
 					}
 				}).then(answers => {
 					question.answers = answers
 					resolve([question])
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getQuestionWithSingleAnswer(questionId, answerId) {
+			var question = null
+			return new Promise((resolve, reject) => {
+				QuestionRepository.getQuestionById(questionId
+				).then(fetchedQuestion => {
+					question = fetchedQuestion
+					return QuestionRepository.getAnswerById(answerId)
+				}).then(answer => {
+					question.answer = answer
+					resolve(question)
 				}).catch(error => {
 					reject(error)
 				})
@@ -71,7 +98,6 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 					return QuestionRepository.getAllAnswers()
 				}).then(fetchedAnswers => {
 					const questionsAndAnswers = []
-					
 					for (question of questions) {
 						const answers = []
 						for (answer of fetchedAnswers) {
