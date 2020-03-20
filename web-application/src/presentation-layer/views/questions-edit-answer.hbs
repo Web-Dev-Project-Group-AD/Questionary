@@ -1,5 +1,4 @@
 
-
 <div class="row" id="content">
     {{#if question}}
         <div class="medium-8 columns">
@@ -18,7 +17,7 @@
             <div class="medium-12 column">
                 <h3>Edit Answer</h3>
             </div>
-            <form method="POST" action="/questions/edit-answer/{{question.answer.id}}">
+            <form id="answerForm" method="POST" action="/questions/edit-answer/{{question.answer.id}}">
                 <div class="medium-12 column">
                     <textarea rows="10" cols="50" name="content" id="answerContent" 
                         placeholder="Answer">{{question.answer.content}}</textarea>
@@ -48,5 +47,4 @@
     {{/if}}
 </div>
 
-
-<script src="../views/client-validation/answer-validator.js"></script>
+<script src="/scripts/client-validation/answer-validator.js"></script>

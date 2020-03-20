@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const form = document.querySelector("form")
-    form.addEventListener("submit", validateRegisterForm)
+    const form = document.getElementById("answerForm")
+    form.addEventListener("submit", validateAnswerForm)
 
-    function validateRegisterForm(event) {
+    function validateAnswerForm(event) {
 
         const ANSWER_CONTENT_MIN_LENGTH = 8
         const ANSWER_CONTENT_MAX_LENGTH = 5000

@@ -19,7 +19,7 @@
                 <div class="medium-12 column">
                     <h3>New Answer</h3>
                 </div>
-                <form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
+                <form id="answerForm" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
                     <div class="medium-12 column">
                         <textarea rows="10" cols="50" name="content" id="answerContent" 
                             placeholder="Answer">{{#if question.answer}}{{question.answer}}{{/if}}</textarea>
@@ -45,36 +45,11 @@
                 </form>
             </div>
 
-            {{!-- <form class="question-answer" method="POST" action="/questions/by-id/{{question.id}}/new-answer">
-                <br>
-                <input type="text" name="content" id="answerContent" placeholder="Answer"
-                    {{#if question.answer}}
-                        value="{{question.answer}}"
-                    {{/if}}
-                />
-                <br>
-                <input type="hidden" name="questionTitle" value="{{question.title}}" />
-                <input type="hidden" name="questionDescription" value="{{question.description}}" />
-                <input type="hidden" name="questionAuthor" value="{{question.author}}" />
-                <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-                <input type="submit" class="button" value="Submit answer" />
-                <br>
-                <ul id="errorMessages">
-                    {{#if validationErrors}}
-                        {{#each validationErrors}}
-                            <li>{{this}}</li>
-                        {{/each}}
-                    {{/if}}
-			    </ul>
-            </form> --}}
-
         {{else}}
-
             <h3>Question does not exist.</h3>
-
         {{/if}}
 
     </div>
 </div>
 
-<script src="../views/client-validation/answer-validator.js"></script>
+<script src="/scripts/client-validation/answer-validator.js"></script>
