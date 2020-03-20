@@ -122,22 +122,23 @@ module.exports = ({ QuestionManager, SearchManager, SessionAuthorizer, csrfProte
     router.get("/:answerStatus", csrfProtection, (request, response) => {
         const userStatus = request.session.userStatus
         const answerStatus = request.params.answerStatus
-        const categories = []
 
-        QuestionManager.getCategoriesByAnswerStatus(answerStatus
-        ).then(fetchedCategories => {
-            for (fetchedCategory of fetchedCategories) {
-                categories.push(fetchedCategory.name)
+        var questions = []
+        if (answerStatus == CATEGORY_ALL) {
+            questions = QuestionManager.getAll()
+        } else if (answerStatus == CATEGORY_ANSWERED) {
+            questions = QuestionManager.getAllAnswered()
+        } else {
+            questions = QuestionManager.getAllUnanswered()
+        }
+        questions.then(questions => {
+            const categories = []
+            for (question of questions) {
+                if (!categories.includes(question.category)) {
+                    categories.push(question.category)
+                }
             }
-            if (answerStatus == CATEGORY_ALL) {
-                return QuestionManager.getAll(category)
-            } else if (answerStatus == CATEGORY_ANSWERED) {
-                return QuestionManager.getAllAnswered(category)
-            } else {
-                return QuestionManager.getAllUnAnswered(category)
-            }
-        }).then(questions => {
-            response.render("questions.hbs", 
+            return response.render("questions.hbs", 
             { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
@@ -192,23 +193,25 @@ module.exports = ({ QuestionManager, SearchManager, SessionAuthorizer, csrfProte
 
         const userStatus = request.session.userStatus
         const category = request.params.category
-        const categories = []
         const answerStatus = request.params.answerStatus
+        
+        var questions = []
 
-        QuestionManager.getCategoriesByAnswerStatus(answerStatus
-        ).then(fetchedCategories => {
-            for (fetchedCategory of fetchedCategories) {
-                categories.push(fetchedCategory.name)
+        if (answerStatus == CATEGORY_ALL) {
+            questions = QuestionManager.getAllByCategory(category)
+        } else if (answerStatus == CATEGORY_ANSWERED) {
+            questions = QuestionManager.getAnsweredByCategory(category)
+        } else {
+            questions = QuestionManager.getUnansweredByCategory(category)
+        }
+        questions.then(questions => {
+            const categories = []
+            for (question of questions) {
+                if (!categories.includes(question.category)) {
+                    categories.push(question.category)
+                }
             }
-            if (answerStatus == CATEGORY_ALL) {
-                return QuestionManager.getAllByCategory(category)
-            } else if (answerStatus == CATEGORY_ANSWERED) {
-                return QuestionManager.getAnsweredByCategory(category)
-            } else {
-                return QuestionManager.getUnansweredByCategory(category)
-            }
-        }).then(questions => {
-            return response.render("questions.hbs", 
+            response.render("questions.hbs", 
             { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)

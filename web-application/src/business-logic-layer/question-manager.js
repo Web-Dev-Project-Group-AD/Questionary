@@ -1,7 +1,9 @@
 
+
+
 module.exports = ({ QuestionValidator, QuestionRepository }) => {
 
-	return {
+	var self = {
 
 		createQuestion(question) {
 			return new Promise((resolve, reject) => {
@@ -78,7 +80,23 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 			})
 		},
 
-		getAllUnansweredQuestions() {
+		getAll() {
+			return new Promise((resolve, reject) => {
+				var questions = []
+				self.getAllAnswered(
+				).then(fetchedQuestions => {
+					questions = fetchedQuestions
+					return self.getAllUnanswered()
+				}).then(fetchedQuestions => {
+					questions.push.apply(questions, fetchedQuestions)
+					resolve(questions)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getAllUnanswered() {
 			return new Promise((resolve, reject) => {
 				QuestionRepository.getQuestionsByAnswerStatus(false
 				).then(questions => {
@@ -89,7 +107,7 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 			})
 		},
 
-		getAllQuestionsWithAnswers() {
+		getAllAnswered() {
 			return new Promise((resolve, reject) => {
 				var questions = []
 				QuestionRepository.getQuestionsByAnswerStatus(true
@@ -126,21 +144,17 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 			})
 		},
 
-		getQuestionsByCategory(category, isAnswered) {
+		getAnsweredByCategory(category) {
 			return new Promise((resolve, reject) => {
 				var questions = []
-				QuestionRepository.getQuestionsByCategory(category, isAnswered
+				QuestionRepository.getQuestionsByCategory(category, isAnswered = true
 				).then(fetchedQuestions => {
 					questions = fetchedQuestions
-					if (!isAnswered) {
-						return resolve(questions)
-					} else {
-						const questionIds = []
-						for (question of questions) {
-							questionIds.push(question.id)
-						}
-						return QuestionRepository.getAnswersByQuestionIds(questionIds)					
+					const questionIds = []
+					for (question of questions) {
+						questionIds.push(question.id)
 					}
+					return QuestionRepository.getAnswersByQuestionIds(questionIds)					
 				}).then(fetchedAnswers => {
 					const questionsAndAnswers = []
 					for (question of questions) {
@@ -154,6 +168,33 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 						questionsAndAnswers.push(question)
 					}
 					resolve(questionsAndAnswers)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getUnansweredByCategory(category) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.getQuestionsByCategory(category, isAnswered = false
+				).then(fetchedQuestions => {
+					resolve(fetchedQuestions)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getAllByCategory(category) {
+			var questions = []
+			return new Promise((resolve, reject) => {
+				self.getAnsweredByCategory(category
+				).then(fetchedQuestions => {
+					questions = fetchedQuestions
+					return self.getUnansweredByCategory(category)
+				}).then(fetchedQuestions => {
+					questions.push.apply(questions, fetchedQuestions)
+					resolve(questions)
 				}).catch(error => {
 					reject(error)
 				})
@@ -271,6 +312,7 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 				})
 			})
 		}
-
 	}
+
+	return self
 }
