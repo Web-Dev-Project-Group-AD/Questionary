@@ -2,40 +2,41 @@
 
 -- GRANT ALL PRIVILEGES ON database.* TO 'root'@'%' IDENTIFIED BY 'password';
 
--- Create a table to store user accounts in.
 CREATE TABLE IF NOT EXISTS accounts (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	username VARCHAR(50) NOT NULL,
-	password VARCHAR(100) NOT NULL,
-	CONSTRAINT usernameUnique UNIQUE (username)
+	username VARCHAR(20) NOT NULL,
+	email VARCHAR(50) NOT NULL,
+	password VARCHAR(255) NOT NULL,
+	isAdmin BOOLEAN DEFAULT 0,
+	createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT usernameUnique UNIQUE (username),
+	CONSTRAINT emailUnique UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS questionCategories (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	categoryName VARCHAR(50) NOT NULL,
-	CONSTRAINT nameUnique UNIQUE (categoryName)
+	name VARCHAR(20) NOT NULL,
+	CONSTRAINT nameUnique UNIQUE (name)
 );
 
--- Create a table to store questions in.
 CREATE TABLE IF NOT EXISTS questions (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	category VARCHAR(50) NOT NULL,
-	author VARCHAR(50) NOT NULL,
-	question VARCHAR(255) NOT NULL,
+	author VARCHAR(20) NOT NULL,
+	category VARCHAR(20) NOT NULL,
+	title VARCHAR(60) NOT NULL,
+	description VARCHAR(255),
 	isAnswered BOOLEAN DEFAULT 0,
-	CONSTRAINT questionUnique UNIQUE (question),
-	FOREIGN KEY (category) REFERENCES questionCategories(categoryName),
+	CONSTRAINT titleUnique UNIQUE (title),
+	FOREIGN KEY (category) REFERENCES questionCategories(name),
 	FOREIGN KEY (author) REFERENCES accounts(username)
 );
 
--- Create a table to store answers in.
 CREATE TABLE IF NOT EXISTS answers (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	answer TEXT NOT NULL,
-	author VARCHAR(50) NOT NULL,
-	questionId INT NOT NULL,
-	createdAt DATETIME DEFAULT now(),
-	lastEdited DATETIME NULL,
+	author VARCHAR(20) NOT NULL,
+	questionId INT UNSIGNED NOT NULL,
+	content TEXT NOT NULL,
+	createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (author) REFERENCES accounts(username),
 	FOREIGN KEY (questionId) REFERENCES questions(id)
 );

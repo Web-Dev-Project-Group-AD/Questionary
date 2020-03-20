@@ -16,7 +16,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(result => {
                     resolve(result.id)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -29,12 +30,11 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(categories => {
                     resolve(categories)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
-
-        
 
         createQuestion(question) {
             return new Promise((resolve, reject) => {
@@ -67,6 +67,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(question => {
                     resolve(question)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -80,6 +81,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -93,6 +95,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -109,6 +112,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -121,6 +125,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -134,6 +139,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(questions => {
                     resolve(questions)
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -151,6 +157,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     })
                     resolve([...new Set(categories)])
                 }).catch(error => {
+                    console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
@@ -191,7 +198,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(result => {
                     resolve()
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -206,7 +214,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(() => {
                     resolve()
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -220,7 +229,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(result => {
                     resolve(result.id)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -233,7 +243,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(answer => {
                     resolve(answer)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -246,7 +257,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(answers => {
                     resolve(answers)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -259,7 +271,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(answers => {
                     resolve(answers)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -271,7 +284,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(answers => {
                     resolve(answers)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -288,7 +302,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(result => {
                     resolve(result.id)
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -303,7 +318,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(() => {
                     resolve()
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -317,7 +333,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(result => {
                     resolve()
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -331,7 +348,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(result => {
                     resolve()
                 }).catch(error => {
-                    reject(error)
+                    console.log(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         },
@@ -343,7 +361,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 }).then(answerCount => {
                     resolve(answerCount)
                 }).catch(error => {
-                    reject(error)
+                    reject(ERROR_MSG_DATABASE_GENERAL)
                 })
             })
         }
