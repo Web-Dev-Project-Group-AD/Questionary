@@ -75,8 +75,8 @@ module.exports = ({ database }) => {
 
             return new Promise((resolve, reject) => {
                 database.query(query, values
-                ).then(question => {
-                    resolve(question)
+                ).then(questions => {
+                    resolve(questions[0])
                 }).catch(error => {
                     console.log(error)
                     reject(ERROR_MSG_DATABASE_GENERAL)
