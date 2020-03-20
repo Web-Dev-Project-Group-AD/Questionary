@@ -21,12 +21,16 @@ module.exports = ({ database }) => {
         },
 
         getAllCategories() {
-            const query = "SELECT * FROM questionCategories"
+
+            const query = "SELECT name FROM questionCategories"
             const values = []
             
             return new Promise((resolve, reject) => {
                 database.query(query, values
-                ).then(categories => {
+                ).then(fetchedCategories => {
+                    var categories = fetchedCategories.map(row => {
+                        return row.name
+                    })
                     resolve(categories)
                 }).catch(error => {
                     console.log(error)
@@ -60,6 +64,7 @@ module.exports = ({ database }) => {
         },
         
         getQuestionById(id) {
+
             const query = "SELECT * FROM questions WHERE id = ?"
             const values = [id]
 
@@ -75,8 +80,9 @@ module.exports = ({ database }) => {
         },
 
         getQuestionsByIds(ids) {
-            const query = "SELECT * FROM questions WHERE id IN ?"
-            const values = [ids]
+
+            const query = "SELECT * FROM questions WHERE id IN (?)"
+            const values = [ids.toString()]
 
             return new Promise((resolve, reject) => {
                 database.query(query, values
@@ -90,6 +96,7 @@ module.exports = ({ database }) => {
         },
 
         getQuestionsByAuthor(author) {
+
             const query = "SELECT * FROM questions WHERE author = ?"
             const values = [author]
 
@@ -104,11 +111,9 @@ module.exports = ({ database }) => {
             })
         },
 
-        
-
         getQuestionsByCategory(category, isAnswered) {
 
-            const query = "SELECT * FROM questions WHERE category = ?, isAnswered = ?"
+            const query = "SELECT * FROM questions WHERE category = ? AND isAnswered = ?"
             const values = [category, isAnswered]
 
             return new Promise((resolve, reject) => {
@@ -122,6 +127,7 @@ module.exports = ({ database }) => {
         },
 
         getAllQuestions() {
+
             const query = "SELECT * FROM questions"
             const values = []
 
@@ -135,6 +141,7 @@ module.exports = ({ database }) => {
                 })
             })
         },
+
         getQuestionsByAnswerStatus(isAnswered) {
 
             const query = "SELECT * FROM questions WHERE isAnswered = ?"
@@ -152,12 +159,16 @@ module.exports = ({ database }) => {
         },
 
         getCategoriesByAnswerStatus(isAnswered) {
+
             const query = "SELECT category FROM questions WHERE isAnswered = ?"
             const values = [isAnswered]
 
             return new Promise((resolve, reject) => {
                 database.query(query, values
-                ).then(categories => {
+                ).then(fetchedCategories => {
+                    var categories = fetchedCategories.map(row => {
+                        return row.category
+                    })
                     resolve(categories)
                 }).catch(error => {
                     console.log(error)
@@ -167,6 +178,7 @@ module.exports = ({ database }) => {
         },
 
         updateQuestion(questionUpdate) {
+
             const query =   `UPDATE questions SET title = ?, description = ? 
                             WHERE author = ? AND id = ?`
             const values = [
@@ -188,6 +200,7 @@ module.exports = ({ database }) => {
         },
 
         questionUpdateAnswerStatus(id, isAnswered) {
+
             const query = "UPDATE questions SET isAnswered = ? WHERE id = ?"
             const values = [isAnswered, id]
 
@@ -203,6 +216,7 @@ module.exports = ({ database }) => {
         },
 
         deleteQuestionById(author, id) {
+
             const query = "DELETE FROM questions WHERE author = ? AND id = ?"
             const values = [author, id]
 
@@ -269,8 +283,8 @@ module.exports = ({ database }) => {
         },
 
         getAnswersByQuestionIds(ids) {
-            const query = "SELECT * FROM answers WHERE id IN ?"
-            const values = [ids]
+            const query = "SELECT * FROM answers WHERE id IN (?)"
+            const values = [ids.toString()]
 
             return new Promise((resolve, reject) => {
                 database.query(query, values
