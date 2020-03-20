@@ -15,7 +15,6 @@ module.exports = ({sequelize}) => sequelize.define('AccountModel', {
         type: Sequelize.TEXT,
         allowNull: false,
         unique: true
-
     },
     password: {
         type: Sequelize.TEXT,

@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 
-const MYSQL_HOST = 'database'
+const MYSQL_HOST = "192.168.99.101"
 const MYSQL_USER = 'root'
 const MYSQL_ROOT_PASSWORD = 'password'
 const MYSQL_DATABASE = 'database'
