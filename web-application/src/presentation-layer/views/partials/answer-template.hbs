@@ -26,6 +26,7 @@
             </form>
 
             <form method="POST" name="deleteAnswer" action="/questions/delete-answer/{{../id}}">
+                <input type="hidden" name="questionId" value="{{../questionId}}" />
                 <input type="hidden" name="_csrf" value="{{@root.csrfToken}}" />
                 <input type="submit" class="button" value="Delete" />
             </form>
