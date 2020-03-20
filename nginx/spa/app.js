@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
     changeToPage(location.pathname)
 
     if (localStorage.accessToken) {
-        console.log("localStorage.accessToken", localStorage.accessToken)
+        console.log("localStorage.accessToken1", localStorage.accessToken)
         login(localStorage.accessToken)
-        console.log("localStorage.accessToken", localStorage.accessToken)
+        console.log("localStorage.accessToken2", localStorage.accessToken)
     } else {
         logout()
     }
@@ -48,15 +48,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 //"Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
-        }
-        ).then(function (response) {
-            // TODO: Check status code to see if it succeeded. Display errors if it failed.
-            // TODO: Update the view somehow.
-            console.log("respons.body: ", response.body, "was successful")
-            console.log("response_signUp_header: ", response.headers)
-        }).catch(function (error) {
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Api response was not ok')
+            }
+            return response.blob()
+
+            /*{
+                console.log("response_signup:", response)
+    
+                if(!response.ok){
+                    response.json().then(function (body){
+                        console.log(body)
+    
+                        //TODO spinner hide it???
+    
+                        let error = ''
+                        switch(response.status){
+                            case 400:
+                                error = body.message
+    
+                                const errorPage = document.getElementById("error-page")
+                                const errorMessage = document.getElementById("errorMessage")
+                            
+                                errorPage.style.display = "block"
+                                errorMessage.innerText = error
+    
+                        }
+                    })
+                }*/
+
+        }).then((account) => {
+            console.log('Success:', account)
+        }).catch((error) => {
             // TODO: Update the view and display error.
-            console.log("error_signUp:", error)
+            console.log("Error:", error)
         })
 
     })
@@ -133,6 +159,9 @@ function changeToPage(url) {
         fetchUser(id)
     } else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
+    } else if (url == "/api/accounts/sign-out") {
+        //document.getElementById("sign-out-page").classList.add("current-page")
+        logout()
     } else {
         document.getElementById("error-page").classList.add("current-page")
         console.log("error-page is shown")
@@ -208,7 +237,7 @@ function login(accessToken) {
     localStorage.accessToken = accessToken
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
-    console.log("login function navigation-handler.js")
+    console.log("login function app.js")
 }
 
 function logout() {
@@ -216,5 +245,5 @@ function logout() {
     localStorage.accessToken = ""
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
-    console.log("logout function navigation-handler.js")
+    console.log("logout function app.js")
 }
