@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const form = document.querySelector("form")
-    form.addEventListener("submit", validateRegisterForm)
+    const form = document.getElementById("sign-up")
 
-    function validateRegisterForm(event) {
-
+    form.addEventListener("submit", function validateRegisterForm(event) {
+        
         const MIN_USERNAME_LENGTH = 4
         const MAX_USERNAME_LENGTH = 20
         const MIN_PASSWORD_LENGTH = 8
@@ -38,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (password1 != password2) {
             errorMessages.push("Passwords dont match.")
         }
-
+        console.log(errorMessages)
         if (!errorMessages.length > 0) {
             return true
         } else {
@@ -51,6 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault()
         }
 
-    }
+    })
 
 })
