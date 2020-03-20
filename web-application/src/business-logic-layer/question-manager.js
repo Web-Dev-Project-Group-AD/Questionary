@@ -24,7 +24,18 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 
 		getAllCategories() {
 			return new Promise((resolve, reject) => {
-			QuestionRepository.getAllCategories(
+				QuestionRepository.getAllCategories(
+				).then(categories => {
+					resolve(categories)
+				}).catch(error => {
+					reject(error)
+				})
+			})
+		},
+
+		getCategoriesByAnswerStatus(isAnswered) {
+			return new Promise((resolve, reject) => {
+				QuestionRepository.getCategoriesByAnswerStatus(isAnswered
 				).then(categories => {
 					resolve(categories)
 				}).catch(error => {
@@ -302,16 +313,25 @@ module.exports = ({ QuestionValidator, QuestionRepository }) => {
 			})
 		},
 
-		deleteAnswerById(author, id) {
+		deleteAnswerById(author, answerId, questionId) {
 			return new Promise((resolve, reject) => {
-				QuestionRepository.deleteAnswerById(author, id
+				QuestionRepository.deleteAnswerById(author, answerId
 				).then(() => {
+					return QuestionRepository.countAnswersByQuestionId(questionId)
+				}).then(answerCount => {
+					if (answerCount > 0) {
+						resolve()
+					} else {
+						return QuestionRepository.questionUpdateAnswerStatus(questionId, false)
+					}
+				}).then(() => {
 					resolve()
 				}).catch(error => {
 					reject(error)
 				})
 			})
 		}
+
 	}
 
 	return self

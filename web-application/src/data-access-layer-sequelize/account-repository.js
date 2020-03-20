@@ -9,6 +9,10 @@ const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 const SEQUELIZE_ERROR_UNIQUE_USERNAME = "username must be unique"
 const SEQUELIZE_ERROR_UNIQUE_EMAIL = "email must be unique"
 
+const CATEGORY_ANSWERED = "answered"
+const CATEGORY_UNANSWERED = "unanswered"
+const CATEGORY_ALL = "all"
+
 
 module.exports = ({ AccountModel }) => {
 

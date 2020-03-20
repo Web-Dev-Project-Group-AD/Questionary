@@ -196,21 +196,29 @@ module.exports = ({ QuestionManager, SearchManager, SessionAuthorizer, csrfProte
         const answerStatus = request.params.answerStatus
         
         var questions = []
+        var categories = []
+        var promise = null
 
         if (answerStatus == CATEGORY_ALL) {
-            questions = QuestionManager.getAllByCategory(category)
+            promise = QuestionManager.getAllByCategory(category
+            )
         } else if (answerStatus == CATEGORY_ANSWERED) {
-            questions = QuestionManager.getAnsweredByCategory(category)
+            promise = QuestionManager.getAnsweredByCategory(category)
         } else {
-            questions = QuestionManager.getUnansweredByCategory(category)
+            promise = QuestionManager.getUnansweredByCategory(category)
         }
-        questions.then(questions => {
-            const categories = []
-            for (question of questions) {
-                if (!categories.includes(question.category)) {
-                    categories.push(question.category)
-                }
+        promise.then(fetchedQuestions => {
+            questions = fetchedQuestions
+            
+            if (answerStatus == CATEGORY_ALL) {
+                return QuestionManager.getAllCategories()
+            } else if (answerStatus == CATEGORY_ANSWERED) {
+                return QuestionManager.getCategoriesByAnswerStatus(true)
+            } else {
+                return QuestionManager.getCategoriesByAnswerStatus(false)
             }
+        }).then(fetchedCategories => {
+            categories = fetchedCategories
             response.render("questions.hbs", 
             { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
@@ -458,8 +466,9 @@ module.exports = ({ QuestionManager, SearchManager, SessionAuthorizer, csrfProte
         const userStatus = request.session.userStatus
         const author = userStatus.username
         const answerId = request.params.answerId
+        const questionId = request.body.questionId
 
-        QuestionManager.deleteAnswerById(author, answerId
+        QuestionManager.deleteAnswerById(author, answerId, questionId
         ).then(() => {
             response.redirect("/questions/by-answer-author/" + userStatus.username)
         }).catch(error => {

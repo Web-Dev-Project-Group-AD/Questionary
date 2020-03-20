@@ -25,6 +25,7 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
             return new Promise((resolve, reject) => {
                 QuestionCategoryModel.findAll({
                     raw: true,
+                    attributes: ["name"]
                 }).then(categories => {
                     resolve(categories)
                 }).catch(error => {
@@ -32,6 +33,8 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                 })
             })
         },
+
+        
 
         createQuestion(question) {
             return new Promise((resolve, reject) => {
@@ -130,6 +133,23 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     where: { isAnswered: isAnswered }
                 }).then(questions => {
                     resolve(questions)
+                }).catch(error => {
+                    reject(ERROR_MSG_DATABASE_GENERAL)
+                })
+            })
+        },
+
+        getCategoriesByAnswerStatus(isAnswered) {
+            return new Promise((resolve, reject) => {
+                QuestionModel.findAll({
+                    raw: true,
+                    where: { isAnswered: isAnswered },
+                    attributes: ["category"]
+                }).then(fetchedCategories => {
+                    var categories = fetchedCategories.map(category => {
+                        return category.category
+                    })
+                    resolve([...new Set(categories)])
                 }).catch(error => {
                     reject(ERROR_MSG_DATABASE_GENERAL)
                 })
@@ -310,6 +330,18 @@ module.exports = ({ QuestionCategoryModel, QuestionModel, AnswerModel }) => {
                     where: { author: author }
                 }).then(result => {
                     resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        countAnswersByQuestionId(questionId) {
+            return new Promise((resolve, reject) => {
+                AnswerModel.count({  
+                    where: { questionId: questionId }
+                }).then(answerCount => {
+                    resolve(answerCount)
                 }).catch(error => {
                     reject(error)
                 })
