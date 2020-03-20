@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const form = document.querySelector("form")
-    form.addEventListener("submit", validateRegisterForm)
+    const form = document.getElementById("questionForm")
+    form.addEventListener("submit", validateQuestionForm)
 
-    function validateRegisterForm(event) {
-
+    function validateQuestionForm(event) {
 
         const QUESTION_TITLE_MIN_LENGTH = 6
         const QUESTION_TITLE_MAX_LENGTH = 60
@@ -13,14 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const QUESTION_CATEGORY_MAX_LENGTH = 20
         
         const title = document.getElementById("questionTitle").value
-        
         const description = document.getElementById("questionDescription").value
         const optionCategories = document.getElementById("optionCategories")
-
         const customCategory = document.getElementById("customCategory").value
+
         const errorMessages = []
-        
         const errorList = document.getElementById("errorMessages")
+
         while (errorList.firstChild) {
             errorList.removeChild(errorList.firstChild)
         }			

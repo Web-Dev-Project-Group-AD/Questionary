@@ -4,7 +4,7 @@
             <div class="medium-12 column">
                 <h3>Edit Question</h3>
             </div>
-            <form name="question" method="POST" action="/questions/by-id/{{question.id}}/edit">
+            <form name="question" id="questionForm" method="POST" action="/questions/by-id/{{question.id}}/edit">
                 <div class="medium-12 column">
                     <input type="text" name="title" id="questionTitle" placeholder="Question" 
                         value="{{question.title}}" />
@@ -32,4 +32,4 @@
     {{/if}}
 </div>
 
-<script src="../views/client-validation/question-validator.js"></script>
+<script src="/scripts/client-validation/question-validator.js"></script>

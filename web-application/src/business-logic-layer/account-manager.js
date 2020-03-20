@@ -106,13 +106,10 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 				}
 				AccountRepository.getAccountByUsername(account.username
 				).then(returnedAccount => {
-					if	(returnedAccount.thirdParty) {
-						throw "Can not change third party account password."
-					}
 					return bcrypt.compare(account.oldPassword, returnedAccount.password)
 				}).then(isValidPassword => {
 					if (!isValidPassword) {
-						throw "Incorrect password."
+						throw ["Incorrect password."]
 					} else {
 						return bcrypt.hash(account.password, saltRounds)
 					}
@@ -120,8 +117,8 @@ module.exports = ({ AccountRepository, AccountValidator }) => {
 					return AccountRepository.updatePassword(account.id, hashedPassword)
 				}).then(returnedId => {
 					resolve(returnedId)
-				}).catch(error => {
-					reject(error)
+				}).catch(errors => {
+					reject(errors)
 				})
 			})
 		},

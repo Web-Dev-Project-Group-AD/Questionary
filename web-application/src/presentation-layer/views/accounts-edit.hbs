@@ -4,15 +4,15 @@
 			<h3>Change Password</h3>
 		</div>
         <div class="medium-8 column">
-            <form method="POST" action="/accounts/edit-password">
+            <form method="POST" id="accountForm" action="/accounts/edit-password">
    			    <div class="medium-8 column">
-                    <input type="password" name="oldPassword" id="oldPassword" placeholder="Old password" />
+                    <input type="password" name="oldPassword" placeholder="Old password" />
    			    </div>
                 <div class="medium-8 column">
-                    <input type="password" name="password" id="password" placeholder="New password" />
+                    <input id="password1" type="password" name="password" placeholder="New password" />
                 </div>
                 <div class="medium-8 column">
-                    <input type="password" name="passwordRepeated" id="passwordRepeated" placeholder="Repeat new password" />
+                    <input id="password2"  type="password" name="passwordRepeated" placeholder="Repeat new password" />
                 </div>
                 <input type="hidden" name="_csrf" value="{{csrfToken}}" />
       			<div class="medium-8 column">
@@ -31,3 +31,5 @@
         </div>
     </div>
 </div>
+
+<script src="/scripts/client-validation/account-validator.js"></script>

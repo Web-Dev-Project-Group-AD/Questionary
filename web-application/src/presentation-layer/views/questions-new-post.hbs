@@ -3,7 +3,7 @@
 		<div class="medium-12 column">
 			<h3>New Question</h3>
 		</div>
-		<form name="question" method="POST" action="/questions/new-post">
+		<form name="question" method="POST" id="questionForm" action="/questions/new-post">
 			<div class="medium-12 column">
 				<input type="text" name="title" id="questionTitle" placeholder="Question" 
 					{{#if question}}
@@ -46,55 +46,4 @@
 	</div>
 </div>
 
-
-{{!-- 
-<div name="newQuestion">
-
-		<h3>New Question</h3>
-
-		<form name="question" method="POST" action="/questions/new-post">
-			<br>
-			<input type="text" name="title" id="questionTitle" placeholder="Question" 
-				{{#if question}}
-					value="{{question.title}}"
-				{{/if}}
-			/>
-			<br>
-			<input type="text" name="description" id="questionDescription" placeholder="Description (Optional)" 
-				{{#if question}}
-					value="{{question.description}}"
-				{{/if}}
-			/>
-			<br>
-			{{#if categories}}
-				<label for="categories">Choose a category:</label>
-				<select id="optionCategories" name="optionCategories">
-					{{#each categories}}
-						<option value="{{name}}">{{name}}</option>
-					{{/each}}
-				</select>
-				</ul>
-				Or create a new one:
-			{{/if}}
-			<input type="text" name="customCategory" id="customCategory" placeholder="Custom category" 
-				{{#if question}}
-					value="{{question.customCategory}}"
-				{{/if}}
-			/>
-			<br>
-			<input type="hidden" name="_csrf" value="{{csrfToken}}" />
-			<input type="submit" class="button" value="Post question" />
-			<br>
-			<ul id="errorMessages">
-				{{#if validationErrors}}
-					{{#each validationErrors}}
-						<li>{{this}}</li>
-					{{/each}}
-				{{/if}}
-			</ul>
-		</form>
-
-	</div>
-</div> --}}
-
-<script src="client-validation/question-validator.js"></script>
+<script src="/scripts/client-validation/question-validator.js"></script>

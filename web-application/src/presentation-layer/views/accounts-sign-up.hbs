@@ -3,7 +3,7 @@
 		<div class="medium-8 column">
 			<h3>New Account</h3>
 		</div>
-		<form method="POST" action="/accounts/sign-up">
+		<form method="POST" id="accountForm" action="/accounts/sign-up">
 			<div class="small-6 column">
 				<input id="email" name="email" type="email" placeholder="Email"
 					{{#if email}}
@@ -11,25 +11,25 @@
 					{{/if}} 
 				/>
 			</div>
-			<div class="small-6 column">
+			<div class="small-6 column username">
 				<input id="username" name="username" type="text" placeholder="Username" 
 					{{#if username}}
 						value="{{username}}"
 					{{/if}} 
 				/>
 			</div>
-			<div class="small-6 column">
+			<div class="small-6 column password">
 				<input id="password1" name="password" type="password" placeholder="Password" />
 			</div>
-			<div class="small-6 column">
+			<div class="small-6 column passwordRepeated">
 				<input id="password2" name="passwordRepeated" type="password" placeholder="Repeat password" />
 			</div>
 			<input type="hidden" name="_csrf" value="{{csrfToken}}" />
-			<div class="small-6 column">
+			<div class="small-6 column submit">
 				<input type="submit" class="button" value="Sign up">
 			</div>
 		</form>
-		<div class="medium-8 column">
+		<div class="medium-8 column error">
 			<ul id="errorMessages">
 				{{#if validationErrors}}
 					{{#each validationErrors}}
@@ -41,4 +41,4 @@
 	</div>
 </div>
 
-<script src="../views/client-validation/account-validator.js"></script>
+<script src="/scripts/client-validation/account-validator.js"></script>

@@ -1,16 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const form = document.getElementById("sign-up")
-
-    form.addEventListener("submit", function validateRegisterForm(event) {
+    const form = document.getElementById("accountForm")
+    form.addEventListener("submit", validateRegisterForm) 
+    
+    function validateRegisterForm(event) {
         
         const MIN_USERNAME_LENGTH = 4
         const MAX_USERNAME_LENGTH = 20
         const MIN_PASSWORD_LENGTH = 8
         const MAX_PASSWORD_LENGTH = 20
 
-        const username = document.getElementById("username").value
-        const email = document.getElementById("email").value
+        var username = document.getElementById("username")
+        var email = document.getElementById("email")
+
         const password1 = document.getElementById("password1").value
         const password2 = document.getElementById("password2").value
 
@@ -20,14 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
         while (errorList.firstChild) {
             errorList.removeChild(errorList.firstChild)
         }
-
-        if (MIN_USERNAME_LENGTH > username.length) {
-            errorMessages.push("Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long.")
-        } else if (username.length > MAX_USERNAME_LENGTH) {
-            errorMessages.push("Username can not be longer than " + MAX_USERNAME_LENGTH + " characters.")
-        }
-        if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-            errorMessages.push("Invalid email address.")
+        if (username && email) {
+            if (MIN_USERNAME_LENGTH > username.value.length) {
+                errorMessages.push("Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long.")
+            } else if (username.value.length > MAX_USERNAME_LENGTH) {
+                errorMessages.push("Username can not be longer than " + MAX_USERNAME_LENGTH + " characters.")
+            }
+            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value))) {
+                errorMessages.push("Invalid email address.")
+            }
         }
         if (MIN_PASSWORD_LENGTH > password1.length) {
             errorMessages.push("Password needs to be atleast " + MIN_PASSWORD_LENGTH + " characters long.")
@@ -50,6 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault()
         }
 
-    })
+    }
 
 })
