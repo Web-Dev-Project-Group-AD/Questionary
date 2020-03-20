@@ -1,9 +1,11 @@
 const { google } = require("googleapis")
+const host = "192.168.99.101"
+const port = "8080"
 
 const googleConfig = {
 	clientId: "839844109281-jeeke7afrr71tgto1d6tkeg9n1lb4f33.apps.googleusercontent.com",
 	clientSecret: "dhueYuUllEODwGyXb2aaZk3L",
-	redirect: "http://192.168.99.100.xip.io:8080/accounts/oauth2callback"
+	redirect: "http://" + host + ".xip.io:" + port + "/accounts/oauth2callback"
 }
 
 const defaultScope = [
