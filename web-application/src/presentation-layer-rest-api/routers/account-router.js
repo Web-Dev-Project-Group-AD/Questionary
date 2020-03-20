@@ -23,12 +23,12 @@ module.exports = ({ AccountManager, generateToken }) => {
             const userId = account
             console.log("restapi_signup_id_mail: ", account, isAdmin)
 
-           // const token = generateToken.createToken(account, isAdmin)
+            // const token = generateToken.createToken(account, isAdmin)
             //console.log("token123: ", token)
             console.log(username, " signed in123")
             response.setHeader('Location', '/sign-up/' + userId)
             response.status(201).json().end()
-           // response.status(201).json(token).end()
+            // response.status(201).json(token).end()
             // return
 
         }).catch(validationErrors => {
@@ -51,13 +51,6 @@ module.exports = ({ AccountManager, generateToken }) => {
     // Content-Type: application/x-www-form-urlencoded
     // Body: grant_type=password&email=?&password=?
     router.post('/sign-in', function (request, response) {
-
-        /*const authorizationHeader = request.get('authorization')
-        const accessToken = authorizationHeader.substr("Bearer ".length)
-
-        console.log("authorizationHeader", authorizationHeader)
-        console.log("signUp_accessToken", accessToken)*/
-
 
         const { email, password } = request.body
         console.log("request.body.email_signIn: ", request.body.email)
@@ -141,6 +134,34 @@ module.exports = ({ AccountManager, generateToken }) => {
 
         return
     })
+
+    router.get("/all", /*SessionAuthorizer.authorizeAdmin,*/(request, response) => {
+
+        //const userStatus = request.session.userStatus
+
+        const authorizationHeader = request.get('authorization')
+        const accessToken = authorizationHeader.substr("Bearer ".length)
+
+        console.log("authorizationHeader", authorizationHeader)
+        console.log("getAllAccounts_accessToken", accessToken)
+
+        AccountManager.getAllAccounts(
+        ).then(accounts => {
+            console.log("here we are in get All Ascounts")
+
+            response.setHeader('Location', '/all')
+            response.status(200).json({ accounts })
+            console.log("here we are in get All Ascounts_end")
+
+
+            // {accounts}       
+            //response.render("accounts-list-all.hbs", { accounts })
+        }).catch(error => {
+            console.log(error)
+            //response.status(500).render("statuscode-500.hbs", { userStatus })
+        })
+    })
+
     return router
 
 }

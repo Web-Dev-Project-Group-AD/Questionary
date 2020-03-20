@@ -1,9 +1,11 @@
 // TODO: Don't write all JS code in the same file.
+
+const urlApi = "http://localhost:8080/api/"
+
 document.addEventListener("DOMContentLoaded", function () {
 
     console.log("nginx_spa_here we are")
 
-    //const url = "http://localhost:8080/api/"
     changeToPage(location.pathname)
 
     if (localStorage.accessToken) {
@@ -27,16 +29,18 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault()
         console.log("navigation-handler_sign_up")
 
-        //const name = document.querySelector("#sign-up-page .username").value
-        //name = reqest.body.username
+        const username = document.querySelector("#sign-up-page #username").value
+        const email = document.querySelector("#sign-up-page #email").value
+        const password = document.querySelector("#sign-up-page #password1").value
+        const passwordRepeated = document.querySelector("#sign-up-page #password2").value
 
-        const { username, email, password, passwordRepeated } = request.body
         const account = { username, email, password, passwordRepeated }
+        console.log("signUp_account: ", account)
 
         // TODO: Build an SDK (e.g. a separate JS file)
         // handling the communication with the backend.
         fetch(
-            "http://localhost:8080/api/accounts/sign-up", {
+            urlApi + "accounts/sign-up", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -48,9 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             // TODO: Update the view somehow.
-            console.log("respons.body: ", response.body)
+            console.log("respons.body: ", response.body, "was successful")
             console.log("response_signUp_header: ", response.headers)
-            console.log("response_signUp_localStorage.accessToken: ", localStorage.accessToken)
         }).catch(function (error) {
             // TODO: Update the view and display error.
             console.log("error_signUp:", error)
@@ -68,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("email and password:", email, password)
 
         fetch(
-            "http://localhost:8080/api/accounts/sign-in", {
+            urlApi + "accounts/sign-in", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -78,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
-            
+
             return response.json(400)
         }).then(function (body) {
             // TODO: Read out information about the user account from the id_token.
@@ -119,7 +122,7 @@ function changeToPage(url) {
     // TODO: Factor out common code in all branches.
     if (url == "/") {
         document.getElementById("home-page").classList.add("current-page")
-    } else if (url == "/api/accounts") {
+    } else if (url == "/api/accounts/all") {
         document.getElementById("accounts-page").classList.add("current-page")
         fetchAllAccounts()
     } else if (url == "/api/accounts/sign-in") {
@@ -138,27 +141,44 @@ function changeToPage(url) {
 }
 
 function fetchAllAccounts() {
+    console.log("fetchAllAccounts_start")
 
     fetch(
-        "http://localhost:8080/api/accounts"
+        urlApi + "accounts/all", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + localStorage.accessToken
+        },
+        //body: JSON.stringify(accounts)
+    }
     ).then(function (response) {
+        console.log("response_getAllAccounts: ", response)
         // TODO: Check status code to see if it succeeded. Display errors if it failed.
         return response.json()
     }).then(function (accounts) {
         console.log("accounts_fetchAllAcc: ", accounts)
         const ul = document.querySelector("#accounts-page ul")
         ul.innerText = ""
+        console.log("ul_accounts: ", ul)
+        console.log("accounts: ", accounts)
         for (const account of accounts) {
+            console.log("account: ", account.id)
             const li = document.createElement("li")
-            const anchor = document.createElement("a")
-            anchor.innerText = account.name
-            console.log(account.id)
-            anchor.setAttribute("href", '/api/accounts/' + account.id)
-            li.appendChild(anchor)
+            //const anchor = document.createElement("a")
+            li.innerText = account.username
+            //anchor.innerText = account.username
+            console.log(account.username)
+            //anchor.setAttribute("href", '/api/accounts/' + account.id)
+            //li.appendChild(anchor)
             ul.append(li)
+            console.log("ul_after: ", ul)
+            console.log("one users shown_getAllAccounts")
+            return
         }
+        console.log("all users shown_getAllAccounts_end")
     }).catch(function (error) {
-        console.log(error)
+        //console.log(error)
+        return error
     })
 
 }
@@ -166,7 +186,7 @@ function fetchAllAccounts() {
 function fetchUser(id) {
 
     fetch(
-        "http://localhost:8080/api/accounts/" + id
+        urlApi + "accounts/" + id
     ).then(function (response) {
         console.log("fetchUser_id:", id)
         // TODO: Check status code to see if it succeeded. Display errors if it failed.
