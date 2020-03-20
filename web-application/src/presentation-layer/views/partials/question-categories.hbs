@@ -4,11 +4,7 @@
     </div>
     <ul>
         {{#each categories}}
-            <li>
-                <a href="/questions/by-category/{{this}}/{{#if ../isAnswered}}answered{{else}}unanswered{{/if}}">
-                    {{this}}
-                </a>
-            </li>  
+            <li><a href="/questions/by-category/{{this}}/{{../answerStatus}}">{{this}}</a></li>  
         {{/each}}
     </ul>
 </div>

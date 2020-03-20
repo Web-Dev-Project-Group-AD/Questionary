@@ -2,8 +2,12 @@ const express = require("express")
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 
+const CATEGORY_ANSWERED = "answered"
+const CATEGORY_UNANSWERED = "unanswered"
+const CATEGORY_ALL = "all"
 
-module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
+
+module.exports = ({ QuestionManager, SearchManager, SessionAuthorizer, csrfProtection }) => {
 
     const router = express.Router()
 
@@ -58,12 +62,13 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         const questionId = request.params.questionId
         const userStatus = request.session.userStatus
+        const answerStatus = CATEGORY_ALL
     
         QuestionManager.getQuestionAnswered(questionId
         ).then(questions => {
             const categories = [questions[0].category]
             response.render("questions.hbs", 
-            { userStatus, questions, categories, csrfToken: request.csrfToken() })
+            { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -74,6 +79,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         const userStatus = request.session.userStatus
         const author = request.params.author
+        const answerStatus = CATEGORY_ALL
 
         QuestionManager.getQuestionsByAuthor(author
         ).then(questions => {
@@ -84,7 +90,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 }
             }
             response.render("questions.hbs", 
-            { userStatus, questions, categories, csrfToken: request.csrfToken() })
+            { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
@@ -95,6 +101,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         const userStatus = request.session.userStatus
         const author = request.params.author
+        const answerStatus = CATEGORY_ANSWERED
 
         QuestionManager.getQuestionsByAnswerAuthor(author
         ).then(questions => {
@@ -105,78 +112,141 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 }
             }
             response.render("questions.hbs", 
-            { userStatus, questions, categories, csrfToken: request.csrfToken() })
+            { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
 
-    router.get("/unanswered", csrfProtection, (request, response) => {
-
+    router.get("/:answerStatus", csrfProtection, (request, response) => {
         const userStatus = request.session.userStatus
-        const isAnswered = false
-
-        QuestionManager.getAllUnansweredQuestions(
-        ).then(questions => {
-            const categories = []
-            for(question of questions) {
-                if (!categories.includes(question.category)) {
-                    categories.push(question.category)
-                }
-            }
-            response.render("questions.hbs", 
-            { userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
-        }).catch(error => {
-            console.log(error)
-            response.status(500).render("statuscode-500.hbs", { userStatus })
-        })
-    })
-
-    router.get("/answered", csrfProtection, (request, response) => {
-
-        const userStatus = request.session.userStatus
-        const isAnswered = true
-
-        QuestionManager.getAllQuestionsWithAnswers(
-        ).then(questions => {
-            const categories = []
-            for(question of questions) {
-                if (!categories.includes(question.category)) {
-                    categories.push(question.category)
-                }
-            }
-            response.render("questions.hbs", 
-            { userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
-        }).catch(error => {
-            console.log(error)
-            response.status(500).render("statuscode-500.hbs", { userStatus })
-        })
-    })
-
-    router.get("/by-category/:category/:isAnswered", csrfProtection, (request, response) => {
-
-        const userStatus = request.session.userStatus
-        const category = request.params.category
+        const answerStatus = request.params.answerStatus
         const categories = []
-        const isAnswered = (request.params.isAnswered == "answered")
 
-        QuestionManager.getAllCategories(
+        QuestionManager.getCategoriesByAnswerStatus(answerStatus
         ).then(fetchedCategories => {
             for (fetchedCategory of fetchedCategories) {
                 categories.push(fetchedCategory.name)
             }
-            return QuestionManager.getQuestionsByCategory(category, isAnswered)
+            if (answerStatus == CATEGORY_ALL) {
+                return QuestionManager.getAll(category)
+            } else if (answerStatus == CATEGORY_ANSWERED) {
+                return QuestionManager.getAllAnswered(category)
+            } else {
+                return QuestionManager.getAllUnAnswered(category)
+            }
         }).then(questions => {
             response.render("questions.hbs", 
-            { userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
+            { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
+        }).catch(error => {
+            console.log(error)
+            response.status(500).render("statuscode-500.hbs", { userStatus })
+        })
+        
+    })
+    
+    // router.get("/unanswered", csrfProtection, (request, response) => {
+
+    //     const userStatus = request.session.userStatus
+    //     const answerStatus = CATEGORY_UNANSWERED
+
+    //     QuestionManager.getAllUnansweredQuestions(
+    //     ).then(questions => {
+    //         const categories = []
+    //         for(question of questions) {
+    //             if (!categories.includes(question.category)) {
+    //                 categories.push(question.category)
+    //             }
+    //         }
+    //         response.render("questions.hbs", 
+    //         { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
+    //     }).catch(error => {
+    //         console.log(error)
+    //         response.status(500).render("statuscode-500.hbs", { userStatus })
+    //     })
+    // })
+
+    // router.get("/answered", csrfProtection, (request, response) => {
+
+    //     const userStatus = request.session.userStatus
+    //     const answerStatus = CATEGORY_ANSWERED
+        
+    //     QuestionManager.getAllQuestionsWithAnswers(
+    //     ).then(questions => {
+    //         const categories = []
+    //         for(question of questions) {
+    //             if (!categories.includes(question.category)) {
+    //                 categories.push(question.category)
+    //             }
+    //         }
+    //         response.render("questions.hbs", 
+    //         { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
+    //     }).catch(error => {
+    //         console.log(error)
+    //         response.status(500).render("statuscode-500.hbs", { userStatus })
+    //     })
+    // })
+
+    router.get("/by-category/:category/:answerStatus", csrfProtection, (request, response) => {
+
+        const userStatus = request.session.userStatus
+        const category = request.params.category
+        const categories = []
+        const answerStatus = request.params.answerStatus
+
+        QuestionManager.getCategoriesByAnswerStatus(answerStatus
+        ).then(fetchedCategories => {
+            for (fetchedCategory of fetchedCategories) {
+                categories.push(fetchedCategory.name)
+            }
+            if (answerStatus == CATEGORY_ALL) {
+                return QuestionManager.getAllByCategory(category)
+            } else if (answerStatus == CATEGORY_ANSWERED) {
+                return QuestionManager.getAnsweredByCategory(category)
+            } else {
+                return QuestionManager.getUnansweredByCategory(category)
+            }
+        }).then(questions => {
+            return response.render("questions.hbs", 
+            { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
         }).catch(error => {
             console.log(error)
             response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
+        
+    
+    //     QuestionManager.getCategoriesByAnswerStatus(answerStatus
+    //     ).then(fetchedCategories => {
+    //         for (fetchedCategory of fetchedCategories) {
+    //             categories.push(fetchedCategory.name)
+    //         }
+    //         if (answerStatus == CATEGORY_ALL || answerStatus == CATEGORY_ANSWERED) {
+    //             return QuestionManager.getQuestionsByCategory(category, isAnswered = true)
+    //         } else {
+    //             return QuestionManager.getQuestionsByCategory(category, isAnswered = false)
+    //         }
+    //     }).then(fetchedQuestions => {
+    //         questions = fetchedQuestions
+    //         if (answerStatus == CATEGORY_UNANSWERED) {
+    //             return response.render("questions.hbs", 
+    //             { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
+    //         } else {
+    //             return QuestionManager.getQuestionsByCategory(category, isAnswered = false)
+    //         }
+    //     }).then(fetchedQuestions => {
+    //         questions.push.apply(questions, fetchedQuestions)
+    //         return response.render("questions.hbs", 
+    //         { userStatus, questions, categories, answerStatus, csrfToken: request.csrfToken() })
+    //     }).catch(error => {
+    //         console.log("categories: ", error)
+    //         response.status(500).render("statuscode-500.hbs", { userStatus })
+    //     })
+    // })
+    
 
-    router.get("/by-id/:questionId/edit", 
+    router.get("/by-id/:questionId/edit",
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const id = request.params.questionId
@@ -285,6 +355,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
+        const answerStatus = CATEGORY_ALL
         var question = { 
             id: request.params.questionId, 
             title: request.body.questionTitle, 
@@ -304,7 +375,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             question.answers = answers
             const questions = [question]
             response.render("questions.hbs", 
-            { userStatus, questions, csrfToken: request.csrfToken() })
+            { userStatus, questions, answerStatus, csrfToken: request.csrfToken() })
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
@@ -343,6 +414,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
     csrfProtection, SessionAuthorizer.authorizeUser, (request, response) => {
 
         const userStatus = request.session.userStatus
+        const answerStatus = CATEGORY_ANSWERED
         const answer = { 
             id: request.params.answerId,
             author: userStatus.username, 
@@ -363,7 +435,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             const questions = [question]
 
             response.render("questions.hbs", 
-            { userStatus, questions, isAnswered: true, csrfToken: request.csrfToken() })
+            { userStatus, questions, answerStatus, csrfToken: request.csrfToken() })
 
         }).catch(validationErrors => {
             console.log(validationErrors)
@@ -392,6 +464,29 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             response.status(500).render("statuscode-500.hbs", { userStatus })
         })
     })
+
+    router.get("/search-results", csrfProtection, (request, response) => {
+		
+		const userStatus = request.session.userStatus
+		const searchQuery = request.query.searchQuery
+
+		SearchManager.searchQuestions(searchQuery
+		).then(questions => {
+
+            const categories = []
+            for(question of questions) {
+                if (!categories.includes(question.category)) {
+                    categories.push(question.category)
+                }
+            }
+
+            response.render("questions.hbs", 
+            { userStatus, categories, questions, answerStatus: CATEGORY_ALL, csrfToken: request.csrfToken() })
+		}).catch(error => {
+			console.log(error)
+			response.statusCode(500).render("500.hbs", { userStatus })
+		})
+	})
 
     return router
 }

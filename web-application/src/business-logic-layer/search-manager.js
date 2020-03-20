@@ -2,14 +2,20 @@ const Fuse = require("fuse.js")
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 
-module.exports = ({ QuestionRepository, searchOptions }) => {
+module.exports = ({ QuestionManager, searchOptions }) => {
 
     return {
 
         searchQuestions(searchQuery) {
+            var questions = []
+
             return new Promise((resolve, reject) => {
-                QuestionRepository.getAllQuestions(
-                ).then(questions => {
+                QuestionManager.getAllQuestionsWithAnswers(
+                ).then(answeredQuestions => {
+                    questions = answeredQuestions
+                    return QuestionManager.getAllUnansweredQuestions()
+                }).then(unansweredQuestions => {
+                    questions.push.apply(questions, unansweredQuestions)
                     const fuse = new Fuse(questions, searchOptions)
                     const searchResults = fuse.search(searchQuery)
                     resolve(searchResults)
