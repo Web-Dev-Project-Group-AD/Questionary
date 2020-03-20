@@ -156,3 +156,7 @@ h1, h2, h3, h4 {
     margin-top: 15px;
 }
 
+p.textPost, h3.textPost {
+    word-wrap: break-word;
+}
+

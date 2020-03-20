@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (customCategory && QUESTION_CATEGORY_MIN_LENGTH > customCategory.length) {
             errorMessages.push("Custom category needs to be atleast " + QUESTION_CATEGORY_MIN_LENGTH + " characters long.")
         } else if (customCategory && customCategory.length > QUESTION_CATEGORY_MAX_LENGTH) {
-            errorMessages.push("Custom category can not be longer than " + QUESTION_TITLE_MAX_LENGTH + " characters.")
+            errorMessages.push("Custom category can not be longer than " + QUESTION_CATEGORY_MAX_LENGTH + " characters.")
         }
 
         if (!errorMessages.length > 0) {

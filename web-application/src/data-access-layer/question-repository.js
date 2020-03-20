@@ -1,4 +1,5 @@
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const ERROR_MSG_CREATE_UNIQUE_QUESTION = "Question already exists."
 
 module.exports = ({ database }) => {
 
@@ -6,7 +7,7 @@ module.exports = ({ database }) => {
 
         createQuestionCategory(category) {
 
-            const query = "INSERT INTO questionCategories (name) VALUES (?)"
+            const query = "INSERT IGNORE INTO questionCategories (name) VALUES (?)"
             const values = [category]
             
             return new Promise((resolve, reject) => {
@@ -56,9 +57,13 @@ module.exports = ({ database }) => {
 				).then(result => {
 					resolve(result.insertId)
 				}).catch(error => {
-                    console.log(error)
-                    //TODO: uniqueconstraint error handling
-					reject(error)
+                    const errors = []
+                    if (error.sqlMessage.includes("Duplicate entry")) {
+                        errors.push(ERROR_MSG_CREATE_UNIQUE_QUESTION) 
+                    } else {
+                        errors.push(ERROR_MSG_DATABASE_GENERAL)
+                    }
+					reject(errors)
 				})
 			})
         },
