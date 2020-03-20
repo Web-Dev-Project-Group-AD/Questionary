@@ -125,6 +125,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })
 
+document.querySelector("#new-question-page form").addEventListener("submit", function (event) {
+    event.preventDefault()
+    console.log("navigation-handler_newQuestion")
+
+    const questionTitle = document.querySelector("#new-question-page #questionTitle").value
+    const questionDescription = document.querySelector("#new-question-page #questionDescription").value
+    const customCategory = document.querySelector("#new-question-page #customCategory").value
+
+    //console.log("body in questions", body)
+
+    var question = {
+        author: username.value,
+        category: customCategory,
+        title: questionTitle,
+        description: questionDescription
+    }
+
+
+    console.log("newQuestion_question: ", question)
+
+    // TODO: Build an SDK (e.g. a separate JS file)
+    // handling the communication with the backend.
+    fetch(
+        urlApi + "questions/new-post", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.accessToken
+        },
+        body: JSON.stringify(question)
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error('Api response was not ok')
+        }
+        return response.blob()
+
+    }).then((question) => {
+        console.log('Success:', question)
+    }).catch((error) => {
+        // TODO: Update the view and display error.
+        console.log("Error:", error)
+    })
+
+})
+
 window.addEventListener("popstate", function (event) {
     const url = location.pathname
     changeToPage(url)
@@ -159,6 +204,8 @@ function changeToPage(url) {
         fetchUser(id)
     } else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
+    } else if (url == "/api/questions/new-post") {
+        document.getElementById("new-question-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
         //document.getElementById("sign-out-page").classList.add("current-page")
         logout()
@@ -182,15 +229,34 @@ function fetchAllAccounts() {
     }
     ).then(function (response) {
         console.log("response_getAllAccounts: ", response)
+        console.log("response_getAllAccounts_body: ", response.body)
         // TODO: Check status code to see if it succeeded. Display errors if it failed.
         return response.json()
     }).then(function (accounts) {
         console.log("accounts_fetchAllAcc: ", accounts)
         const ul = document.querySelector("#accounts-page ul")
         ul.innerText = ""
+        const account = ""
+        const li = document.createElement("li")
+        li.innerText = "hier bin ich hoffentlich bald"
+        ul.append(li)
+
         console.log("ul_accounts: ", ul)
-        console.log("accounts: ", accounts)
-        for (const account of accounts) {
+        console.log("accounts123: ", [accounts])
+        //console.log("accounts123456: ", [response.body])
+        for (account of accounts) {
+            console.log("account: ", accounts.id)
+            const li = document.createElement("li")
+            //const anchor = document.createElement("a")
+            li.innerText = account.username
+            //anchor.setAttribute("href", '/pets/'+pet.id)
+            //li.appendChild(anchor)
+            ul.appendChild(li)
+            console.log("forschleife_hier")
+        }
+        console.log("hallo was geht hier")
+        /*for (const account of accounts) {
+            console.log("account: ", account.id)
             console.log("account: ", account.id)
             const li = document.createElement("li")
             //const anchor = document.createElement("a")
@@ -203,10 +269,10 @@ function fetchAllAccounts() {
             console.log("ul_after: ", ul)
             console.log("one users shown_getAllAccounts")
             return
-        }
+        }*/
         console.log("all users shown_getAllAccounts_end")
     }).catch(function (error) {
-        //console.log(error)
+        console.log("error hier bin ich: ", error)
         return error
     })
 
@@ -237,6 +303,7 @@ function login(accessToken) {
     localStorage.accessToken = accessToken
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
+    goToPage("/")
     console.log("login function app.js")
 }
 
@@ -245,5 +312,6 @@ function logout() {
     localStorage.accessToken = ""
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
+    goToPage("/")
     console.log("logout function app.js")
 }

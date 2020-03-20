@@ -85,6 +85,7 @@ module.exports = ({ AccountManager, generateToken }) => {
             const claims = {
                 sub: returnedAccount.id,
                 email: returnedAccount.email,
+                username: returnedAccount.username,
                 admin: returnedAccount.isAdmin,
             }
 

@@ -7,7 +7,7 @@ const container = require("../main")
 
 const VarRouter = container.resolve("VarRouter")
 const AccountRouterApi = container.resolve("AccountRouterApi")
-//const QuestionRouter = container.resolve("QuestionRouter")
+const QuestionRouterApi = container.resolve("QuestionRouterApi")
 //const sequelizeSync = container.resolve("sequelizeSync")
 
 // Create the express application.
@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // Attach all routers.
 app.use('/', VarRouter)
 app.use('/accounts', AccountRouterApi)
-//app.use("/questions", QuestionRouterApi)
+app.use('/questions', QuestionRouterApi)
 
 console.log("here we are in rest api")
 
