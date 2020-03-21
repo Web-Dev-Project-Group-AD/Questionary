@@ -82,7 +82,6 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         QuestionManager.createQuestion(question
         ).then(questionId => {
             response.setHeader('Location', '/questions/by-id/' + questionId)
-            response.redirect("/questions/by-id/" + questionId)
             console.log("createdQuestion")
             response.status(201).json().end()
         }).catch(validationErrors => {

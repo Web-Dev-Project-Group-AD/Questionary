@@ -183,50 +183,7 @@ function goToPage(url) {
 
 }
 
-function changeToPage(url) {
 
-    const currentPageDiv = document.getElementsByClassName("current-page")[0]
-    if (currentPageDiv) {
-        currentPageDiv.classList.remove("current-page")
-    }
-
-    // TODO: Optimally this information can be put in an array instead of having a long list of if-else if statements.
-    // TODO: Factor out common code in all branches.
-    if (url == "/") {
-        document.getElementById("home-page").classList.add("current-page")
-    } else if (url == "/api/accounts/all") {
-        document.getElementById("accounts-page").classList.add("current-page")
-        fetchAllAccounts()
-    } else if (url == "/api/accounts/sign-in") {
-        document.getElementById("sign-in-page").classList.add("current-page")
-    } else if (new RegExp("^/api/accounts/[0-9]+$").test(url)) {
-        document.getElementById("sign-in-page").classList.add("current-page")
-        const id = url.split("/")[2]
-        fetchUser(id)
-    } else if (new RegExp("^/api/questions/by-id/[0-9]+$").test(url)) {
-        document.getElementById("new-question-page").classList.add("current-page")
-        console.log("new_question_page")
-        const id = url.split("/")[2]
-        console.log("id", id)
-        viewQuestionsForUser(id)
-        console.log("question_done")
-    } else if (url == "/api/accounts/sign-up") {
-        document.getElementById("sign-up-page").classList.add("current-page")
-    } else if (url == "/api/questions/new-post") {
-        document.getElementById("new-question-page").classList.add("current-page")
-    } else if (url == "/api/questions/unanswered/") {
-        document.getElementById("answer-page").classList.add("current-page")
-    } else if (url == "/api/questions/by-user/[0-9]+$") {
-        document.getElementById("question-user-page").classList.add("current-page")
-    } else if (url == "/api/accounts/sign-out") {
-        //document.getElementById("sign-out-page").classList.add("current-page")
-        logout()
-    } else {
-        document.getElementById("error-page").classList.add("current-page")
-        console.log("error-page is shown")
-    }
-
-}
 
 /* function fetchAllAccounts() {
     console.log("fetchAllAccounts_start")
@@ -290,7 +247,8 @@ return error
 
 } */
 
-/*function fetchUser(id) {
+function fetchUser(id) {
+    //TODO look if it works
 
     fetch(
         urlApi + "accounts/" + id
@@ -308,7 +266,52 @@ return error
         console.log(error)
     })
 
-}*/
+}
+
+function changeToPage(url) {
+
+    const currentPageDiv = document.getElementsByClassName("current-page")[0]
+    if (currentPageDiv) {
+        currentPageDiv.classList.remove("current-page")
+    }
+
+    // TODO: Optimally this information can be put in an array instead of having a long list of if-else if statements.
+    // TODO: Factor out common code in all branches.
+    if (url == "/") {
+        document.getElementById("home-page").classList.add("current-page")
+    } else if (url == "/api/accounts/all") {
+        document.getElementById("accounts-page").classList.add("current-page")
+        fetchAllAccounts()
+    } else if (url == "/api/accounts/sign-in") {
+        document.getElementById("sign-in-page").classList.add("current-page")
+    } else if (new RegExp("^/api/accounts/[0-9]+$").test(url)) {
+        document.getElementById("sign-in-page").classList.add("current-page")
+        const id = url.split("/")[2]
+        fetchUser(id)
+    } else if (new RegExp("^/api/questions/by-id/[0-9]+$").test(url)) {
+        document.getElementById("new-question-page").classList.add("current-page")
+        console.log("new_question_page")
+        const id = url.split("/")[2]
+        console.log("id", id)
+        viewQuestionsForUser(id)
+        console.log("question_done")
+    } else if (url == "/api/accounts/sign-up") {
+        document.getElementById("sign-up-page").classList.add("current-page")
+    } else if (url == "/api/questions/new-post") {
+        document.getElementById("new-question-page").classList.add("current-page")
+    } else if (url == "/api/questions/unanswered/") {
+        document.getElementById("answer-page").classList.add("current-page")
+    } else if (url == "/api/questions/by-user/[0-9]+$") {
+        document.getElementById("question-user-page").classList.add("current-page")
+    } else if (url == "/api/accounts/sign-out") {
+        //document.getElementById("sign-out-page").classList.add("current-page")
+        logout()
+    } else {
+        document.getElementById("error-page").classList.add("current-page")
+        console.log("error-page is shown")
+    }
+
+}
 
 /*function viewQuestionsForUser(questionId) {
     console.log("viewQuestionsForUser_start")
