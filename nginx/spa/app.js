@@ -4,15 +4,13 @@
 const urlApi = "http://localhost:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
-
     console.log("nginx_spa_here we are")
 
     changeToPage(location.pathname)
 
     if (localStorage.accessToken) {
-        console.log("localStorage.accessToken1", localStorage.accessToken)
+        console.log("localStorage.accessToken", localStorage.accessToken)
         login(localStorage.accessToken)
-        console.log("localStorage.accessToken2", localStorage.accessToken)
     } else {
         logout()
     }
@@ -25,10 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
 
-    // TODO: Avoid using this long lines of code.
     document.querySelector("#sign-up-page form").addEventListener("submit", function (event) {
         event.preventDefault()
-        console.log("navigation-handler_sign_up")
 
         showLoader()
 
@@ -38,68 +34,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const passwordRepeated = document.querySelector("#sign-up-page #password2").value
 
         const account = { username, email, password, passwordRepeated }
-        console.log("signUp_account: ", account)
 
-        // TODO: Build an SDK (e.g. a separate JS file)
-        // handling the communication with the backend.
         fetch(
             urlApi + "accounts/sign-up", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                //"Authorization": localStorage.accessToken
-                //"Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
         }).then((response) => {
             if (!response.ok) {
-                console.log("if_create")
                 response.json().then(function (body) {
-                    console.log(body)
                     hideLoader()
                     throw new Error(body)
                 })
             } else {
-                console.log("else_create")
-
-                console.log("localStorage.accessToken1", localStorage.accessToken)
-                login(localStorage.accessToken)
-                console.log("localStorage.accessToken2", localStorage.accessToken)
                 hideLoader()
-                goToPage("/")
+                goToPage("/api/accounts/sign-in")
                 return response.blob()
             }
 
-            /*{
-                console.log("response_signup:", response)
-    
-                if(!response.ok){
-                    response.json().then(function (body){
-                        console.log(body)
-    
-                        //TODO spinner hide it???
-    
-                        let error = ''
-                        switch(response.status){
-                            case 400:
-                                error = body.message
-    
-                                const errorPage = document.getElementById("error-page")
-                                const errorMessage = document.getElementById("errorMessage")
-                            
-                                errorPage.style.display = "block"
-                                errorMessage.innerText = error
-    
-                        }
-                    })
-                }*/
-
         }).then((account) => {
-            console.log('Success:', account)
             hideLoader()
+            console.log('Success:', account)
+
         }).catch((error) => {
             hideLoader()
-            // TODO: Update the view and display error.
             console.log("Error:", error)
         })
 
@@ -107,12 +67,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
-        console.log("navigation-handler_sign_in")
+
+        showLoader()
 
         const email = document.querySelector("#sign-in-page .email").value
         const password = document.querySelector("#sign-in-page .password").value
-
-        console.log("email and password:", email, password)
 
         fetch(
             urlApi + "accounts/sign-in", {
@@ -120,21 +79,19 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Bearer " + localStorage.accessToken
-                //"Authorization": localStorage.accessToken
-            }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
+            },
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
-            // TODO: Check status code to see if it succeeded. Display errors if it failed.
-
+            hideLoader()
             return response.json(400)
         }).then(function (body) {
-            // TODO: Read out information about the user account from the id_token.
-            console.log("signIn_fetch_body.accessToken:", body)
-            console.log("signIn_fetch_body.accessToken:", body.access_token)
+            console.log("body.accessToken:", body.access_token)
+            hideLoader()
             login(body.access_token)
             return
         }).catch(function (error) {
-            console.log("signIn_fetch_error", error)
+            hideLoader()
+            console.log("Error: ", error)
             return
 
         })
@@ -225,7 +182,6 @@ function changeToPage(url) {
     } else if (url == "/api/questions/new-post") {
         document.getElementById("new-question-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
-        //document.getElementById("sign-out-page").classList.add("current-page")
         logout()
     } else {
         document.getElementById("error-page").classList.add("current-page")
@@ -317,21 +273,24 @@ function fetchUser(id) {
 }
 
 function login(accessToken) {
+    showLoader()
     console.log("accessToken", accessToken)
     localStorage.accessToken = accessToken
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
+    hideLoader()
     goToPage("/")
-    console.log("login function app.js")
+    console.log("login")
 }
 
 function logout() {
-    console.log("logout")
+    showLoader()
     localStorage.accessToken = ""
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
+    hideLoader()
     goToPage("/")
-    console.log("logout function app.js")
+    console.log("logout")
 }
 
 function showLoader() {
