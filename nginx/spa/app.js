@@ -1,5 +1,6 @@
 // TODO: Don't write all JS code in the same file.
 
+// Docker Machine IP address, must be changed to own IP
 const urlApi = "http://localhost:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -29,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault()
         console.log("navigation-handler_sign_up")
 
+        showLoader()
+
         const username = document.querySelector("#sign-up-page #username").value
         const email = document.querySelector("#sign-up-page #email").value
         const password = document.querySelector("#sign-up-page #password1").value
@@ -50,9 +53,22 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(account)
         }).then((response) => {
             if (!response.ok) {
-                throw new Error('Api response was not ok')
+                console.log("if_create")
+                response.json().then(function (body) {
+                    console.log(body)
+                    hideLoader()
+                    throw new Error(body)
+                })
+            } else {
+                console.log("else_create")
+
+                console.log("localStorage.accessToken1", localStorage.accessToken)
+                login(localStorage.accessToken)
+                console.log("localStorage.accessToken2", localStorage.accessToken)
+                hideLoader()
+                goToPage("/")
+                return response.blob()
             }
-            return response.blob()
 
             /*{
                 console.log("response_signup:", response)
@@ -80,7 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }).then((account) => {
             console.log('Success:', account)
+            hideLoader()
         }).catch((error) => {
+            hideLoader()
             // TODO: Update the view and display error.
             console.log("Error:", error)
         })
@@ -314,4 +332,14 @@ function logout() {
     document.body.classList.add("isLoggedOut")
     goToPage("/")
     console.log("logout function app.js")
+}
+
+function showLoader() {
+    document.getElementById("loader").classList.add('show')
+    document.getElementById("loader").classList.remove('hide')
+}
+
+function hideLoader() {
+    document.getElementById("loader").classList.add('hide')
+    document.getElementById("loader").classList.remove('show')
 }
