@@ -23,8 +23,8 @@
             <li><a href="/">Questionary</a></li>
             <li><a href="/api/accounts/all">View Accounts</a></li>
             <li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign in</a></li>
-            <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
-            <li class="showIfLoggedIn"><a href="/api/questions/new-post">new Question</a></li>
+            <!-- <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li> -->
+            <li class="showIfLoggedIn"><a href="/api/questions/new-post">New Question</a></li>
             <li class="showIfLoggedIn"><a href="/api/accounts/sign-out">Logout</a></li>
         </ul>
     </nav>
@@ -82,18 +82,23 @@
             </div>
             <form action="">
                 <div>
-                    Mail-Adresse: <input type="text" name="email" class="email">
+                    <input type="text" name="email" class="email" placeholder="Email">
                 </div>
                 <div>
-                    Password: <input type="text" name="password" class="password">
+                    <input type="password" name="password" class="password" placeholder="Password">
                 </div>
-                <input type="submit" value="Login">
+                <input type="submit" value="Login" class="button">
             </form>
+            <br><br>
+            <h4>Not a user?</h4>
+            <br>
+            <a id="sign-up" class="button" href="/api/accounts/sign-up">Sign up</a>
+
         </div>
 
         <div id="new-question-page">
             <div class="content">
-                <h1>new Question</h1>
+                <h1>New Question</h1>
             </div>
             <form name="question" method="POST" action="/questions/new-post">
                 <br>
