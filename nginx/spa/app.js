@@ -54,30 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             return response.blob()
 
-            /*{
-                console.log("response_signup:", response)
-    
-                if(!response.ok){
-                    response.json().then(function (body){
-                        console.log(body)
-    
-                        //TODO spinner hide it???
-    
-                        let error = ''
-                        switch(response.status){
-                            case 400:
-                                error = body.message
-    
-                                const errorPage = document.getElementById("error-page")
-                                const errorMessage = document.getElementById("errorMessage")
-                            
-                                errorPage.style.display = "block"
-                                errorMessage.innerText = error
-    
-                        }
-                    })
-                }*/
-
         }).then((account) => {
             console.log('Success:', account)
         }).catch((error) => {
@@ -102,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Bearer " + localStorage.accessToken
-                //"Authorization": localStorage.accessToken
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
@@ -123,52 +98,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
     })
 
-})
+    document.querySelector("#new-question-page form").addEventListener("submit", (event) => {
+        event.preventDefault()
+        console.log("navigation-handler_newQuestion")
 
-document.querySelector("#new-question-page form").addEventListener("submit", function (event) {
-    event.preventDefault()
-    console.log("navigation-handler_newQuestion")
+        const questionTitle = document.querySelector("#new-question-page #questionTitle").value
+        const questionDescription = document.querySelector("#new-question-page #questionDescription").value
+        const customCategory = document.querySelector("#new-question-page #customCategory").value
 
-    const questionTitle = document.querySelector("#new-question-page #questionTitle").value
-    const questionDescription = document.querySelector("#new-question-page #questionDescription").value
-    const customCategory = document.querySelector("#new-question-page #customCategory").value
+        //console.log("body in questions", body)
 
-    //console.log("body in questions", body)
-
-    var question = {
-        author: username.value,
-        category: customCategory,
-        title: questionTitle,
-        description: questionDescription
-    }
-
-
-    console.log("newQuestion_question: ", question)
-
-    // TODO: Build an SDK (e.g. a separate JS file)
-    // handling the communication with the backend.
-    fetch(
-        urlApi + "questions/new-post", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.accessToken
-        },
-        body: JSON.stringify(question)
-    }).then((response) => {
-        if (!response.ok) {
-            throw new Error('Api response was not ok')
+        const question = {
+            author: username.value,
+            category: customCategory,
+            title: questionTitle,
+            description: questionDescription
         }
-        return response.blob()
 
-    }).then((question) => {
-        console.log('Success:', question)
-    }).catch((error) => {
-        // TODO: Update the view and display error.
-        console.log("Error:", error)
+
+        console.log("newQuestion_question: ", question)
+
+        // TODO: Build an SDK (e.g. a separate JS file)
+        // handling the communication with the backend.
+        fetch(
+            urlApi + "questions/new-post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.accessToken
+            },
+            body: JSON.stringify(question)
+
+        }).then((response) => {
+
+            //console.log("body_here:", body)
+            return response.json(400)
+
+
+            /* questionTitle.innerText = body.question.title
+             customCategory.innerText = body.question.customCategory
+             questionDescription.innerText = body.question.description
+             author.innerText = body.question.author
+ 
+ */
+            /*
+             } else {
+                 response.json() {
+                     console.log("else_body: ", body)
+     
+                     const id = body.question.id
+                     goToPage("/questions/by-id/" + id)
+                     document.getElementById("createQuestionForm").reset()
+                 }
+             }*/
+        }).then((body) => {
+            console.log('Success1:', body)
+            return
+        }).then((question) => {
+            console.log('Success:', question)
+            return
+
+        }).catch((error) => {
+            //console.log(JSON.stringify(error))
+            // TODO: Update the view and display error.
+            console.log("Error_here:", error)
+            return
+        })
+
     })
 
 })
+
+
 
 window.addEventListener("popstate", function (event) {
     const url = location.pathname
@@ -202,10 +203,21 @@ function changeToPage(url) {
         document.getElementById("sign-in-page").classList.add("current-page")
         const id = url.split("/")[2]
         fetchUser(id)
+    } else if (new RegExp("^/api/questions/by-id/[0-9]+$").test(url)) {
+        document.getElementById("new-question-page").classList.add("current-page")
+        console.log("new_question_page")
+        const id = url.split("/")[2]
+        console.log("id", id)
+        viewQuestionsForUser(id)
+        console.log("question_done")
     } else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
     } else if (url == "/api/questions/new-post") {
         document.getElementById("new-question-page").classList.add("current-page")
+    } else if (url == "/api/questions/unanswered/") {
+        document.getElementById("answer-page").classList.add("current-page")
+    } else if (url == "/api/questions/by-user/[0-9]+$") {
+        document.getElementById("question-user-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
         //document.getElementById("sign-out-page").classList.add("current-page")
         logout()
@@ -216,7 +228,7 @@ function changeToPage(url) {
 
 }
 
-function fetchAllAccounts() {
+/* function fetchAllAccounts() {
     console.log("fetchAllAccounts_start")
 
     fetch(
@@ -252,9 +264,9 @@ function fetchAllAccounts() {
             //anchor.setAttribute("href", '/pets/'+pet.id)
             //li.appendChild(anchor)
             ul.appendChild(li)
-            console.log("forschleife_hier")
+            console.log("forschleife_here")
         }
-        console.log("hallo was geht hier")
+        console.log("hello whatsup")
         /*for (const account of accounts) {
             console.log("account: ", account.id)
             console.log("account: ", account.id)
@@ -270,15 +282,15 @@ function fetchAllAccounts() {
             console.log("one users shown_getAllAccounts")
             return
         }*/
-        console.log("all users shown_getAllAccounts_end")
-    }).catch(function (error) {
-        console.log("error hier bin ich: ", error)
-        return error
-    })
+/*console.log("all users shown_getAllAccounts_end")
+}).catch(function (error) {
+console.log("error here iam: ", error)
+return error
+})
 
-}
+} */
 
-function fetchUser(id) {
+/*function fetchUser(id) {
 
     fetch(
         urlApi + "accounts/" + id
@@ -296,7 +308,88 @@ function fetchUser(id) {
         console.log(error)
     })
 
-}
+}*/
+
+/*function viewQuestionsForUser(questionId) {
+    console.log("viewQuestionsForUser_start")
+
+    const noQuestions = document.getElementById("noQuestionsForUser")
+
+    fetch(
+        route + '/questions/by-id/' + questionId, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + localStorage.access_token
+        },
+    }
+    ).then(function (response) {
+        console.log(response)
+
+        noQuestions.style.display = "none"
+
+        if (!response.ok) {
+            response.json().then(function (body) {
+                console.log("body_viewQuestionsById: ", body)
+
+                if (response.status == 401) {
+                    localStorage.clear()
+                    goToPage("/")
+                    return
+                }
+
+                console.log("error_body:", body.message)
+            })
+        } else {
+            response.json().then(function (body) {
+                console.log("body_else: ", body)
+
+                document.getElementById("question-user-page").classList.add("current-page")
+
+                const questions = body.questions
+
+                const questionsDiv = document.getElementById("questionsUser")
+                questionsDiv.innerHTML = ""
+
+                if (!questions || questions.length == 0) {
+                    noQuestions.style.display = "block"
+                } else {
+                    for (var question of questions) {
+                        const questionDiv = document.createElement('div')
+                        questionDiv.classList.add("box")
+
+                        questionDiv.innerHTML = `
+                       
+                        <article>
+                            <div>
+                                <div class="content">
+                                    <p>
+                                        <strong>${question.title}</strong>
+                                    
+                                        ${question.description}
+                                        <br>${question.author}
+                                    </p>
+                                </div>
+                                <div>
+                                    <a href="/questions/by-id/${question.id}">More</a>
+                                </div>
+                            </div>
+
+                        </article>
+                   
+                    `
+                        questionsDiv.appendChild(questionDiv)
+                    }
+                }
+            })
+        }
+    }).catch(function (error) {
+        console.log(JSON.stringify(error))
+
+        //hideSpinner()
+        console.log("Error connecting")
+    })
+
+}*/
 
 function login(accessToken) {
     console.log("accessToken", accessToken)

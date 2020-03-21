@@ -1,5 +1,4 @@
 const express = require('express')
-const jwt = require('jsonwebtoken')
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 
@@ -11,8 +10,13 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
     const serverSecret = "175342C7638E1D173B45FCC2EC97E"
 
     /*router.get("/new-post", (request, response) => {
+        console.log("get new Questions in question router")
 
         //const userStatus = request.session.userStatus
+
+        const loggedInId = response.locals.id
+
+        console.log("loggedInId:", loggedInId)
 
         QuestionManager.getAllCategories(
         ).then(categories => {
@@ -37,7 +41,9 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         console.log("authorizationHeader", authorizationHeader)
         console.log("getAllAccounts_accessToken", accessToken)
 
-        try {
+
+        //TODO change it when file middleware is working
+        /*try {
 
             payload = jwt.verify(accessToken, serverSecret)
 
@@ -58,10 +64,11 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 })
                 return
             }
-        }
+        }*/
 
-        //const category = (request.body.optionCategories && !request.body.customCategory) ? request.body.optionCategories : request.body.customCategory
-        //console.log("category: ", category)
+        console.log("here iam ")
+
+        const category = (request.body.optionCategories && !request.body.customCategory) ? request.body.optionCategories : request.body.customCategory
 
         var question = {
             author: request.body.author,
@@ -75,8 +82,9 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         QuestionManager.createQuestion(question
         ).then(questionId => {
             response.setHeader('Location', '/questions/by-id/' + questionId)
+            response.redirect("/questions/by-id/" + questionId)
+            console.log("createdQuestion")
             response.status(201).json().end()
-            //response.redirect("/questions/by-id/" + questionId)
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
