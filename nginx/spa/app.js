@@ -1,17 +1,16 @@
 // TODO: Don't write all JS code in the same file.
 
+// Docker Machine IP address, must be changed to own IP
 const urlApi = "http://localhost:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
-
     console.log("nginx_spa_here we are")
 
     changeToPage(location.pathname)
 
     if (localStorage.accessToken) {
-        console.log("localStorage.accessToken1", localStorage.accessToken)
+        console.log("localStorage.accessToken", localStorage.accessToken)
         login(localStorage.accessToken)
-        console.log("localStorage.accessToken2", localStorage.accessToken)
     } else {
         logout()
     }
@@ -24,10 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
 
-    // TODO: Avoid using this long lines of code.
     document.querySelector("#sign-up-page form").addEventListener("submit", function (event) {
         event.preventDefault()
-        console.log("navigation-handler_sign_up")
+
+        showLoader()
 
         const username = document.querySelector("#sign-up-page #username").value
         const email = document.querySelector("#sign-up-page #email").value
@@ -35,29 +34,31 @@ document.addEventListener("DOMContentLoaded", function () {
         const passwordRepeated = document.querySelector("#sign-up-page #password2").value
 
         const account = { username, email, password, passwordRepeated }
-        console.log("signUp_account: ", account)
 
-        // TODO: Build an SDK (e.g. a separate JS file)
-        // handling the communication with the backend.
         fetch(
             urlApi + "accounts/sign-up", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                //"Authorization": localStorage.accessToken
-                //"Authorization": "Bearer " + localStorage.accessToken
             },
             body: JSON.stringify(account)
         }).then((response) => {
             if (!response.ok) {
-                throw new Error('Api response was not ok')
+                response.json().then(function (body) {
+                    hideLoader()
+                    throw new Error(body)
+                })
+            } else {
+                hideLoader()
+                goToPage("/api/accounts/sign-in")
+                return response.blob()
             }
-            return response.blob()
 
         }).then((account) => {
+            hideLoader()
             console.log('Success:', account)
         }).catch((error) => {
-            // TODO: Update the view and display error.
+            hideLoader()
             console.log("Error:", error)
         })
 
@@ -65,12 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
-        console.log("navigation-handler_sign_in")
+
+        showLoader()
 
         const email = document.querySelector("#sign-in-page .email").value
         const password = document.querySelector("#sign-in-page .password").value
-
-        console.log("email and password:", email, password)
 
         fetch(
             urlApi + "accounts/sign-in", {
@@ -78,20 +78,19 @@ document.addEventListener("DOMContentLoaded", function () {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Bearer " + localStorage.accessToken
-            }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
+            },
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
-            // TODO: Check status code to see if it succeeded. Display errors if it failed.
-
+            hideLoader()
             return response.json(400)
         }).then(function (body) {
-            // TODO: Read out information about the user account from the id_token.
-            console.log("signIn_fetch_body.accessToken:", body)
-            console.log("signIn_fetch_body.accessToken:", body.access_token)
+            console.log("body.accessToken:", body.access_token)
+            hideLoader()
             login(body.access_token)
             return
         }).catch(function (error) {
-            console.log("signIn_fetch_error", error)
+            hideLoader()
+            console.log("Error: ", error)
             return
 
         })
@@ -139,13 +138,13 @@ document.addEventListener("DOMContentLoaded", function () {
              customCategory.innerText = body.question.customCategory
              questionDescription.innerText = body.question.description
              author.innerText = body.question.author
- 
+
  */
             /*
              } else {
                  response.json() {
                      console.log("else_body: ", body)
-     
+
                      const id = body.question.id
                      goToPage("/questions/by-id/" + id)
                      document.getElementById("createQuestionForm").reset()
@@ -183,9 +182,41 @@ function goToPage(url) {
 
 }
 
+function changeToPage(url) {
 
+    const currentPageDiv = document.getElementsByClassName("current-page")[0]
+    if (currentPageDiv) {
+        currentPageDiv.classList.remove("current-page")
+    }
 
-/* function fetchAllAccounts() {
+    // TODO: Optimally this information can be put in an array instead of having a long list of if-else if statements.
+    // TODO: Factor out common code in all branches.
+    if (url == "/") {
+        document.getElementById("home-page").classList.add("current-page")
+    } else if (url == "/api/accounts/all") {
+        document.getElementById("accounts-page").classList.add("current-page")
+        fetchAllAccounts()
+    } else if (url == "/api/accounts/sign-in") {
+        document.getElementById("sign-in-page").classList.add("current-page")
+    } else if (new RegExp("^/api/accounts/[0-9]+$").test(url)) {
+        document.getElementById("sign-in-page").classList.add("current-page")
+        const id = url.split("/")[2]
+        fetchUser(id)
+    } else if (url == "/api/accounts/sign-up") {
+        document.getElementById("sign-up-page").classList.add("current-page")
+    } else if (url == "/api/questions/new-post") {
+        document.getElementById("new-question-page").classList.add("current-page")
+    } else if (url == "/api/accounts/sign-out") {
+        //document.getElementById("sign-out-page").classList.add("current-page")
+        logout()
+    } else {
+        document.getElementById("error-page").classList.add("current-page")
+        console.log("error-page is shown")
+    }
+
+}
+
+function fetchAllAccounts() {
     console.log("fetchAllAccounts_start")
 
     fetch(
@@ -361,13 +392,13 @@ function changeToPage(url) {
                         questionDiv.classList.add("box")
 
                         questionDiv.innerHTML = `
-                       
+
                         <article>
                             <div>
                                 <div class="content">
                                     <p>
                                         <strong>${question.title}</strong>
-                                    
+
                                         ${question.description}
                                         <br>${question.author}
                                     </p>
@@ -378,7 +409,7 @@ function changeToPage(url) {
                             </div>
 
                         </article>
-                   
+
                     `
                         questionsDiv.appendChild(questionDiv)
                     }
@@ -395,19 +426,32 @@ function changeToPage(url) {
 }*/
 
 function login(accessToken) {
+    showLoader()
     console.log("accessToken", accessToken)
     localStorage.accessToken = accessToken
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
+    hideLoader()
     goToPage("/")
-    console.log("login function app.js")
+    console.log("login")
 }
 
 function logout() {
-    console.log("logout")
+    showLoader()
     localStorage.accessToken = ""
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
+    hideLoader()
     goToPage("/")
-    console.log("logout function app.js")
+    console.log("logout")
+}
+
+function showLoader() {
+    document.getElementById("loader").classList.add('show')
+    document.getElementById("loader").classList.remove('hide')
+}
+
+function hideLoader() {
+    document.getElementById("loader").classList.add('hide')
+    document.getElementById("loader").classList.remove('show')
 }
