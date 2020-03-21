@@ -33,3 +33,12 @@ services:
       POSTGRES_DB: 'postgres'
       POSTGRES_USER: 'admin'
       POSTGRES_PASSWORD: 'password1'
+  nginx:
+    build: nginx
+    volumes:
+      - "./nginx/spa:/usr/share/nginx/html/"
+    ports:
+      - "8888:80"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
