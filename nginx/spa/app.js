@@ -28,35 +28,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
         showLoader()
 
+        //const username = document.getElementById('username').value
+        console.log("username1")
         const username = document.querySelector("#sign-up-page #username").value
+        console.log("username2:", username)
         const email = document.querySelector("#sign-up-page #email").value
+        console.log("email:", email)
         const password = document.querySelector("#sign-up-page #password1").value
+        console.log("password:", password)
         const passwordRepeated = document.querySelector("#sign-up-page #password2").value
+        console.log("passwordRepeated:", passwordRepeated)
 
-        const account = { username, email, password, passwordRepeated }
+        const account = JSON.stringify({
+            "username": username,
+            "email": email,
+            "password": password,
+            "passwordRepeated": passwordRepeated
+        })
+
+        function validatingJSON(json) {
+
+            var checkedjson
+
+            try {
+                console.log("json", json)
+                checkedjson = JSON.parse(json)
+                console.log("checked json", checkedjson)
+
+            } catch (e) {
+                console.log("e", e)
+            }
+
+            return checkedjson
+        }
 
         fetch(
             urlApi + "accounts/sign-up", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(account)
+            body: account
         }).then((response) => {
+            console.log("response_before_if:", response)
             if (!response.ok) {
-                response.json().then(function (body) {
-                    hideLoader()
-                    throw new Error(body)
-                })
+                console.log("if_response")
+                //validatingJSON(account)
+                //console.log("account:", account)
+                //validatingJSON(response)
+                //console.log("response2:", response)
+                response.json()
+                    .then((body) => {
+                        console.log("working_body:", body)
+                        hideLoader()
+                        console.log("Error_if: ", error)
+                        //throw new Error(account)
+                    })
             } else {
-                hideLoader()
-                goToPage("/api/accounts/sign-in")
-                return response.blob()
+                console.log("else_response")
+                //console.log("account2:", body)
+                response.json().then((body) => {
+                    //validatingJSON(body)
+                    console.log("else_working:", body)
+                    //validatingJSON(response)
+                    //console.log("response3:", response)
+                    hideLoader()
+                    document.getElementById("signUpForm").reset()
+                    goToPage("/api/accounts/sign-in")
+                    //return response.blob()
+                })
+
             }
 
-        }).then((account) => {
-            hideLoader()
-            console.log('Success:', account)
         }).catch((error) => {
             hideLoader()
             console.log("Error:", error)
@@ -101,6 +144,14 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault()
         console.log("navigation-handler_newQuestion")
 
+        console.log("accessToken: ", localStorage.accessToken)
+        const payload = parseJwt(localStorage.accessToken)
+        const id = payload.sub
+        const author = payload.username
+        console.log("id and author: ", id, author)
+
+
+
         const questionTitle = document.querySelector("#new-question-page #questionTitle").value
         const questionDescription = document.querySelector("#new-question-page #questionDescription").value
         const customCategory = document.querySelector("#new-question-page #customCategory").value
@@ -108,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //console.log("body in questions", body)
 
         const question = {
-            author: username.value,
+            author: author,
             category: customCategory,
             title: questionTitle,
             description: questionDescription
@@ -129,15 +180,26 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(question)
 
         }).then((response) => {
+            console.log("response_q:", response)
             if (!response.ok) {
                 response.json().then(function (body) {
+                    console.log("body_question", body)
                     hideLoader()
-                    throw new Error(body)
+                    //throw new Error(body)
+                    console.log("Error3: ", error)
                 })
             } else {
-                hideLoader()
-                goToPage("/api/questions/unanswered/")
-                return response.blob()
+                response.json().then((body) => {
+                    //validatingJSON(body)
+                    console.log("else_working:", body)
+                    //validatingJSON(response)
+                    //console.log("response3:", response)
+                    hideLoader()
+                    //document.getElementById("signUpForm").reset()
+                    goToPage("/api/questions/unanswered/")
+
+                    //return response.blob()
+                })
             }
 
 
@@ -164,9 +226,6 @@ document.addEventListener("DOMContentLoaded", function () {
             /*}).then((body) => {
                 console.log('Success1:', body)
                 return*/
-        }).then((question) => {
-            console.log('Success:', question)
-            return
 
         }).catch((error) => {
             //console.log(JSON.stringify(error))
@@ -326,41 +385,52 @@ function changeToPage(url) {
 }
 
 function viewUnansweredQuestions() {
-    console.log("viewQuestionsForUser_start")
+    console.log("viewUnansweredQuestions_start")
 
-    const noQuestions = document.getElementById("noQuestionsForUser")
+    const noQuestions = document.getElementById("noUnansweredQuestions")
 
     fetch(
         urlApi + '/questions/unanswered/', {
         method: "GET",
         headers: {
-            "Authorization": "Bearer " + localStorage.access_token
+            "Authorization": "Bearer " + localStorage.accessToken
         },
     }
     ).then((response) => {
         console.log("response_viewUnansweredQuestions", response)
-
+        console.log("here")
         noQuestions.style.display = "none"
 
         if (!response.ok) {
-            response.json().then(function (body) {
-                console.log("body_viewunansweredQuestions: ", body)
+
+            console.log("if_body: ", body)
+            response.json().then((body) => {
+                console.log("if_viewunansweredQuestions")
+                console.log("if_body_viewunansweredQuestions: ", body)
 
                 hideLoader()
-                throw new Error(body)
+
+                console.log("Errors4:", error)
             })
         } else {
             // hideLoader()
             // goToPage("/api/accounts/sign-in")
             // return response.blob()
-            response.json().then(function (body) {
-                console.log("body_else: ", body)
+            console.log("body_else: ")
 
-                const answerpage = document.getElementById("answer-page").classList.add("current-page")
+            response.json().then((body) => {
+                console.log("else_working:", body)
+
+                hideLoader()
+                const answerpage = document.getElementById("answer-page")
+
+                answerpage.classList.add("current-page")
+                console.log("answerpage:", answerpage)
 
                 const questions = body.questions
+                console.log("questions:", questions)
 
-                const questionsDiv = document.getElementById("questions")
+                const questionsDiv = document.getElementById("question")
                 questionsDiv.innerHTML = ""
 
                 if (!questions || questions.length == 0) {
@@ -379,17 +449,10 @@ function viewUnansweredQuestions() {
                                 <h1>Questions1</h1>
                             </div>
 
-                            
-                            </div>
-                            <div id="questionTitle">${question.title}<div>
-                            <<a href="/questions/by-id/${question.id}">More to the question</a></div>
+                            <div id="questionTitle">${question.title}</div>
+
                             <div id="questionDescription">${question.description}</div>
                             <div id="questionAuthor">${question.author}</div>
-
-
-                            <div id="noQuestionsToAnswer" class="hidden">
-                                <p>There are no questions to answer.</p>
-                            </div>
 
                         </div>
  
@@ -401,13 +464,21 @@ function viewUnansweredQuestions() {
                 }
             })
         }
-    }).catch(function (error) {
-        console.log(JSON.stringify(error))
-
-        //hideSpinner()
-        console.log("Error connecting")
+    }).catch((error) => {
+        //console.log(JSON.stringify(error))
+        hideLoader()
+        console.log("Error connecting: ", error)
     })
 
+}
+
+const parseJwt = (token) => {
+    try {
+        return JSON.parse(atob(token.split('.')[1]))
+    } catch (e) {
+        logout()
+        return null
+    }
 }
 
 function login(accessToken) {

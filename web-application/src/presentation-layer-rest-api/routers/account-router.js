@@ -13,8 +13,17 @@ module.exports = ({ AccountManager, generateToken }) => {
 
     router.post("/sign-up", (request, response) => {
 
+        console.log("request.body_create:", request.body)
+
         const { username, email, password, passwordRepeated } = request.body
-        const account = { username, email, password, passwordRepeated }
+        //const account = { username, email, password, passwordRepeated }
+
+        const account = {
+            username: username,
+            email: email,
+            password: password,
+            passwordRepeated: passwordRepeated
+        }
 
         AccountManager.createAccount(account
         ).then(createdAccount => {
@@ -27,9 +36,13 @@ module.exports = ({ AccountManager, generateToken }) => {
             //console.log("token123: ", token)
             console.log(username, " signed in123")
             response.setHeader('Location', '/sign-up/' + userId)
-            response.status(201).json().end()
+            response.status(201).json({
+                account: account,
+                status: '201',
+                message: 'User created successfully'
+            })
             // response.status(201).json(token).end()
-            // return
+            //return
 
         }).catch(validationErrors => {
 
@@ -38,8 +51,8 @@ module.exports = ({ AccountManager, generateToken }) => {
                 response.status(400).json(validationErrors)
                 return
             } else {
-                response.status(500).json(error).end()
-                //return
+                response.status(500).json(error)
+                return
             }
         })
 

@@ -31,16 +31,16 @@ nav ul li a{
 	color: black;
 }
 
-main{
+body{
 	width: 75%;
 	margin: 0 auto;
 }
 
-main > div{
+body > div{
 	display: none;
 }
 
-main > div.current-page{
+body > div.current-page{
 	display: block;
 }
 

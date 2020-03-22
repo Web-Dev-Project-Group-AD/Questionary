@@ -24,7 +24,7 @@ app.use(function (request, response, next) {
 
 // Handles parsing data from the request body.
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 //app.use(authorizeLogin)
 
 // Attach all routers.

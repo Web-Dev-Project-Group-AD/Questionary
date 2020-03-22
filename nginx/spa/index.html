@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
     <link rel="stylesheet" type="text/css" href="./static-files/styles.css">
     <script src="app.js" type="module"></script>
-
-
 </head>
 
 <body>
@@ -32,160 +30,182 @@
         </ul>
     </nav>
 
-    <main>
+    <!-- <main> -->
 
-        <div id="loader" class="lds-ring center hide">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+    <div id="loader" class="lds-ring center hide">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div id="home-page">
+        <h1>Home</h1>
+        <p>This is the home page...</p>
+    </div>
+
+    <div id="accounts-page">
+        <h1>Accounts</h1>
+        <ul>
+            <li>no accounts</li>
+        </ul>
+
+        <div id="noAccounts" class="hidden">
+            <p>There are no accounts!</p>
+        </div>
+    </div>
+
+    <div id="user-page">
+        <h1>Account</h1>
+        <div>Name: <span class="username"></span></div>
+        <div>Id: <span class="id"></span></div>
+    </div>
+
+    <div id="sign-up-page">
+        <div class="content">
+            <h2>Sign Up</h2>
+            <p>Create a new account using the form below.</p>
         </div>
 
-        <div id="home-page">
-            <h1>Home</h1>
-            <p>This is the home page...</p>
-        </div>
-
-        <div id="accounts-page">
-            <h1>Accounts</h1>
-            <ul>
-                <li>no accounts</li>
-            </ul>
-
-            <div id="noAccounts" class="hidden">
-                <p>There are no accounts!</p>
-            </div>
-        </div>
-
-        <div id="user-page">
-            <h1>Account</h1>
-            <div>Name: <span class="username"></span></div>
-            <div>Id: <span class="id"></span></div>
-        </div>
-
-        <div id="sign-up-page">
-            <div class="content">
-                <h2>Sign Up</h2>
-                <p>Create a new account using the form below.</p>
-            </div>
-
-            <form method="POST" action="/accounts/sign-up">
-                <br>
-                <input type="text" name="username" id="username" placeholder="Username">
-                <br>
-                <input type="email" name="email" id="email" placeholder="E-Mail">
-                <br>
-                <input type="password" name="password" id="password1" placeholder="Password" />
-                <br>
-                <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
-                <br>
-                <input type="submit" class="btn" value="Register">
-            </form>
-        </div>
-
-        <div id="sign-in-page">
-            <div class="content">
-                <h1>Login</h1>
-            </div>
-            <form action="">
-                <div>
-                    <input type="text" name="email" class="email" placeholder="Email">
-                </div>
-                <div>
-                    <input type="password" name="password" class="password" placeholder="Password">
-                </div>
-                <input type="submit" value="Login" class="button">
-            </form>
-            <br><br>
-            <h4>Not a user?</h4>
+        <form method="POST" action="" id="signUpForm">
             <br>
-            <a id="sign-up" class="button" href="/api/accounts/sign-up">Sign up</a>
+            <input type="text" name="username" id="username" placeholder="Username">
+            <br>
+            <input type="email" name="email" id="email" placeholder="E-Mail">
+            <br>
+            <input type="password" name="password" id="password1" placeholder="Password" />
+            <br>
+            <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
+            <br>
+            <input type="submit" class="btn" value="Register">
+        </form>
+    </div>
+
+    <div id="sign-in-page">
+        <div class="content">
+            <h1>Login</h1>
+        </div>
+        <form action="">
+            <div>
+                <input type="text" name="email" class="email" placeholder="Email">
+            </div>
+            <div>
+                <input type="password" name="password" class="password" placeholder="Password">
+            </div>
+            <input type="submit" value="Login" class="button">
+        </form>
+        <br><br>
+        <h4>Not a user?</h4>
+        <br>
+        <a id="sign-up" class="button" href="/api/accounts/sign-up">Sign up</a>
+
+    </div>
+
+    <div id="new-question-page">
+        <div class="content">
+            <h1>New Question</h1>
+        </div>
+        <form name="question" method="POST" action="" id="createQuestionForm">
+            <br>
+            <input type="text" name="title" id="questionTitle" placeholder="Question" />
+            <br>
+            <textarea rows="4" cols="50" name="description" id="questionDescription"
+                placeholder="Description (Optional)"></textarea>
+            <br>
+            <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
+            <!--<input type="hidden" name="_csrf" value="EUyclN3W-PIPfXknqgGVpd7JWd_iFPq7C3Ic" />-->
+            <br>
+            <input type="submit" class="button" value="Submit question" />
+            <br>
+        </form>
+
+    </div>
+
+    <div id="answer-page">
+        <div class="content">
+            <h1>Answers:</h1>
+        </div>
+
+        <div class="questions blog-post">
+
+            <h3>Dummy: Question Title</h3>
+            <p>Dummy: Question Description</p>
+            <div>
+                <ul>
+                    <li><a href="/accounts/{{question.author}}">Dummy: Asked by: question.author</a></li>
+                </ul>
+            </div>
+
+            <div id="noUnansweredQuestions" class="hidden">
+                <p>Dummy:There are no questions to answer!</p>
+            </div>
 
         </div>
 
-        <div id="new-question-page">
-            <div class="content">
-                <h1>New Question</h1>
-            </div>
-            <form name="question" method="POST" action="" id="createQuestionForm">
-                <br>
-                <input type="text" name="title" id="questionTitle" placeholder="Question" />
-                <br>
-                <textarea rows="4" cols="50" name="description" id="questionDescription"
-                    placeholder="Description (Optional)"></textarea>
-                <br>
-                <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
-                <!--<input type="hidden" name="_csrf" value="EUyclN3W-PIPfXknqgGVpd7JWd_iFPq7C3Ic" />-->
-                <br>
-                <input type="submit" class="button" value="Submit question" />
-                <br>
-            </form>
+    </div>
+
+
+    <div id="question">
+        <div class="content">
+            <h1>Questions1</h1>
+        </div>
+
+        <div id="questionAuthor">123</div>
+        <div id="questionTitle">123
+            <a href="/questions/by-id/:id">here what is happend</a>
+        </div>
+        <div id="questionDescription">123</div>
+
+
+        <div id="noQuestionsToAnswer" class="hidden">
+            <p>There are no questions to answer.</p>
+        </div>
+
+    </div>
+
+    <!-- <div id="question-page">
+        <div class="content">
+            <h1>Questions1</h1>
+        </div>
+
+        <div id="questionTitle">${question.title}</div>
+        <div>
+        <a id="questionTitle" href="/questions/by-id/${question.id}">${question.title}</a>
+        </div>
+
+        <div id="questionDescription">${question.description}</div>
+        <div id="questionAuthor">${question.author}</div>
+
+
+        <div id="noQuestionsToAnswer" class="hidden">
+            <p>There are no questions to answer.</p>
+        </div>
+
+    </div> -->
+
+
+    <div id="question-user-page">
+        <div class="content">
+            <h1>Questions for one user:</h1>
+        </div>
+
+        <div id="questionsUser">
 
         </div>
 
-        <div id="answer-page">
-            <div class="content">
-                <h1>Answers:</h1>
-            </div>
-
-            <div class="questions blog-post">
-
-                <h3>DummyQuestion Title</h3>
-                <p>DummyQuestion Description</p>
-                <div>
-                    <ul>
-                        <li><a href="/accounts/{{question.author}}">DummyAsked by: question.author</a></li>
-                    </ul>
-                </div>
-
-                <div id="noQuestions" class="hidden">
-                    <p>DummyThere are no questions to answer!</p>
-                </div>
-
-            </div>
-
+        <div id="noQuestionsForUser" class="hidden">
+            <p>You have no questions!</p>
+            <!-- <a href="/questions/by-user/:author">here what is happend</a>-->
         </div>
 
-        <div id="question-user-page">
-            <div class="content">
-                <h1>Questions for one user:</h1>
-            </div>
+    </div>
 
-            <div id="questionsUser">
+    <div id="error-page">
+        <h1>Error</h1>
+        <p>Oups, something went wrong ^^'</p>
+    </div>
 
-            </div>
-
-            <div id="noQuestionsForUser" class="hidden">
-                <p>You have no questions!</p>
-                <!-- <a href="/questions/by-user/:author">here what is happend</a>-->
-            </div>
-
-        </div>
-        <!-- 
-        <div id="question-page">
-            <div class="content">
-                <h1>Questions1</h1>
-            </div>
-
-            <div id="questionAuthor"></div>
-            <div id="questionTitle">
-                <!-- <a href="/questions/by-id/:id">here what is happend</a>-->
-        <!--</div>
-            <div id="questionDescription"></div>
-
-
-            <div id="noQuestionsToAnswer" class="hidden">
-                <p>There are no questions to answer.</p>
-            </div>
-
-        </div> -->
-
-        <div id="error-page">
-            <h1>Error</h1>
-            <p>Oups, something went wrong ^^'</p>
-        </div>
-
-    </main>
+    <!-- </main> -->
 
     <!--<footer>
         Petto |

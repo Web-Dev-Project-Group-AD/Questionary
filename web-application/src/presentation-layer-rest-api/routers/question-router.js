@@ -83,7 +83,11 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         ).then(questionId => {
             response.setHeader('Location', '/questions/by-id/' + questionId)
             console.log("createdQuestion")
-            response.status(201).json().end()
+            response.status(201).json({
+                question: question,
+                status: '201',
+                message: 'Question created successfully'
+            })
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
@@ -125,11 +129,11 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         console.log("newQuestion_unanswered_start")
         let payload = null
 
-        const authorizationHeader = request.get('authorization')
-        const accessToken = authorizationHeader.substr("Bearer ".length)
+        //const authorizationHeader = request.get('authorization')
+        //const accessToken = authorizationHeader.substr("Bearer ".length)
 
-        console.log("authorizationHeader", authorizationHeader)
-        console.log("getAllAccounts_accessToken", accessToken)
+        //console.log("authorizationHeader", authorizationHeader)
+        //console.log("getAllAccounts_accessToken", accessToken)
 
         const isAnswered = false
 
@@ -144,7 +148,11 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
             }
 
             response.setHeader('Location', '/questions/unanswered')
-            response.status(201).json().end()
+            response.status(200).json({
+                questions: questions,
+                status: '200',
+                message: 'Questions are showing successfully'
+            })
             //response.render("questions.hbs", 
             //{ userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
         }).catch(error => {
