@@ -12,8 +12,6 @@ const urlApi = "http://192.168.99.100:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("nginx_spa_here we are")
-
     changeToPage(location.pathname)
 
     if (localStorage.getItem("accessToken")) {
@@ -177,16 +175,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
     })
 
+
+    document.querySelector("#edit-question-page form").addEventListener("submit", (event) => {
+        event.preventDefault()
+
+        const editQuestionPage = document.querySelector("#edit-question-page")
+
+        const id = editQuestionPage.querySelector("#questionId").value
+        const title = editQuestionPage.querySelector("#questionTitle").value
+        const description = editQuestionPage.querySelector("#questionDescription").value
+        
+        const question = { id, title, description }
+
+        console.log("questionUpdate")
+
+        fetch(
+            urlApi + "questions/by-id/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
+                },
+                body: JSON.stringify(question)
+            }
+        ).then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                changeToPage(response.status.toString)
+            }
+        }).then(() => {
+            
+            // handle return
+
+        }).catch(error => {
+            console.log("Error_here:", error)
+            return
+        })
+    })
 })
 
-function jwtDecode(t) {
+function jwtDecode(encodedToken) {
     let token = {};
-    token.raw = t;
-    token.header = JSON.parse(window.atob(t.split('.')[0]));
-    token.payload = JSON.parse(window.atob(t.split('.')[1]));
+    token.raw = encodedToken;
+    token.header = JSON.parse(window.atob(encodedToken.split('.')[0]));
+    token.payload = JSON.parse(window.atob(encodedToken.split('.')[1]));
     return (token)
-  }
+}
 
+function getLocalUsername() {
+    var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
+    return accessTokenRaw.payload.username   
+}
 
 window.addEventListener("popstate", function (event) {
     const url = location.pathname
@@ -219,22 +259,20 @@ function fetchUser(id) {
     }).catch(function (error) {
         console.log(error)
     })
-
 }
 
 
 function fetchAllQuestions() {
     fetch(
-        urlApi + "questions/all"
-    ).then(response => {
+        urlApi + "questions/all", {
+            method: "GET"
+    }).then(response => {
         if (response.ok) {
             return response.json()
         } else {
             
         }
     }).then(questions => {
-
-       
 
         const questionsPage = document.querySelector("#questions-page")
         const questionsDiv =  questionsPage.querySelector("#questions")
@@ -260,27 +298,28 @@ function fetchAllQuestions() {
                     const title = questions[i].title
                     const description = questions[i].description
                     const author =  questions[i].author
+                    const id = questions[i].id
                     //console.log(title, description, author)
                    
                     //var accessTokenRaw = jwt.decode(localStorage.getItem("accessToken"))
                     var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
                     
                     const username = accessTokenRaw.payload.username
-                    console.log("username: ", username)
                    
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
                         <div id="questions-page">
-                        <div class="content">
-                            <h1></h1>
-                        </div>
-                        <div class="question blog-post">
-                            <h3>` + title + `</h3>
-                            <p>` + description + `</p>
-                            <div>
-                                <ul>
-                                    <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
-                                </ul>
+                            <div class="content">
+                                <h1></h1>
+                            </div>
+                            <div class="question blog-post">
+                                <h3>` + title + `</h3>
+                                <p>` + description + `</p>
+                                <div>
+                                    <ul>
+                                        <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>    
                         `
@@ -288,11 +327,14 @@ function fetchAllQuestions() {
                         var questionOptions = document.createElement("div") 
                         questionOptions.innerHTML = `
                             <ul>
-                                <li><a href="questions/by-id//edit/">Edit</a></li>
-                                <li><a href="/delete/">Delete</a></li>
+                                <li><a href="edit/` + id + `">Edit</a></li>
+                                <li><a href="delete/` + id + `">Delete</a></li>
                             </ul>
                             `
                             questionDiv.appendChild(questionOptions)
+
+                            // <li><a href="by-id/` + id  + `/edit/">Edit</a></li>
+
                     }
                     questionsDiv.appendChild(questionDiv)
                 }
@@ -310,34 +352,92 @@ function fetchAllQuestions() {
     })
 }
 
-function editQuestion(id) {
+function loadEditQuestionForm(questionId) {
+    console.log("loadEditQuestionForm: ", questionId)
+
     fetch(
-        urlApi + "questions/" + id
+        urlApi + "questions/by-id/" + questionId, {
+            method: "GET"
+        }
     ).then(response => {
+        console.log("loadEditForm: ", response)
         if (response.ok) {
             return response.json()
         } else {
-            changeToPage(response.status.toString)
+            // handle exception            
         }
     }).then(question => {
-        
-        // Implement edit question
 
+            console.log("question in loadForm:", question)
+
+            const editQuestionPage = document.querySelector("#edit-question-page")
+
+            var id = editQuestionPage.querySelector("#questionId")
+            var title = editQuestionPage.querySelector("#questionTitle")
+            var description = editQuestionPage.querySelector("#questionDescription")
+
+            id.value = question[0].id
+            title.value = question[0].title
+            description.value = question[0].description
+
+            editQuestionPage.classList.add("current-page")
+
+
+            //var id = editQuestionPage.querySelector("#title")
+
+            // var formDiv = document.createElement("div")
+            // formDiv.innerHTML = `
+            //     <form name="question" id="questionForm" method="POST">
+            //         <input type="text" name="title" id="questionTitle" value="` + question.title + `" placeholder="Question" />
+            //         <input type="text" name="description" id="questionDescription" value="` + question.description + `" placeholder="Description" />
+            //         <input type="submit" value="Submit edit" />
+            //     </form>
+            //     `
+            
+    }).catch(error => {
+        // handle error
     })
 }
 
-function deleteQuestion(id) {
+// function editQuestion(question) {
+//     fetch(
+//         urlApi + "questions/by-id/" + question.id, {
+//             method: "PUT",
+//             headers: {
+//                 "Authorization": "Bearer " + localStorage.getItem("accessToken")
+//             },
+//             body: JSON.stringify(question)
+//         }
+//     ).then(response => {
+//         if (response.ok) {
+//             return response.json()
+//         } else {
+//             changeToPage(response.status.toString)
+//         }
+//     }).then(question => {
+        
+//         // Implement edit question
+//     })
+// }
+
+function deleteQuestion(questionId) {
     fetch(
-        urlApi + "questions/" + id
+        urlApi + "questions/by-id/" + questionId, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            },
+        }
     ).then(response => {
         if (response.ok) {
             goToPage("/api" + response.headers.get("Location"))
         } else {
             goToPage(response.status.toString)
         }
+    }).catch(error => {
+        // TODO: handle error
     })
 }
-
 
 function changeToPage(url) {
 
@@ -366,7 +466,24 @@ function changeToPage(url) {
         console.log("id", id)
         viewQuestionsForUser(id)
         console.log("question_done")
-    } else if (url == "/api/accounts/sign-up") {
+
+    }
+                            //http://192.168.99.100:8888/api/questions/by-id/1/edit/
+                           // ^\/api\/questions\/by-id\/[0-9]\/edit/$
+    // } else if (new RegExp("^/api/questions/edit/[0-9]+$").test(url)) {
+    //     console.log("working!")
+    //     document.getElementById("edit-question-page").classList.add("current-page")
+    
+    else if (url.includes("edit")) {
+        console.log("working!")
+        const id = url.split("/")[1]
+
+        console.log("iD in route:", id)
+        loadEditQuestionForm(id)
+    }
+    
+
+     else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
     } else if (url == "/api/questions/new-post") {
         document.getElementById("new-question-page").classList.add("current-page")

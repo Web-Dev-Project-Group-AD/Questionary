@@ -32,6 +32,11 @@ function authorizeRequest(request, response, next) {
     }
 }
 
+function parseTokenFromRequest(request) {
+    const authorizationHeader = request.get("authorization")
+    return jwt.decode(authorizationHeader.substr("Bearer ".length))
+}
+
 
 module.exports = ({ QuestionManager }) => {
 
@@ -94,7 +99,7 @@ module.exports = ({ QuestionManager }) => {
 
         console.log("questionId: ", questionId)
 
-        QuestionManager.getQuestionByIS(getQuestionById
+        QuestionManager.getQuestionById(questionId
         ).then(question => {
             response.setHeader("Location", "/questions/by-id/" + questionId)
             response.status(201).json(question).end()
@@ -107,14 +112,18 @@ module.exports = ({ QuestionManager }) => {
     
     router.put("/by-id/:questionId", authorizeRequest, (request, response) => {
         const questionId = request.params.questionId
+        const username = parseTokenFromRequest(request).username
+
 
         const question = { 
 
-            id: questionId, 
+            id: request.body.id, 
             title: request.body.title, 
             description: request.body.description, 
-            author: request.body.description
+            author: username
         }
+
+        console.log("edit question serverside: ", question)
 
 
         QuestionManager.updateQuestion(question

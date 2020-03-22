@@ -99,7 +99,6 @@
                     placeholder="Description (Optional)"></textarea>
                 <br>
                 <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
-                <!--<input type="hidden" name="_csrf" value="EUyclN3W-PIPfXknqgGVpd7JWd_iFPq7C3Ic" />-->
                 <br>
                 <input type="submit" class="button" value="Submit question" />
                 <br>
@@ -111,11 +110,19 @@
             <div id="questions"></div>
         </div>
 
-
         <div id="edit-question-page">
-
-
-
+            <h3>Edit question</h3>
+            <form name="question" method="POST" id="editQuestionForm">
+                <br>
+                <input type="text" name="title" id="questionTitle" placeholder="Question" />
+                <br>
+                <textarea rows="4" cols="50" name="description" id="questionDescription"
+                    placeholder="Description (Optional)"></textarea>
+                <br>
+                <input type="hidden" id="questionId" /> 
+                <input type="submit" class="button" value="Submit edit" />
+                <br>
+            </form>
         </div>
 
 

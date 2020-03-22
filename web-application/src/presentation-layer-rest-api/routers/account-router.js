@@ -5,6 +5,39 @@ const ERROR_MSG_DATABASE_GENERAL = "Database error."
 const ERROR_MSG_CREATE_UNIQUE_USERNAME = "Username is already taken."
 const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
+
+
+function authorizeRequest(request, response, next) {
+  
+    const authorizationHeader = request.get('authorization')
+    const accessToken = authorizationHeader.substr("Bearer ".length)
+    
+    try {
+        jwt.verify(accessToken, serverSecret)
+        next()
+
+    } catch(error) {
+        if (error.name == "TokenExpiredError") {
+            response.status(401).json({
+                'status': '401',
+                'error': 'invalid_token',
+                'message': 'JWT expired'
+            })
+        } else {
+            response.status(401).json({
+                'status': '401',
+                'error': 'invalid_token',
+                'message': 'JWT is malformed or invalid'
+            })
+        }
+        return
+    }
+}
+
+
+
+
+
 module.exports = ({ AccountManager, generateToken }) => {
 
     const router = express.Router()
