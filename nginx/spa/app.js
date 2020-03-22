@@ -257,35 +257,43 @@ function fetchAllQuestions() {
             for (var i = 0; i < questions.length; i++) {
                 if (questions[i].title) {
                     
-                    var title = questions[i].title
-                    var description = questions[i].description
-                    var author =  questions[i].author
+                    const title = questions[i].title
+                    const description = questions[i].description
+                    const author =  questions[i].author
                     //console.log(title, description, author)
                    
                     //var accessTokenRaw = jwt.decode(localStorage.getItem("accessToken"))
                     var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
                     
-
-                    console.log("accessTokenRaw: ", accessTokenRaw)
-                    username = accessTokenRaw.payload.username
+                    const username = accessTokenRaw.payload.username
                     console.log("username: ", username)
-
+                   
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
-                    <div id="questions-page">
-                    <div class="content">
-                        <h1></h1>
-                    </div>
-                    <div class="question blog-post">
-                        <h3>` + title + `</h3>
-                        <p>` + description + `</p>
-                        <div>
-                            <ul>
-                                <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
-                            </ul>
+                        <div id="questions-page">
+                        <div class="content">
+                            <h1></h1>
                         </div>
-                    </div>    
-                    `
+                        <div class="question blog-post">
+                            <h3>` + title + `</h3>
+                            <p>` + description + `</p>
+                            <div>
+                                <ul>
+                                    <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
+                                </ul>
+                            </div>
+                        </div>    
+                        `
+                    if (author == username) {
+                        var questionOptions = document.createElement("div") 
+                        questionOptions.innerHTML = `
+                            <ul>
+                                <li><a href="questions/by-id//edit/">Edit</a></li>
+                                <li><a href="/delete/">Delete</a></li>
+                            </ul>
+                            `
+                            questionDiv.appendChild(questionOptions)
+                    }
                     questionsDiv.appendChild(questionDiv)
                 }
             }
