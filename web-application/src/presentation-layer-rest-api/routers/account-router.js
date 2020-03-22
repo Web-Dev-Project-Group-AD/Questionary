@@ -8,15 +8,15 @@ const ERROR_MSG_CREATE_UNIQUE_EMAIL = "Email is already taken."
 
 
 function authorizeRequest(request, response, next) {
-  
+
     const authorizationHeader = request.get('authorization')
     const accessToken = authorizationHeader.substr("Bearer ".length)
-    
+
     try {
         jwt.verify(accessToken, serverSecret)
         next()
 
-    } catch(error) {
+    } catch (error) {
         if (error.name == "TokenExpiredError") {
             response.status(401).json({
                 'status': '401',
@@ -192,7 +192,7 @@ module.exports = ({ AccountManager, generateToken }) => {
             response.setHeader('Location', '/all')
             response.status(200).json({ accounts })
 
- 
+
             //response.render("accounts-list-all.hbs", { accounts })
         }).catch(error => {
             console.log(error)

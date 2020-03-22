@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/x-www-form-urlencoded"
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
             body: "grant_type=password&email=" + email + "&password=" + password
-        }).then(function (response) {
+        }).then((response) => {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             if (response.ok) {
                 hideLoader()
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).catch(function (error) {
             hideLoader()
             console.log("signIn_fetch_error", error)
-            return
+            //return
 
         })
 
@@ -114,7 +114,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#new-question-page form").addEventListener("submit", (event) => {
         event.preventDefault()
         console.log("navigation-handler_newQuestion")
-        showLoader()
 
         const questionTitle = document.querySelector("#new-question-page #questionTitle").value
         const questionDescription = document.querySelector("#new-question-page #questionDescription").value
@@ -144,42 +143,17 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(question)
 
         }).then(response => {
-
-
             if (response.ok) {
                 console.log(response)
-                hideLoader()
-                goToPage("/api" + response.headers.get("Location"))
-                return
+                //console.log("url: ", response.headers.get("Location"))
+                //goToPage("/api/" + response.headers.get("Location"))
+                goToPage("/api/questions/all")
+                //return
             } else {
-                hideLoader()
                 throw ("oops")
-
             }
 
-            //console.log("body_here:", body)
-
-
-            /* questionTitle.innerText = body.question.title
-             customCategory.innerText = body.question.customCategory
-             questionDescription.innerText = body.question.description
-             author.innerText = body.question.author
- 
-
-             } else {
-                 response.json() {
-                     console.log("else_body: ", body)
-     
-                     const id = body.question.id
-                     goToPage("/questions/by-id/" + id)
-                     document.getElementById("createQuestionForm").reset()
-                 }
-             }*/
-
         }).catch(error => {
-            //console.log(JSON.stringify(error))
-            // TODO: Update the view and display error.
-            hideLoader()
             console.log("Error_here:", error)
             return
         })
@@ -189,37 +163,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelector("#edit-question-page form").addEventListener("submit", (event) => {
         event.preventDefault()
+        showLoader()
 
         const editQuestionPage = document.querySelector("#edit-question-page")
 
         const id = editQuestionPage.querySelector("#questionId").value
         const title = editQuestionPage.querySelector("#questionTitle").value
         const description = editQuestionPage.querySelector("#questionDescription").value
-        
+
         const question = { id, title, description }
 
         console.log("questionUpdate")
 
         fetch(
             urlApi + "questions/by-id/" + id, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
-                },
-                body: JSON.stringify(question)
-            }
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            },
+            body: JSON.stringify(question)
+        }
         ).then(response => {
             if (response.ok) {
+                hideLoader()
                 return response.json()
             } else {
+                hideLoader()
                 changeToPage(response.status.toString)
             }
-        }).then(() => {
-            
-            // handle return
-
         }).catch(error => {
+            hideLoader()
             console.log("Error_here:", error)
             return
         })
@@ -236,7 +210,7 @@ function jwtDecode(encodedToken) {
 
 function getLocalUsername() {
     var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
-    return accessTokenRaw.payload.username   
+    return accessTokenRaw.payload.username
 }
 
 window.addEventListener("popstate", function (event) {
@@ -276,7 +250,7 @@ function fetchUser(id) {
 function fetchAllQuestions() {
     fetch(
         urlApi + "questions/all", {
-            method: "GET"
+        method: "GET"
     }).then(response => {
         if (response.ok) {
             return response.json()
@@ -306,10 +280,10 @@ function fetchAllQuestions() {
         if (questions.length > 0) {
             for (var i = 0; i < questions.length; i++) {
                 if (questions[i].title) {
-                    
+
                     const title = questions[i].title
                     const description = questions[i].description
-                    const author =  questions[i].author
+                    const author = questions[i].author
                     const id = questions[i].id
                     //console.log(title, description, author)
 
@@ -318,7 +292,7 @@ function fetchAllQuestions() {
 
 
 
-                    username = accessTokenRaw.payload.username
+                    const username = accessTokenRaw.payload.username
 
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
@@ -334,16 +308,16 @@ function fetchAllQuestions() {
                         </div>
                     </div>           
                         `
-                    
+
                     if (author == username) {
-                        var questionOptions = document.createElement("div") 
+                        var questionOptions = document.createElement("div")
                         questionOptions.innerHTML = `
                             <ul>
                                 <li><a href="edit/` + id + `">Edit</a></li>
                                 <li><a href="delete/` + id + `">Delete</a></li>
                             </ul>
                             `
-                            questionDiv.appendChild(questionOptions
+                        questionDiv.appendChild(questionOptions)
 
                     }
                     questionsDiv.appendChild(questionDiv)
@@ -367,8 +341,8 @@ function loadEditQuestionForm(questionId) {
 
     fetch(
         urlApi + "questions/by-id/" + questionId, {
-            method: "GET"
-        }
+        method: "GET"
+    }
     ).then(response => {
         console.log("loadEditForm: ", response)
         if (response.ok) {
@@ -378,20 +352,20 @@ function loadEditQuestionForm(questionId) {
         }
     }).then(question => {
 
-            console.log("question in loadForm:", question)
+        console.log("question in loadForm:", question)
 
-            const editQuestionPage = document.querySelector("#edit-question-page")
+        const editQuestionPage = document.querySelector("#edit-question-page")
 
-            var id = editQuestionPage.querySelector("#questionId")
-            var title = editQuestionPage.querySelector("#questionTitle")
-            var description = editQuestionPage.querySelector("#questionDescription")
+        var id = editQuestionPage.querySelector("#questionId")
+        var title = editQuestionPage.querySelector("#questionTitle")
+        var description = editQuestionPage.querySelector("#questionDescription")
 
-            id.value = question[0].id
-            title.value = question[0].title
-            description.value = question[0].description
+        id.value = question[0].id
+        title.value = question[0].title
+        description.value = question[0].description
 
-            editQuestionPage.classList.add("current-page")
-            
+        editQuestionPage.classList.add("current-page")
+
     }).catch(error => {
         // handle error
     })
@@ -400,11 +374,11 @@ function loadEditQuestionForm(questionId) {
 function deleteQuestion(questionId) {
     fetch(
         urlApi + "questions/by-id/" + questionId, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("accessToken")
-            },
-        }
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        },
+    }
     ).then(response => {
         if (response.ok) {
             goToPage("/api" + response.headers.get("Location"))

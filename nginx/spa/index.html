@@ -13,13 +13,10 @@
 </head>
 
 <body>
-
     <div class="top-bar" id="top-bar">
         <div class="top-bar-left">
             <ul class="menu">
                 <li class="menu-text"><a href="/">Questionary</a></li>
-                <!-- <a href="/" id="titleWebpage">Questionary</a> -->
-
             </ul>
         </div>
         <div class="top-bar-right">
@@ -27,7 +24,6 @@
                 <li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign In</a></li>
                 <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
                 <li class="showIfLoggedIn"><a href="/api/questions/new-post">New Question</a></li>
-                <!--<li class="showIfLoggedIn"><a href="/api/questions/by-user/1">QuestionsUser</a></li>-->
                 <li class="showIfLoggedIn"><a href="/api/questions/all">View Questions</a></li>
                 <li class="showIfLoggedIn"><a href="/api/accounts/sign-out">Sign out</a></li>
             </ul>
@@ -113,9 +109,6 @@
                 </div>
                 <label for="customCategory">Create a custom category:</label>
                 <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
-
-                <br>
-
                 <input type="submit" class="button" value="Submit question" />
             </form>
         </div>
@@ -124,19 +117,20 @@
             <div id="questions"></div>
         </div>
 
-        <div id="edit-question-page">
-
-            <h3>Edit question</h3>
+        <div class="row form-post" id="edit-question-page">
+            <div class="medium-12 column content">
+                <h3>Edit question</h3>
+            </div>
             <form name="question" method="POST" id="editQuestionForm">
-                <br>
-                <input type="text" name="title" id="questionTitle" placeholder="Question" />
-                <br>
-                <textarea rows="4" cols="50" name="description" id="questionDescription"
-                    placeholder="Description (Optional)"></textarea>
-                <br>
-                <input type="hidden" id="questionId" /> 
+                <div class="medium-12 column">
+                    <input type="text" name="title" id="questionTitle" placeholder="Question" />
+                </div>
+                <div class="medium-12 column">
+                    <textarea rows="4" cols="50" name="description" id="questionDescription"
+                        placeholder="Description (Optional)"></textarea>
+                </div>
+                <input type="hidden" id="questionId" />
                 <input type="submit" class="button" value="Submit edit" />
-                <br>
             </form>
         </div>
 
@@ -145,15 +139,11 @@
                 <h1>Questions for one user:</h1>
             </div>
 
-            <div id="questionsUser">
-
-            </div>
+            <div id="questionsUser"></div>
 
             <div id="noQuestionsForUser" class="hidden">
                 <p>You have no questions!</p>
-                <!-- <a href="/questions/by-user/:author">here what is happend</a>-->
             </div>
-
         </div>
 
         <div id="loader" class="lds-ring center hide">
