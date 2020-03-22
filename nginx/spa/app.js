@@ -7,7 +7,7 @@
 
 // const jwt = require("jsonwebtoken")
 
-
+// change to own IP Adress or localhost
 const urlApi = "http://192.168.99.100:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -272,19 +272,17 @@ function fetchAllQuestions() {
 
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
-                    <div id="questions-page">
-                    <div class="content">
-                        <h1></h1>
-                    </div>
-                    <div class="question blog-post">
-                        <h3>` + title + `</h3>
-                        <p>` + description + `</p>
-                        <div>
-                            <ul>
-                                <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
-                            </ul>
+                    <div class="medium-8 column question content">
+                        <div class="question blog-post">
+                            <h3 class="textPost">` + title + `</h3>
+                            <p class="textPost">` + description + `</p>
+                            <div class="callout">
+                                <ul class="menu simple">
+                                    <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>    
+                    </div>      
                     `
                     questionsDiv.appendChild(questionDiv)
                 }
@@ -312,7 +310,6 @@ function editQuestion(id) {
             changeToPage(response.status.toString)
         }
     }).then(question => {
-        
         // Implement edit question
 
     })
@@ -447,13 +444,11 @@ function logout() {
                         questionDiv.classList.add("box")
 
                         questionDiv.innerHTML = `
-                       
                         <article>
                             <div>
                                 <div class="content">
                                     <p>
                                         <strong>${question.title}</strong>
-                                    
                                         ${question.description}
                                         <br>${question.author}
                                     </p>
@@ -464,7 +459,6 @@ function logout() {
                             </div>
 
                         </article>
-                   
                     `
                         questionsDiv.appendChild(questionDiv)
                     }

@@ -1,48 +1,9 @@
-body{
-	/* background-color: silver; */
-	background-color: rgb(110, 219, 233);
-	/*background-color: rgb(19, 113, 126);*/
+body {
+    font-family: Lucida Console;
 }
 
-header{
-	text-align: center;
-	font-size: 300%;
-	font-weight: bold;
-}
-
-nav{
-	border-bottom: 1px solid black;
-	width: 80%;
-	margin: 0 auto;
-	padding: 0.5em;
-}
-
-nav ul{
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	text-align: center;
-}
-
-nav ul li{
-	display: inline-block;
-}
-
-nav ul li a{
-	color: black;
-}
-
-main{
-	width: 75%;
-	margin: 0 auto;
-}
-
-main > div{
-	display: none;
-}
-
-main > div.current-page{
-	display: block;
+h1, h2, h3, h4 {
+    font-family: Lucida Console;
 }
 
 body.isLoggedOut .showIfLoggedIn{
@@ -53,14 +14,131 @@ body.isLoggedIn .showIfLoggedOut{
 	display: none;
 }
 
-footer{
-	border-top: 1px solid black;
-	width: 80%;
+.main-content{
+	width: 75%;
 	margin: 0 auto;
-	text-align: center;
-	padding: 0.5em;
 }
 
-footer a{
-	color: black;
+.main-content > div{
+	display: none;
 }
+
+.main-content > div.current-page{
+	display: block;
+}
+
+.top-bar {
+    font-size: large;
+    overflow: hidden;
+    background: #333;
+    padding: 1.5rem;
+    display: block;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.top-bar .menu-text {
+    color: #ffffff
+}
+
+.top-bar .menu {
+    background: #333;
+}
+
+
+.top-bar-left li {
+    padding: 0;
+}
+
+.top-bar a, .top-bar a:visited {
+    color: #ffffff;
+}
+
+.top-bar a:active {
+    color: #000;
+}
+
+.top-bar #search li {
+	display: inline-block;
+}
+
+.top-bar .input-group {
+	margin-bottom: 0;
+}
+
+.row {
+    margin-top: 80px;
+}
+
+.row h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.side-nav {
+    width: 250px;
+    right: 50px;
+    margin-top: 50px;
+    padding-top: 10px;
+    background-color: #333; 
+    overflow-x: hidden;
+    position: fixed; 
+    z-index: 1;
+}
+
+.side-nav h4 {
+    text-align: center;
+    font-size: larger;
+    color: #ffffff;
+}
+
+.side-nav ul {
+    list-style-type: none;
+    background-color: #f1f1f1;
+}
+
+.side-nav li a {
+    display: block;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+    margin: 0;
+    padding: 5px;
+}
+  
+.side-nav li a.active {
+    background-color: rgb(73, 131, 255);
+    color: white;
+}
+  
+.side-nav li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+.form-post {
+    width: 60%;
+}
+
+.form-post .column:last-child, .columns:last-child {
+    float: left;
+}
+
+.form-sign-in {
+    width: 40%;
+}
+
+.link-sign-up {
+    margin-top: 15px;
+}
+
+#sign-up.button {
+    margin-top: 15px;
+}
+
+p.textPost, h3.textPost {
+    word-wrap: break-word;
+}
+

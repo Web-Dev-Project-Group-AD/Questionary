@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questionary</title>
+    <link rel="stylesheet" href="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
     <link rel="stylesheet" type="text/css" href="./static-files/styles.css">
     <script src="app.js" type="module"></script>
 
@@ -13,22 +14,27 @@
 
 <body>
 
-    <header>
-        Questionary
-    </header>
+    <div class="top-bar" id="top-bar">
+        <div class="top-bar-left">
+            <ul class="menu">
+                <li class="menu-text"><a href="/">Questionary</a></li>
+                <!-- <a href="/" id="titleWebpage">Questionary</a> -->
 
-    <nav>
-        <ul>
-            <li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign in</a></li>
-            <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
-            <li class="showIfLoggedIn"><a href="/api/questions/new-post">new Question</a></li>
-            <!--<li class="showIfLoggedIn"><a href="/api/questions/by-user/1">QuestionsUser</a></li>-->
-            <li class="showIfLoggedIn"><a href="/api/questions/all">View Questions</a></li>
-            <li class="showIfLoggedIn"><a href="/api/accounts/sign-out">Logout</a></li>
-        </ul>
-    </nav>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="menu">
+                <li class="showIfLoggedOut"><a href="/api/accounts/sign-in">Sign In</a></li>
+                <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
+                <li class="showIfLoggedIn"><a href="/api/questions/new-post">New Question</a></li>
+                <!--<li class="showIfLoggedIn"><a href="/api/questions/by-user/1">QuestionsUser</a></li>-->
+                <li class="showIfLoggedIn"><a href="/api/questions/all">View Questions</a></li>
+                <li class="showIfLoggedIn"><a href="/api/accounts/sign-out">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
 
-    <main>
+    <div class="row main-content" id="content">
 
         <div id="home-page">
             <h1>Home</h1>
@@ -52,70 +58,70 @@
             <div>Id: <span class="id"></span></div>
         </div>
 
-        <div id="sign-up-page">
-            <div class="content">
-                <h2>Sign Up</h2>
-                <p>Create a new account using the form below.</p>
+        <div class="row form-post form-sign-up" id="sign-up-page">
+            <div class="medium-8 column content">
+                <h3>New Account</h3>
             </div>
-
-            <form method="POST" action="/accounts/sign-up">
-                <br>
-                <input type="text" name="username" id="username" placeholder="Username">
-                <br>
-                <input type="email" name="email" id="email" placeholder="E-Mail">
-                <br>
-                <input type="password" name="password" id="password1" placeholder="Password" />
-                <br>
-                <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
-                <br>
-                <input type="submit" class="btn" value="Register">
+            <form method="POST" action="">
+                <div class="small-6 column">
+                    <input type="email" name="email" id="email" placeholder="Email">
+                </div>
+                <div class="small-6 column username">
+                    <input type="text" name="username" id="username" placeholder="Username">
+                </div>
+                <div class="small-6 column password">
+                    <input type="password" name="password" id="password1" placeholder="Password" />
+                </div>
+                <div class="small-6 column passwordRepeated">
+                    <input type="password" name="passwordRepeated" id="password2" placeholder="Repeat password" />
+                </div>
+                <div class="small-6 column submit">
+                    <input type="submit" class="button" value="Sign up">
+                </div>
             </form>
         </div>
 
-        <div id="sign-in-page">
-            <div class="content">
-                <h1>Login</h1>
+        <div class="row form-post form-sign-in" id="sign-in-page">
+            <div class="medium-12 column content">
+                <h3>Sign In</h3>
             </div>
             <form action="">
-                <div>
-                    Mail-Adresse: <input type="text" name="email" class="email">
+                <div class="medium-8 column">
+                    <input type="email" name="email" class="email" placeholder="Email">
                 </div>
-                <div>
-                    Password: <input type="text" name="password" class="password">
+                <div class="medium-8 column">
+                    <input type="password" name="password" class="password" placeholder="Password">
                 </div>
-                <input type="submit" value="Login">
+                <div class="medium-8 column">
+                    <input type="submit" class="button" value="Login">
+                </div>
             </form>
         </div>
 
-        <div id="new-question-page">
-            <div class="content">
-                <h1>Create new question</h1>
+        <div class="row form-post" id="new-question-page">
+            <div class="medium-12 column content">
+                <h3>New Question</h3>
             </div>
             <form name="question" method="POST" action="" id="createQuestionForm">
-                <br>
-                <input type="text" name="title" id="questionTitle" placeholder="Question" />
-                <br>
-                <textarea rows="4" cols="50" name="description" id="questionDescription"
-                    placeholder="Description (Optional)"></textarea>
-                <br>
-                <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
-                <!--<input type="hidden" name="_csrf" value="EUyclN3W-PIPfXknqgGVpd7JWd_iFPq7C3Ic" />-->
-                <br>
-                <input type="submit" class="button" value="Submit question" />
-                <br>
-            </form>
+                <div class="medium-12 column">
+                    <input type="text" name="title" id="questionTitle" placeholder="Question" />
+                </div>
 
+                <div class="medium-12 column">
+                    <textarea rows="4" cols="50" name="description" id="questionDescription"
+                        placeholder="Description (Optional)"></textarea>
+                </div>
+                <label for="customCategory">Create a custom category:</label>
+                <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
+                <input type="submit" class="button" value="Submit question" />
+            </form>
         </div>
 
         <div id="questions-page">
             <div id="questions"></div>
         </div>
 
-
         <div id="edit-question-page">
-
-
-
         </div>
 
 
@@ -139,82 +145,14 @@
             <h1>Error</h1>
             <p>Oups, something went wrong ^^'</p>
         </div>
+    </div>
 
-    </main>
-
-    <!--<footer>
-        Petto |
-        Copyright 2020 Peter L-G |
-        <a href="/api/about">About</a>
-    </footer>-->
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
+    <script>
+        $(document).foundation();
+    </script>
 
 </body>
 
 </html>
-
-
-<!--
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const form = document.querySelector("form")
-
-        form.addEventListener("submit", validateRegisterForm)
-
-        function validateRegisterForm(event) {
-
-			/*
-			const constraints =  JSON.parse('{{{validationConstraints}}}')
-			console.log(constraints)
-			*/
-
-            const MIN_USERNAME_LENGTH = 4
-            const MAX_USERNAME_LENGTH = 20
-            const MIN_PASSWORD_LENGTH = 8
-            const MAX_PASSWORD_LENGTH = 20
-
-            const username = document.getElementById("username").value
-            const email = document.getElementById("email").value
-            const password1 = document.getElementById("password1").value
-            const password2 = document.getElementById("password2").value
-
-            const errorMessages = []
-
-            const errorList = document.getElementById("errorMessages")
-            while (errorList.firstChild) {
-                errorList.removeChild(errorList.firstChild)
-            }
-
-            if (MIN_USERNAME_LENGTH > username.length) {
-                errorMessages.push("Username needs to be atleast " + MIN_USERNAME_LENGTH + " characters long.")
-            } else if (username.length > MAX_USERNAME_LENGTH) {
-                errorMessages.push("Username can not be longer than " + MAX_USERNAME_LENGTH + " characters.")
-            }
-            if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-                errorMessages.push("Invalid email address.")
-            }
-            if (MIN_PASSWORD_LENGTH > password1.length) {
-                errorMessages.push("Password needs to be atleast " + MIN_PASSWORD_LENGTH + " characters long.")
-            } else if (password1.length > MAX_PASSWORD_LENGTH) {
-                errorMessages.push("Password can not be longer than " + MAX_PASSWORD_LENGTH + " characters.")
-            }
-            if (password1 != password2) {
-                errorMessages.push("Passwords dont match.")
-            }
-
-            if (!errorMessages.length > 0) {
-                return true
-            } else {
-
-                for (error of errorMessages) {
-                    var newError = document.createElement("LI")
-                    newError.innerText = error
-                    errorList.appendChild(newError)
-                }
-                event.preventDefault()
-            }
-
-        }
-
-    })
-</script>-->
