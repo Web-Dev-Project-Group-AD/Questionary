@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault()
         console.log("navigation-handler_sign_up")
 
+        showLoader()
+
         const username = document.querySelector("#sign-up-page #username").value
         const email = document.querySelector("#sign-up-page #email").value
         const password = document.querySelector("#sign-up-page #password1").value
@@ -52,15 +54,18 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(account)
         }).then((response) => {
             if (!response.ok) {
+                hideLoader()
                 throw new Error('Api response was not ok')
             }
             return response.json()
         }).then((body) => {
             console.log("Success:", body)
+            hideLoader()
             login(body.access_token)
-            return 
+            return
         }).catch((error) => {
             // TODO: Update the view and display error.
+            hideLoader()
             console.log("Error:", error)
         })
 
@@ -69,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
         console.log("navigation-handler_sign_in")
-
+        showLoader()
         const email = document.querySelector("#sign-in-page .email").value
         const password = document.querySelector("#sign-in-page .password").value
 
@@ -85,17 +90,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             if (response.ok) {
+                hideLoader()
                 return response.json()
             } else {
+                hideLoader()
                 changeToPage(response.status.toString)
             }
         }).then(function (body) {
+            hideLoader()
             // TODO: Read out information about the user account from the id_token.
             console.log("signIn_fetch_body.accessToken:", body)
             console.log("signIn_fetch_body.accessToken:", body.access_token)
             login(body.access_token)
             return
         }).catch(function (error) {
+            hideLoader()
             console.log("signIn_fetch_error", error)
             return
 
@@ -107,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#new-question-page form").addEventListener("submit", (event) => {
         event.preventDefault()
         console.log("navigation-handler_newQuestion")
+        showLoader()
 
         const questionTitle = document.querySelector("#new-question-page #questionTitle").value
         const questionDescription = document.querySelector("#new-question-page #questionDescription").value
@@ -140,17 +150,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 console.log(response)
-
+                hideLoader()
                 goToPage("/api" + response.headers.get("Location"))
                 return
             } else {
-
-                throw("oops")
+                hideLoader()
+                throw ("oops")
 
             }
 
             //console.log("body_here:", body)
-            
+
 
             /* questionTitle.innerText = body.question.title
              customCategory.innerText = body.question.customCategory
@@ -171,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).catch(error => {
             //console.log(JSON.stringify(error))
             // TODO: Update the view and display error.
+            hideLoader()
             console.log("Error_here:", error)
             return
         })
@@ -185,7 +196,7 @@ function jwtDecode(t) {
     token.header = JSON.parse(window.atob(t.split('.')[0]));
     token.payload = JSON.parse(window.atob(t.split('.')[1]));
     return (token)
-  }
+}
 
 
 window.addEventListener("popstate", function (event) {
@@ -230,21 +241,21 @@ function fetchAllQuestions() {
         if (response.ok) {
             return response.json()
         } else {
-            
+
         }
     }).then(questions => {
 
-       
+
 
         const questionsPage = document.querySelector("#questions-page")
-        const questionsDiv =  questionsPage.querySelector("#questions")
-        var errorDiv =  questionsPage.querySelector("#error")
+        const questionsDiv = questionsPage.querySelector("#questions")
+        var errorDiv = questionsPage.querySelector("#error")
         console.log("questionsDiv: ", questionsDiv)
         console.log("questionsPage before: ", questionsPage)
-        if (questionsDiv) {   
+        if (questionsDiv) {
             for (var i = 0; i < questionsDiv.childElementCount; i++) {
                 var questionDiv = questionsDiv.firstChild
-                questionDiv.remove()    
+                questionDiv.remove()
             }
         }
         if (errorDiv) {
@@ -256,15 +267,15 @@ function fetchAllQuestions() {
         if (questions.length > 0) {
             for (var i = 0; i < questions.length; i++) {
                 if (questions[i].title) {
-                    
+
                     var title = questions[i].title
                     var description = questions[i].description
-                    var author =  questions[i].author
+                    var author = questions[i].author
                     //console.log(title, description, author)
-                   
+
                     //var accessTokenRaw = jwt.decode(localStorage.getItem("accessToken"))
                     var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
-                    
+
 
                     console.log("accessTokenRaw: ", accessTokenRaw)
                     username = accessTokenRaw.payload.username
@@ -294,7 +305,7 @@ function fetchAllQuestions() {
             questionsPage.appendChild(errorDiv)
         }
 
-       
+
     }).catch(function (error) {
         console.log(error)
     })
@@ -362,7 +373,7 @@ function changeToPage(url) {
     } else if (url == "/api/questions/all") {
 
         document.getElementById("questions-page").classList.add("current-page")
-        fetchAllQuestions() 
+        fetchAllQuestions()
 
 
     } else if (url == "/api/questions/by-user/[0-9]+$") {
@@ -378,21 +389,35 @@ function changeToPage(url) {
 }
 
 function login(accessToken) {
+    showLoader()
     console.log("accessToken", accessToken)
-    localStorage.setItem("accessToken", accessToken)     
+    localStorage.setItem("accessToken", accessToken)
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
+    hideLoader()
     goToPage("/")
     console.log("login function app.js")
 }
 
 function logout() {
+    showLoader()
     console.log("logout")
     localStorage.clear()
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
+    hideLoader()
     goToPage("/")
     console.log("logout function app.js")
+}
+
+function showLoader() {
+    document.getElementById("loader").classList.add('show')
+    document.getElementById("loader").classList.remove('hide')
+}
+
+function hideLoader() {
+    document.getElementById("loader").classList.add('hide')
+    document.getElementById("loader").classList.remove('show')
 }
 
 
