@@ -121,6 +121,44 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
         })
     })
 
+    router.get("/unanswered", (request, response) => {
+        console.log("newQuestion_unanswered_start")
+        let payload = null
+
+        const authorizationHeader = request.get('authorization')
+        const accessToken = authorizationHeader.substr("Bearer ".length)
+
+        console.log("authorizationHeader", authorizationHeader)
+        console.log("getAllAccounts_accessToken", accessToken)
+
+        const isAnswered = false
+
+        QuestionManager.getAllUnansweredQuestions(
+        ).then(questions => {
+            const categories = []
+            for (question of questions) {
+                if (!categories.includes(question.category)) {
+                    categories.push(question.category)
+                }
+                console.log(question, "are created.")
+            }
+
+            response.setHeader('Location', '/questions/unanswered')
+            response.status(201).json().end()
+            //response.render("questions.hbs", 
+            //{ userStatus, questions, categories, isAnswered, csrfToken: request.csrfToken() })
+        }).catch(error => {
+            console.log("validationErrors: ", validationErrors)
+            if (validationErrors) {
+                response.status(400).json(validationErrors)
+                return
+            } else {
+                response.status(500).json(error).end()
+                //return
+            }
+        })
+    })
+
     return router
 
 }

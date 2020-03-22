@@ -331,14 +331,14 @@ function viewUnansweredQuestions() {
     const noQuestions = document.getElementById("noQuestionsForUser")
 
     fetch(
-        route + '/questions/unanswered/', {
+        urlApi + '/questions/unanswered/', {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + localStorage.access_token
         },
     }
-    ).then(function (response) {
-        console.log(response)
+    ).then((response) => {
+        console.log("response_viewUnansweredQuestions", response)
 
         noQuestions.style.display = "none"
 
@@ -346,15 +346,13 @@ function viewUnansweredQuestions() {
             response.json().then(function (body) {
                 console.log("body_viewunansweredQuestions: ", body)
 
-                if (response.status == 401) {
-                    localStorage.clear()
-                    goToPage("/")
-                    return
-                }
-
-                console.log("error_body:", body.message)
+                hideLoader()
+                throw new Error(body)
             })
         } else {
+            // hideLoader()
+            // goToPage("/api/accounts/sign-in")
+            // return response.blob()
             response.json().then(function (body) {
                 console.log("body_else: ", body)
 
