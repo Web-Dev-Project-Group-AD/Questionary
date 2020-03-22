@@ -8,10 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     changeToPage(location.pathname)
 
-    if (localStorage.accessToken) {
-        console.log("localStorage.accessToken1", localStorage.accessToken)
-        login(localStorage.accessToken)
-        console.log("localStorage.accessToken2", localStorage.accessToken)
+    if (localStorage.getItem("accessToken")) {
+        login(localStorage.getItem("accessToken"))
     } else {
         logout()
     }
@@ -37,25 +35,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const account = { username, email, password, passwordRepeated }
         console.log("signUp_account: ", account)
 
-        // TODO: Build an SDK (e.g. a separate JS file)
-        // handling the communication with the backend.
         fetch(
             urlApi + "accounts/sign-up", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                //"Authorization": localStorage.accessToken
-                //"Authorization": "Bearer " + localStorage.accessToken
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(account)
         }).then((response) => {
             if (!response.ok) {
                 throw new Error('Api response was not ok')
             }
-            return response.blob()
-
+            return response.json()
         }).then((body) => {
-            console.log('Success:', body)
+            console.log("Success:", body)
             login(body.access_token)
             return 
         }).catch((error) => {
@@ -78,8 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
             urlApi + "accounts/sign-in", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": "Bearer " + localStorage.accessToken
+                "Content-Type": "application/x-www-form-urlencoded"
             }, // TODO: Escape username and password in case they contained reserved characters in the x-www-form-urlencoded format.
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
@@ -127,23 +119,33 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.accessToken
+                "Authorization": "Bearer " + localStorage.getItem("accessToken")
             },
             body: JSON.stringify(question)
 
-        }).then((response) => {
+        }).then(response => {
+
+
+            if (response.ok) {
+                console.log(response)
+
+                changeToPage("/api" + response.headers.get("Location"))
+                return
+            } else {
+
+                throw("oops")
+
+            }
 
             //console.log("body_here:", body)
-            return response.json(400)
-
+            
 
             /* questionTitle.innerText = body.question.title
              customCategory.innerText = body.question.customCategory
              questionDescription.innerText = body.question.description
              author.innerText = body.question.author
  
- */
-            /*
+
              } else {
                  response.json() {
                      console.log("else_body: ", body)
@@ -153,14 +155,8 @@ document.addEventListener("DOMContentLoaded", function () {
                      document.getElementById("createQuestionForm").reset()
                  }
              }*/
-        }).then((body) => {
-            console.log('Success1:', body)
-            return
-        }).then((question) => {
-            console.log('Success:', question)
-            return
 
-        }).catch((error) => {
+        }).catch(error => {
             //console.log(JSON.stringify(error))
             // TODO: Update the view and display error.
             console.log("Error_here:", error)
@@ -187,14 +183,14 @@ function goToPage(url) {
 
 
 
-/* function fetchAllAccounts() {
+function fetchAllAccounts() {
     console.log("fetchAllAccounts_start")
 
     fetch(
         urlApi + "accounts/all", {
         method: "GET",
         headers: {
-            "Authorization": "Bearer " + localStorage.accessToken
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
         },
         //body: JSON.stringify(accounts)
     }
@@ -226,7 +222,7 @@ function goToPage(url) {
             console.log("forschleife_here")
         }
         console.log("hello whatsup")
-        /*for (const account of accounts) {
+        for (const account of accounts) {
             console.log("account: ", account.id)
             console.log("account: ", account.id)
             const li = document.createElement("li")
@@ -240,14 +236,14 @@ function goToPage(url) {
             console.log("ul_after: ", ul)
             console.log("one users shown_getAllAccounts")
             return
-        }*/
-/*console.log("all users shown_getAllAccounts_end")
-}).catch(function (error) {
-console.log("error here iam: ", error)
-return error
-})
+        }
+        console.log("all users shown_getAllAccounts_end")
+    }).catch(function (error) {
+        console.log("error here iam: ", error)
+        return error
+    })
 
-} */
+} 
 
 function fetchUser(id) {
     //TODO look if it works
@@ -269,6 +265,86 @@ function fetchUser(id) {
     })
 
 }
+
+
+function fetchAllQuestions() {
+    fetch(
+        urlApi + "questions/all"
+    ).then(response => {
+        if (response.ok) {
+            return response.json()
+        } else {
+            
+        }
+    }).then(questions => {
+
+       
+
+        const questionsPage = document.querySelector("#questions-page")
+        const questionsDiv =  questionsPage.querySelector("#questions")
+        console.log("questionsDiv: ", questionsDiv)
+        console.log("questionsPage before: ", questionsPage)
+        if (questionsDiv) {   
+            for (var i = 0; i < questionsDiv.childElementCount; i++) {
+                var questionDiv = questionsDiv.firstChild
+                questionDiv.remove()    
+            }
+        }
+
+        console.log("questionsPage after: ", questionsPage)
+
+        if (questions.length > 0) {
+
+            // var questions = []
+            // returnedData.forEach(item => questions.push(item))
+            //console.log(questions)
+
+            // var questionsDiv = document.createElement("div")
+            // questionsDiv.className="questions"
+            for (var i = 0; i < questions.length; i++) {
+
+                if (questions[i].title) {
+                
+                    var title = questions[i].title
+                    var description = questions[i].description
+                    var author =  questions[i].author
+                    //console.log(title, description, author)
+
+
+                    var questionDiv = document.createElement("div")
+                    questionDiv.innerHTML = `
+                    <div id="questions-page">
+                    <div class="content">
+                        <h1></h1>
+                    </div>
+                    <div class="question blog-post">
+                        <h3>` + title + `</h3>
+                        <p>` + description + `</p>
+                        <div>
+                            <ul>
+                                <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
+                            </ul>
+                        </div>
+                    </div>    
+                    `
+                    questionsDiv.appendChild(questionDiv)
+                }
+            }
+            // console.log(questionsDiv)
+            // questionsPage.appendChild(questionsDiv)
+        } else {
+            var errorDiv = document.createElement("div")
+            errorDiv.innerText = "No content."
+            questionsPage.appendChild(errorDiv)
+        }
+
+       
+    }).catch(function (error) {
+        console.log(error)
+    })
+}
+
+
 
 function changeToPage(url) {
 
@@ -301,8 +377,12 @@ function changeToPage(url) {
         document.getElementById("sign-up-page").classList.add("current-page")
     } else if (url == "/api/questions/new-post") {
         document.getElementById("new-question-page").classList.add("current-page")
-    } else if (url == "/api/questions/unanswered/") {
-        document.getElementById("answer-page").classList.add("current-page")
+    } else if (url == "/api/questions/all") {
+
+        document.getElementById("questions-page").classList.add("current-page")
+        fetchAllQuestions() 
+
+
     } else if (url == "/api/questions/by-user/[0-9]+$") {
         document.getElementById("question-user-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
@@ -324,7 +404,7 @@ function changeToPage(url) {
         route + '/questions/by-id/' + questionId, {
         method: "GET",
         headers: {
-            "Authorization": "Bearer " + localStorage.access_token
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
         },
     }
     ).then(function (response) {
@@ -398,7 +478,7 @@ function changeToPage(url) {
 
 function login(accessToken) {
     console.log("accessToken", accessToken)
-    localStorage.accessToken = accessToken
+    localStorage.setItem("accessToken", accessToken)     
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
     goToPage("/")
@@ -407,7 +487,7 @@ function login(accessToken) {
 
 function logout() {
     console.log("logout")
-    localStorage.accessToken = ""
+    localStorage.clear()
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
     goToPage("/")

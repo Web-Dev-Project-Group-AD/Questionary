@@ -25,7 +25,7 @@
             <li class="showIfLoggedOut"><a href="/api/accounts/sign-up">Sign up</a></li>
             <li class="showIfLoggedIn"><a href="/api/questions/new-post">new Question</a></li>
             <!--<li class="showIfLoggedIn"><a href="/api/questions/by-user/1">QuestionsUser</a></li>-->
-            <li class="showIfLoggedIn"><a href="/api/questions/unanswered/">Answers</a></li>
+            <li class="showIfLoggedIn"><a href="/api/questions/all">View Questions</a></li>
             <li class="showIfLoggedIn"><a href="/api/accounts/sign-out">Logout</a></li>
         </ul>
     </nav>
@@ -109,43 +109,8 @@
 
         </div>
 
-        <div id="answer-page">
-            <div class="content">
-                <h1>Answers:</h1>
-            </div>
-
-            <div class="question blog-post">
-
-                <h3>Question Title</h3>
-                <p>Question Description</p>
-                <div>
-                    <ul>
-                        <li><a href="/accounts/{{question.author}}">Asked by: question.author</a></li>
-                    </ul>
-                </div>
-
-                <div id="noQuestions" class="hidden">
-                    <p>There are no questions to answer!</p>
-                </div>
-
-            </div>
-
-
-
-            <!--<form name="question" method="GET" action="/questions/by-id/{{../id}}/edit">
-                <br>
-                <input type="text" name="title" id="questionTitle" placeholder="Question" />
-                <br>
-                <textarea rows="4" cols="50" name="description" id="questionDescription"
-                    placeholder="Description (Optional)"></textarea>
-                <br>
-                <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />-->
-            <!--<input type="hidden" name="_csrf" value="EUyclN3W-PIPfXknqgGVpd7JWd_iFPq7C3Ic" />-->
-            <!--<br>
-                <input type="submit" class="button" value="Submit question" />
-                <br>
-            </form>-->
-
+        <div id="questions-page">
+            <div id="questions"></div>
         </div>
 
         <div id="question-user-page">

@@ -1,9 +1,25 @@
 const express = require('express')
+const jwt = require("jsonwebtoken")
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
 
 
-module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
+function authorizeRequest(request, response, next) {
+  
+    const authorizationHeader = request.get('authorization')
+    const accessToken = authorizationHeader.substr("Bearer ".length)
+    
+    jwt.verify(accessToken, serverSecret
+    ).then(payload => {
+        next()
+    }).catch(error => {
+        response.status(401).end()
+        return
+    })
+}
+
+
+module.exports = ({ QuestionManager }) => {
 
     const router = express.Router()
 
@@ -43,11 +59,13 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
 
         //TODO change it when file middleware is working
-        /*try {
+        try {
 
             payload = jwt.verify(accessToken, serverSecret)
 
         } catch (e) {
+            console.log("error: ", e)
+
             // No access token provided or the access token was invalid.
             if (e.name == "TokenExpiredError") {
                 response.status(401).json({
@@ -64,11 +82,7 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
                 })
                 return
             }
-        }*/
-
-        console.log("here iam ")
-
-        const category = (request.body.optionCategories && !request.body.customCategory) ? request.body.optionCategories : request.body.customCategory
+        }
 
         var question = {
             author: request.body.author,
@@ -81,23 +95,19 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
 
         QuestionManager.createQuestion(question
         ).then(questionId => {
-            response.setHeader('Location', '/questions/by-id/' + questionId)
+            response.setHeader("Location", "/questions/all")
             console.log("createdQuestion")
             response.status(201).json().end()
         }).catch(validationErrors => {
             console.log(validationErrors)
             if (validationErrors.includes(ERROR_MSG_DATABASE_GENERAL)) {
-                console.log("createQuestion_getAllCategorie_if: ")
+
                 response.status(500).json(errorMessage)
                 return
             } else {
-                QuestionManager.getAllCategories(
-                ).then(categories => {
-                    console.log("createQuestion_getAllCategorie_else: ")
                     question.customCategory = request.body.customCategory
                     //response.setHeader('Location', '/questions/by-id/' + questionId)
                     response.status(201).json().end()
-                })
             }
         })
     })
@@ -105,22 +115,31 @@ module.exports = ({ QuestionManager, SessionAuthorizer, csrfProtection }) => {
     router.get("/by-id/:questionId", (request, response) => {
 
         const questionId = request.params.questionId
-        //const userStatus = request.session.userStatus
 
         console.log("questionId: ", questionId)
 
-        QuestionManager.getQuestionAnswered(questionId
-        ).then(questions => {
-            const categories = [questions[0].category]
-            console.log("categories_inID: ", categories)
-            //response.render("questions.hbs", 
-            // { userStatus, questions, categories, csrfToken: request.csrfToken() })
+        QuestionManager.getQuestionByIS(getQuestionById
+        ).then(question => {
+            response.setHeader("Location", "/questions/all")
+            response.status(201).json(questions).end()
+            
         }).catch(error => {
-            console.log("hier in error", error)
-            //response.status(500).render("statuscode-500.hbs", { userStatus })
+            console.log(error)
+            response.status(500).json()
+        })
+    })
+
+    router.get("/all", (request, response) => {
+
+        QuestionManager.getAll(
+        ).then(questions => {
+            console.log("!!!!QUESTIONS: ", questions)
+            response.setHeader("Location", "/questions/all")
+            response.status(201).json(questions).end()
+        }).catch(error => {
+            response.status(500).json()
         })
     })
 
     return router
-
 }

@@ -42,7 +42,7 @@ module.exports = ({ AccountManager, generateToken }) => {
             console.log("id_token: ", idToken)
             console.log("accessToken: ", accessToken)
 
-            response.setHeader('Location', '/sign-up/')
+            response.setHeader("Location", "/sign-up/")
             response.status(200).json({
                 access_token: accessToken,
                 id_token: idToken,
@@ -155,14 +155,11 @@ module.exports = ({ AccountManager, generateToken }) => {
 
         AccountManager.getAllAccounts(
         ).then(accounts => {
-            console.log("here we are in get All Ascounts")
 
             response.setHeader('Location', '/all')
             response.status(200).json({ accounts })
-            console.log("here we are in get All Ascounts_end")
 
-
-            // {accounts}       
+ 
             //response.render("accounts-list-all.hbs", { accounts })
         }).catch(error => {
             console.log(error)
