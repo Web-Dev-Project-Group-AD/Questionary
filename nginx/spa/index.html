@@ -113,6 +113,9 @@
                 </div>
                 <label for="customCategory">Create a custom category:</label>
                 <input type="text" name="customCategory" id="customCategory" placeholder="Custom category" />
+
+                <br>
+
                 <input type="submit" class="button" value="Submit question" />
             </form>
         </div>
@@ -122,8 +125,20 @@
         </div>
 
         <div id="edit-question-page">
-        </div>
 
+            <h3>Edit question</h3>
+            <form name="question" method="POST" id="editQuestionForm">
+                <br>
+                <input type="text" name="title" id="questionTitle" placeholder="Question" />
+                <br>
+                <textarea rows="4" cols="50" name="description" id="questionDescription"
+                    placeholder="Description (Optional)"></textarea>
+                <br>
+                <input type="hidden" id="questionId" /> 
+                <input type="submit" class="button" value="Submit edit" />
+                <br>
+            </form>
+        </div>
 
         <div id="question-user-page">
             <div class="content">

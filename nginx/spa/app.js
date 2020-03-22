@@ -12,8 +12,6 @@ const urlApi = "http://192.168.99.100:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("nginx_spa_here we are")
-
     changeToPage(location.pathname)
 
     if (localStorage.getItem("accessToken")) {
@@ -188,16 +186,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
     })
 
+
+    document.querySelector("#edit-question-page form").addEventListener("submit", (event) => {
+        event.preventDefault()
+
+        const editQuestionPage = document.querySelector("#edit-question-page")
+
+        const id = editQuestionPage.querySelector("#questionId").value
+        const title = editQuestionPage.querySelector("#questionTitle").value
+        const description = editQuestionPage.querySelector("#questionDescription").value
+        
+        const question = { id, title, description }
+
+        console.log("questionUpdate")
+
+        fetch(
+            urlApi + "questions/by-id/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("accessToken")
+                },
+                body: JSON.stringify(question)
+            }
+        ).then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                changeToPage(response.status.toString)
+            }
+        }).then(() => {
+            
+            // handle return
+
+        }).catch(error => {
+            console.log("Error_here:", error)
+            return
+        })
+    })
 })
 
-function jwtDecode(t) {
+function jwtDecode(encodedToken) {
     let token = {};
-    token.raw = t;
-    token.header = JSON.parse(window.atob(t.split('.')[0]));
-    token.payload = JSON.parse(window.atob(t.split('.')[1]));
+    token.raw = encodedToken;
+    token.header = JSON.parse(window.atob(encodedToken.split('.')[0]));
+    token.payload = JSON.parse(window.atob(encodedToken.split('.')[1]));
     return (token)
 }
 
+function getLocalUsername() {
+    var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
+    return accessTokenRaw.payload.username   
+}
 
 window.addEventListener("popstate", function (event) {
     const url = location.pathname
@@ -230,21 +270,20 @@ function fetchUser(id) {
     }).catch(function (error) {
         console.log(error)
     })
-
 }
 
 
 function fetchAllQuestions() {
     fetch(
-        urlApi + "questions/all"
-    ).then(response => {
+        urlApi + "questions/all", {
+            method: "GET"
+    }).then(response => {
         if (response.ok) {
             return response.json()
         } else {
 
         }
     }).then(questions => {
-
 
 
         const questionsPage = document.querySelector("#questions-page")
@@ -267,19 +306,19 @@ function fetchAllQuestions() {
         if (questions.length > 0) {
             for (var i = 0; i < questions.length; i++) {
                 if (questions[i].title) {
-
-                    var title = questions[i].title
-                    var description = questions[i].description
-                    var author = questions[i].author
+                    
+                    const title = questions[i].title
+                    const description = questions[i].description
+                    const author =  questions[i].author
+                    const id = questions[i].id
                     //console.log(title, description, author)
 
                     //var accessTokenRaw = jwt.decode(localStorage.getItem("accessToken"))
                     var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
 
 
-                    console.log("accessTokenRaw: ", accessTokenRaw)
+
                     username = accessTokenRaw.payload.username
-                    console.log("username: ", username)
 
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
@@ -293,8 +332,20 @@ function fetchAllQuestions() {
                                 </ul>
                             </div>
                         </div>
-                    </div>      
-                    `
+                    </div>           
+                        `
+                    
+                    if (author == username) {
+                        var questionOptions = document.createElement("div") 
+                        questionOptions.innerHTML = `
+                            <ul>
+                                <li><a href="edit/` + id + `">Edit</a></li>
+                                <li><a href="delete/` + id + `">Delete</a></li>
+                            </ul>
+                            `
+                            questionDiv.appendChild(questionOptions
+
+                    }
                     questionsDiv.appendChild(questionDiv)
                 }
             }
@@ -311,33 +362,59 @@ function fetchAllQuestions() {
     })
 }
 
-function editQuestion(id) {
+function loadEditQuestionForm(questionId) {
+    console.log("loadEditQuestionForm: ", questionId)
+
     fetch(
-        urlApi + "questions/" + id
+        urlApi + "questions/by-id/" + questionId, {
+            method: "GET"
+        }
     ).then(response => {
+        console.log("loadEditForm: ", response)
         if (response.ok) {
             return response.json()
         } else {
-            changeToPage(response.status.toString)
+            // handle exception            
         }
     }).then(question => {
-        // Implement edit question
 
+            console.log("question in loadForm:", question)
+
+            const editQuestionPage = document.querySelector("#edit-question-page")
+
+            var id = editQuestionPage.querySelector("#questionId")
+            var title = editQuestionPage.querySelector("#questionTitle")
+            var description = editQuestionPage.querySelector("#questionDescription")
+
+            id.value = question[0].id
+            title.value = question[0].title
+            description.value = question[0].description
+
+            editQuestionPage.classList.add("current-page")
+            
+    }).catch(error => {
+        // handle error
     })
 }
 
-function deleteQuestion(id) {
+function deleteQuestion(questionId) {
     fetch(
-        urlApi + "questions/" + id
+        urlApi + "questions/by-id/" + questionId, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            },
+        }
     ).then(response => {
         if (response.ok) {
             goToPage("/api" + response.headers.get("Location"))
         } else {
             goToPage(response.status.toString)
         }
+    }).catch(error => {
+        // TODO: handle error
     })
 }
-
 
 function changeToPage(url) {
 
@@ -361,21 +438,21 @@ function changeToPage(url) {
         fetchUser(id)
     } else if (new RegExp("^/api/questions/by-id/[0-9]+$").test(url)) {
         document.getElementById("new-question-page").classList.add("current-page")
-        console.log("new_question_page")
         const id = url.split("/")[2]
-        console.log("id", id)
         viewQuestionsForUser(id)
-        console.log("question_done")
+    } else if (url.includes("edit")) {
+        const id = url.split("/")[1]
+        console.log("iD in route:", id)
+        loadEditQuestionForm(id)
+    } else if (url.includes("delete")) {
+        const id = url.split("/")[1]
+        deleteQuestion(id)
     } else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
     } else if (url == "/api/questions/new-post") {
         document.getElementById("new-question-page").classList.add("current-page")
     } else if (url == "/api/questions/all") {
-
         document.getElementById("questions-page").classList.add("current-page")
-        fetchAllQuestions()
-
-
     } else if (url == "/api/questions/by-user/[0-9]+$") {
         document.getElementById("question-user-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
@@ -385,7 +462,6 @@ function changeToPage(url) {
         document.getElementById("error-page").classList.add("current-page")
         console.log("error-page is shown")
     }
-
 }
 
 function login(accessToken) {
@@ -419,146 +495,3 @@ function hideLoader() {
     document.getElementById("loader").classList.add('hide')
     document.getElementById("loader").classList.remove('show')
 }
-
-
-/*function viewQuestionsForUser(questionId) {
-    console.log("viewQuestionsForUser_start")
-
-    const noQuestions = document.getElementById("noQuestionsForUser")
-
-    fetch(
-        route + '/questions/by-id/' + questionId, {
-        method: "GET",
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
-        },
-    }
-    ).then(function (response) {
-        console.log(response)
-
-        noQuestions.style.display = "none"
-
-        if (!response.ok) {
-            response.json().then(function (body) {
-                console.log("body_viewQuestionsById: ", body)
-
-                if (response.status == 401) {
-                    localStorage.clear()
-                    goToPage("/")
-                    return
-                }
-
-                console.log("error_body:", body.message)
-            })
-        } else {
-            response.json().then(function (body) {
-                console.log("body_else: ", body)
-
-                document.getElementById("question-user-page").classList.add("current-page")
-
-                const questions = body.questions
-
-                const questionsDiv = document.getElementById("questionsUser")
-                questionsDiv.innerHTML = ""
-
-                if (!questions || questions.length == 0) {
-                    noQuestions.style.display = "block"
-                } else {
-                    for (var question of questions) {
-                        const questionDiv = document.createElement('div')
-                        questionDiv.classList.add("box")
-
-                        questionDiv.innerHTML = `
-                        <article>
-                            <div>
-                                <div class="content">
-                                    <p>
-                                        <strong>${question.title}</strong>
-                                        ${question.description}
-                                        <br>${question.author}
-                                    </p>
-                                </div>
-                                <div>
-                                    <a href="/questions/by-id/${question.id}">More</a>
-                                </div>
-                            </div>
-
-                        </article>
-                    `
-                        questionsDiv.appendChild(questionDiv)
-                    }
-                }
-            })
-        }
-    }).catch(function (error) {
-        console.log(JSON.stringify(error))
-
-        //hideSpinner()
-        console.log("Error connecting")
-    })
-
-}*/
-
-
-
-// function fetchAllAccounts() {
-//     console.log("fetchAllAccounts_start")
-
-//     fetch(
-//         urlApi + "accounts/all", {
-//         method: "GET",
-//         headers: {
-//             "Authorization": "Bearer " + localStorage.getItem("accessToken")
-//         },
-//         //body: JSON.stringify(accounts)
-//     }
-//     ).then(function (response) {
-//         console.log("response_getAllAccounts: ", response)
-//         console.log("response_getAllAccounts_body: ", response.body)
-//         // TODO: Check status code to see if it succeeded. Display errors if it failed.
-//         return response.json()
-//     }).then(function (accounts) {
-//         console.log("accounts_fetchAllAcc: ", accounts)
-//         const ul = document.querySelector("#accounts-page ul")
-//         ul.innerText = ""
-//         const account = ""
-//         const li = document.createElement("li")
-//         li.innerText = "hier bin ich hoffentlich bald"
-//         ul.append(li)
-
-//         console.log("ul_accounts: ", ul)
-//         console.log("accounts123: ", [accounts])
-//         //console.log("accounts123456: ", [response.body])
-//         for (account of accounts) {
-//             console.log("account: ", accounts.id)
-//             const li = document.createElement("li")
-//             //const anchor = document.createElement("a")
-//             li.innerText = account.username
-//             //anchor.setAttribute("href", '/pets/'+pet.id)
-//             //li.appendChild(anchor)
-//             ul.appendChild(li)
-//             console.log("forschleife_here")
-//         }
-//         console.log("hello whatsup")
-//         for (const account of accounts) {
-//             console.log("account: ", account.id)
-//             console.log("account: ", account.id)
-//             const li = document.createElement("li")
-//             //const anchor = document.createElement("a")
-//             li.innerText = account.username
-//             //anchor.innerText = account.username
-//             console.log(account.username)
-//             //anchor.setAttribute("href", '/api/accounts/' + account.id)
-//             //li.appendChild(anchor)
-//             ul.append(li)
-//             console.log("ul_after: ", ul)
-//             console.log("one users shown_getAllAccounts")
-//             return
-//         }
-//         console.log("all users shown_getAllAccounts_end")
-//     }).catch(function (error) {
-//         console.log("error here iam: ", error)
-//         return error
-//     })
-
-// } 
