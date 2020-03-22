@@ -7,7 +7,7 @@
 
 // const jwt = require("jsonwebtoken")
 
-
+// change to own IP Adress or localhost
 const urlApi = "http://192.168.99.100:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault()
         console.log("navigation-handler_sign_up")
 
+        showLoader()
+
         const username = document.querySelector("#sign-up-page #username").value
         const email = document.querySelector("#sign-up-page #email").value
         const password = document.querySelector("#sign-up-page #password1").value
@@ -50,15 +52,18 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(account)
         }).then((response) => {
             if (!response.ok) {
+                hideLoader()
                 throw new Error('Api response was not ok')
             }
             return response.json()
         }).then((body) => {
             console.log("Success:", body)
+            hideLoader()
             login(body.access_token)
-            return 
+            return
         }).catch((error) => {
             // TODO: Update the view and display error.
+            hideLoader()
             console.log("Error:", error)
         })
 
@@ -67,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#sign-in-page form").addEventListener("submit", function (event) {
         event.preventDefault()
         console.log("navigation-handler_sign_in")
-
+        showLoader()
         const email = document.querySelector("#sign-in-page .email").value
         const password = document.querySelector("#sign-in-page .password").value
 
@@ -83,17 +88,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
             if (response.ok) {
+                hideLoader()
                 return response.json()
             } else {
+                hideLoader()
                 changeToPage(response.status.toString)
             }
         }).then(function (body) {
+            hideLoader()
             // TODO: Read out information about the user account from the id_token.
             console.log("signIn_fetch_body.accessToken:", body)
             console.log("signIn_fetch_body.accessToken:", body.access_token)
             login(body.access_token)
             return
         }).catch(function (error) {
+            hideLoader()
             console.log("signIn_fetch_error", error)
             return
 
@@ -105,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#new-question-page form").addEventListener("submit", (event) => {
         event.preventDefault()
         console.log("navigation-handler_newQuestion")
+        showLoader()
 
         const questionTitle = document.querySelector("#new-question-page #questionTitle").value
         const questionDescription = document.querySelector("#new-question-page #questionDescription").value
@@ -138,17 +148,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 console.log(response)
-
+                hideLoader()
                 goToPage("/api" + response.headers.get("Location"))
                 return
             } else {
-
-                throw("oops")
+                hideLoader()
+                throw ("oops")
 
             }
 
             //console.log("body_here:", body)
-            
+
 
             /* questionTitle.innerText = body.question.title
              customCategory.innerText = body.question.customCategory
@@ -169,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).catch(error => {
             //console.log(JSON.stringify(error))
             // TODO: Update the view and display error.
+            hideLoader()
             console.log("Error_here:", error)
             return
         })
@@ -270,19 +281,20 @@ function fetchAllQuestions() {
         if (response.ok) {
             return response.json()
         } else {
-            
+
         }
     }).then(questions => {
 
+
         const questionsPage = document.querySelector("#questions-page")
-        const questionsDiv =  questionsPage.querySelector("#questions")
-        var errorDiv =  questionsPage.querySelector("#error")
+        const questionsDiv = questionsPage.querySelector("#questions")
+        var errorDiv = questionsPage.querySelector("#error")
         console.log("questionsDiv: ", questionsDiv)
         console.log("questionsPage before: ", questionsPage)
-        if (questionsDiv) {   
+        if (questionsDiv) {
             for (var i = 0; i < questionsDiv.childElementCount; i++) {
                 var questionDiv = questionsDiv.firstChild
-                questionDiv.remove()    
+                questionDiv.remove()
             }
         }
         if (errorDiv) {
@@ -300,29 +312,29 @@ function fetchAllQuestions() {
                     const author =  questions[i].author
                     const id = questions[i].id
                     //console.log(title, description, author)
-                   
+
                     //var accessTokenRaw = jwt.decode(localStorage.getItem("accessToken"))
                     var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
-                    
-                    const username = accessTokenRaw.payload.username
-                   
+
+
+
+                    username = accessTokenRaw.payload.username
+
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
-                        <div id="questions-page">
-                            <div class="content">
-                                <h1></h1>
+                    <div class="medium-8 column question content">
+                        <div class="question blog-post">
+                            <h3 class="textPost">` + title + `</h3>
+                            <p class="textPost">` + description + `</p>
+                            <div class="callout">
+                                <ul class="menu simple">
+                                    <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
+                                </ul>
                             </div>
-                            <div class="question blog-post">
-                                <h3>` + title + `</h3>
-                                <p>` + description + `</p>
-                                <div>
-                                    <ul>
-                                        <li><a href="/accounts/` + author + `">Asked by: ` + author + `</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>    
+                        </div>
+                    </div>           
                         `
+                    
                     if (author == username) {
                         var questionOptions = document.createElement("div") 
                         questionOptions.innerHTML = `
@@ -331,9 +343,7 @@ function fetchAllQuestions() {
                                 <li><a href="delete/` + id + `">Delete</a></li>
                             </ul>
                             `
-                            questionDiv.appendChild(questionOptions)
-
-                            // <li><a href="by-id/` + id  + `/edit/">Edit</a></li>
+                            questionDiv.appendChild(questionOptions
 
                     }
                     questionsDiv.appendChild(questionDiv)
@@ -346,7 +356,7 @@ function fetchAllQuestions() {
             questionsPage.appendChild(errorDiv)
         }
 
-       
+
     }).catch(function (error) {
         console.log(error)
     })
@@ -381,44 +391,11 @@ function loadEditQuestionForm(questionId) {
             description.value = question[0].description
 
             editQuestionPage.classList.add("current-page")
-
-
-            //var id = editQuestionPage.querySelector("#title")
-
-            // var formDiv = document.createElement("div")
-            // formDiv.innerHTML = `
-            //     <form name="question" id="questionForm" method="POST">
-            //         <input type="text" name="title" id="questionTitle" value="` + question.title + `" placeholder="Question" />
-            //         <input type="text" name="description" id="questionDescription" value="` + question.description + `" placeholder="Description" />
-            //         <input type="submit" value="Submit edit" />
-            //     </form>
-            //     `
             
     }).catch(error => {
         // handle error
     })
 }
-
-// function editQuestion(question) {
-//     fetch(
-//         urlApi + "questions/by-id/" + question.id, {
-//             method: "PUT",
-//             headers: {
-//                 "Authorization": "Bearer " + localStorage.getItem("accessToken")
-//             },
-//             body: JSON.stringify(question)
-//         }
-//     ).then(response => {
-//         if (response.ok) {
-//             return response.json()
-//         } else {
-//             changeToPage(response.status.toString)
-//         }
-//     }).then(question => {
-        
-//         // Implement edit question
-//     })
-// }
 
 function deleteQuestion(questionId) {
     fetch(
@@ -476,7 +453,6 @@ function changeToPage(url) {
         document.getElementById("new-question-page").classList.add("current-page")
     } else if (url == "/api/questions/all") {
         document.getElementById("questions-page").classList.add("current-page")
-        fetchAllQuestions() 
     } else if (url == "/api/questions/by-user/[0-9]+$") {
         document.getElementById("question-user-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
@@ -486,169 +462,36 @@ function changeToPage(url) {
         document.getElementById("error-page").classList.add("current-page")
         console.log("error-page is shown")
     }
-
 }
 
 function login(accessToken) {
+    showLoader()
     console.log("accessToken", accessToken)
-    localStorage.setItem("accessToken", accessToken)     
+    localStorage.setItem("accessToken", accessToken)
     document.body.classList.remove("isLoggedOut")
     document.body.classList.add("isLoggedIn")
+    hideLoader()
     goToPage("/")
     console.log("login function app.js")
 }
 
 function logout() {
+    showLoader()
     console.log("logout")
     localStorage.clear()
     document.body.classList.remove("isLoggedIn")
     document.body.classList.add("isLoggedOut")
+    hideLoader()
     goToPage("/")
     console.log("logout function app.js")
 }
 
+function showLoader() {
+    document.getElementById("loader").classList.add('show')
+    document.getElementById("loader").classList.remove('hide')
+}
 
-/*function viewQuestionsForUser(questionId) {
-    console.log("viewQuestionsForUser_start")
-
-    const noQuestions = document.getElementById("noQuestionsForUser")
-
-    fetch(
-        route + '/questions/by-id/' + questionId, {
-        method: "GET",
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
-        },
-    }
-    ).then(function (response) {
-        console.log(response)
-
-        noQuestions.style.display = "none"
-
-        if (!response.ok) {
-            response.json().then(function (body) {
-                console.log("body_viewQuestionsById: ", body)
-
-                if (response.status == 401) {
-                    localStorage.clear()
-                    goToPage("/")
-                    return
-                }
-
-                console.log("error_body:", body.message)
-            })
-        } else {
-            response.json().then(function (body) {
-                console.log("body_else: ", body)
-
-                document.getElementById("question-user-page").classList.add("current-page")
-
-                const questions = body.questions
-
-                const questionsDiv = document.getElementById("questionsUser")
-                questionsDiv.innerHTML = ""
-
-                if (!questions || questions.length == 0) {
-                    noQuestions.style.display = "block"
-                } else {
-                    for (var question of questions) {
-                        const questionDiv = document.createElement('div')
-                        questionDiv.classList.add("box")
-
-                        questionDiv.innerHTML = `
-                       
-                        <article>
-                            <div>
-                                <div class="content">
-                                    <p>
-                                        <strong>${question.title}</strong>
-                                    
-                                        ${question.description}
-                                        <br>${question.author}
-                                    </p>
-                                </div>
-                                <div>
-                                    <a href="/questions/by-id/${question.id}">More</a>
-                                </div>
-                            </div>
-
-                        </article>
-                   
-                    `
-                        questionsDiv.appendChild(questionDiv)
-                    }
-                }
-            })
-        }
-    }).catch(function (error) {
-        console.log(JSON.stringify(error))
-
-        //hideSpinner()
-        console.log("Error connecting")
-    })
-
-}*/
-
-
-
-// function fetchAllAccounts() {
-//     console.log("fetchAllAccounts_start")
-
-//     fetch(
-//         urlApi + "accounts/all", {
-//         method: "GET",
-//         headers: {
-//             "Authorization": "Bearer " + localStorage.getItem("accessToken")
-//         },
-//         //body: JSON.stringify(accounts)
-//     }
-//     ).then(function (response) {
-//         console.log("response_getAllAccounts: ", response)
-//         console.log("response_getAllAccounts_body: ", response.body)
-//         // TODO: Check status code to see if it succeeded. Display errors if it failed.
-//         return response.json()
-//     }).then(function (accounts) {
-//         console.log("accounts_fetchAllAcc: ", accounts)
-//         const ul = document.querySelector("#accounts-page ul")
-//         ul.innerText = ""
-//         const account = ""
-//         const li = document.createElement("li")
-//         li.innerText = "hier bin ich hoffentlich bald"
-//         ul.append(li)
-
-//         console.log("ul_accounts: ", ul)
-//         console.log("accounts123: ", [accounts])
-//         //console.log("accounts123456: ", [response.body])
-//         for (account of accounts) {
-//             console.log("account: ", accounts.id)
-//             const li = document.createElement("li")
-//             //const anchor = document.createElement("a")
-//             li.innerText = account.username
-//             //anchor.setAttribute("href", '/pets/'+pet.id)
-//             //li.appendChild(anchor)
-//             ul.appendChild(li)
-//             console.log("forschleife_here")
-//         }
-//         console.log("hello whatsup")
-//         for (const account of accounts) {
-//             console.log("account: ", account.id)
-//             console.log("account: ", account.id)
-//             const li = document.createElement("li")
-//             //const anchor = document.createElement("a")
-//             li.innerText = account.username
-//             //anchor.innerText = account.username
-//             console.log(account.username)
-//             //anchor.setAttribute("href", '/api/accounts/' + account.id)
-//             //li.appendChild(anchor)
-//             ul.append(li)
-//             console.log("ul_after: ", ul)
-//             console.log("one users shown_getAllAccounts")
-//             return
-//         }
-//         console.log("all users shown_getAllAccounts_end")
-//     }).catch(function (error) {
-//         console.log("error here iam: ", error)
-//         return error
-//     })
-
-// } 
+function hideLoader() {
+    document.getElementById("loader").classList.add('hide')
+    document.getElementById("loader").classList.remove('show')
+}
