@@ -182,40 +182,6 @@ function goToPage(url) {
 
 }
 
-function changeToPage(url) {
-
-    const currentPageDiv = document.getElementsByClassName("current-page")[0]
-    if (currentPageDiv) {
-        currentPageDiv.classList.remove("current-page")
-    }
-
-    // TODO: Optimally this information can be put in an array instead of having a long list of if-else if statements.
-    // TODO: Factor out common code in all branches.
-    if (url == "/") {
-        document.getElementById("home-page").classList.add("current-page")
-    } else if (url == "/api/accounts/all") {
-        document.getElementById("accounts-page").classList.add("current-page")
-        fetchAllAccounts()
-    } else if (url == "/api/accounts/sign-in") {
-        document.getElementById("sign-in-page").classList.add("current-page")
-    } else if (new RegExp("^/api/accounts/[0-9]+$").test(url)) {
-        document.getElementById("sign-in-page").classList.add("current-page")
-        const id = url.split("/")[2]
-        fetchUser(id)
-    } else if (url == "/api/accounts/sign-up") {
-        document.getElementById("sign-up-page").classList.add("current-page")
-    } else if (url == "/api/questions/new-post") {
-        document.getElementById("new-question-page").classList.add("current-page")
-    } else if (url == "/api/accounts/sign-out") {
-        //document.getElementById("sign-out-page").classList.add("current-page")
-        logout()
-    } else {
-        document.getElementById("error-page").classList.add("current-page")
-        console.log("error-page is shown")
-    }
-
-}
-
 function fetchAllAccounts() {
     console.log("fetchAllAccounts_start")
 
@@ -269,14 +235,14 @@ function fetchAllAccounts() {
             console.log("ul_after: ", ul)
             console.log("one users shown_getAllAccounts")
             return
-        }*/
-/*console.log("all users shown_getAllAccounts_end")
-}).catch(function (error) {
-console.log("error here iam: ", error)
-return error
-})
+        }
+        console.log("all users shown_getAllAccounts_end")*/
+    }).catch(function (error) {
+        console.log("error here iam: ", error)
+        return error
+    })
 
-} */
+}
 
 function fetchUser(id) {
     //TODO look if it works
@@ -298,6 +264,8 @@ function fetchUser(id) {
     })
 
 }
+
+
 
 function changeToPage(url) {
 
@@ -346,9 +314,9 @@ function changeToPage(url) {
 
 /*function viewQuestionsForUser(questionId) {
     console.log("viewQuestionsForUser_start")
-
+ 
     const noQuestions = document.getElementById("noQuestionsForUser")
-
+ 
     fetch(
         route + '/questions/by-id/' + questionId, {
         method: "GET",
@@ -358,47 +326,47 @@ function changeToPage(url) {
     }
     ).then(function (response) {
         console.log(response)
-
+ 
         noQuestions.style.display = "none"
-
+ 
         if (!response.ok) {
             response.json().then(function (body) {
                 console.log("body_viewQuestionsById: ", body)
-
+ 
                 if (response.status == 401) {
                     localStorage.clear()
                     goToPage("/")
                     return
                 }
-
+ 
                 console.log("error_body:", body.message)
             })
         } else {
             response.json().then(function (body) {
                 console.log("body_else: ", body)
-
+ 
                 document.getElementById("question-user-page").classList.add("current-page")
-
+ 
                 const questions = body.questions
-
+ 
                 const questionsDiv = document.getElementById("questionsUser")
                 questionsDiv.innerHTML = ""
-
+ 
                 if (!questions || questions.length == 0) {
                     noQuestions.style.display = "block"
                 } else {
                     for (var question of questions) {
                         const questionDiv = document.createElement('div')
                         questionDiv.classList.add("box")
-
+ 
                         questionDiv.innerHTML = `
-
+ 
                         <article>
                             <div>
                                 <div class="content">
                                     <p>
                                         <strong>${question.title}</strong>
-
+ 
                                         ${question.description}
                                         <br>${question.author}
                                     </p>
@@ -407,9 +375,9 @@ function changeToPage(url) {
                                     <a href="/questions/by-id/${question.id}">More</a>
                                 </div>
                             </div>
-
+ 
                         </article>
-
+ 
                     `
                         questionsDiv.appendChild(questionDiv)
                     }
@@ -418,11 +386,11 @@ function changeToPage(url) {
         }
     }).catch(function (error) {
         console.log(JSON.stringify(error))
-
+ 
         //hideSpinner()
         console.log("Error connecting")
     })
-
+ 
 }*/
 
 function login(accessToken) {
