@@ -129,9 +129,20 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(question)
 
         }).then((response) => {
+            if (!response.ok) {
+                response.json().then(function (body) {
+                    hideLoader()
+                    throw new Error(body)
+                })
+            } else {
+                hideLoader()
+                goToPage("/api/questions/unanswered/")
+                return response.blob()
+            }
+
 
             //console.log("body_here:", body)
-            return response.json(400)
+            //return response.json(400)
 
 
             /* questionTitle.innerText = body.question.title
@@ -150,9 +161,9 @@ document.addEventListener("DOMContentLoaded", function () {
                      document.getElementById("createQuestionForm").reset()
                  }
              }*/
-        }).then((body) => {
-            console.log('Success1:', body)
-            return
+            /*}).then((body) => {
+                console.log('Success1:', body)
+                return*/
         }).then((question) => {
             console.log('Success:', question)
             return
@@ -160,7 +171,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }).catch((error) => {
             //console.log(JSON.stringify(error))
             // TODO: Update the view and display error.
-            console.log("Error_here:", error)
+            hideLoader()
+            console.log("Error2: ", error)
             return
         })
 
@@ -300,6 +312,7 @@ function changeToPage(url) {
         document.getElementById("new-question-page").classList.add("current-page")
     } else if (url == "/api/questions/unanswered/") {
         document.getElementById("answer-page").classList.add("current-page")
+        viewUnansweredQuestions()
     } else if (url == "/api/questions/by-user/[0-9]+$") {
         document.getElementById("question-user-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
@@ -312,13 +325,13 @@ function changeToPage(url) {
 
 }
 
-/*function viewQuestionsForUser(questionId) {
+function viewUnansweredQuestions() {
     console.log("viewQuestionsForUser_start")
- 
+
     const noQuestions = document.getElementById("noQuestionsForUser")
- 
+
     fetch(
-        route + '/questions/by-id/' + questionId, {
+        route + '/questions/unanswered/', {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + localStorage.access_token
@@ -326,72 +339,78 @@ function changeToPage(url) {
     }
     ).then(function (response) {
         console.log(response)
- 
+
         noQuestions.style.display = "none"
- 
+
         if (!response.ok) {
             response.json().then(function (body) {
-                console.log("body_viewQuestionsById: ", body)
- 
+                console.log("body_viewunansweredQuestions: ", body)
+
                 if (response.status == 401) {
                     localStorage.clear()
                     goToPage("/")
                     return
                 }
- 
+
                 console.log("error_body:", body.message)
             })
         } else {
             response.json().then(function (body) {
                 console.log("body_else: ", body)
- 
-                document.getElementById("question-user-page").classList.add("current-page")
- 
+
+                const answerpage = document.getElementById("answer-page").classList.add("current-page")
+
                 const questions = body.questions
- 
-                const questionsDiv = document.getElementById("questionsUser")
+
+                const questionsDiv = document.getElementById("questions")
                 questionsDiv.innerHTML = ""
- 
+
                 if (!questions || questions.length == 0) {
+                    console.log("if_questionshow")
                     noQuestions.style.display = "block"
                 } else {
+                    console.log("else_questionshow")
                     for (var question of questions) {
                         const questionDiv = document.createElement('div')
                         questionDiv.classList.add("box")
- 
+
                         questionDiv.innerHTML = `
- 
-                        <article>
-                            <div>
-                                <div class="content">
-                                    <p>
-                                        <strong>${question.title}</strong>
- 
-                                        ${question.description}
-                                        <br>${question.author}
-                                    </p>
-                                </div>
-                                <div>
-                                    <a href="/questions/by-id/${question.id}">More</a>
-                                </div>
+
+                        <div id="question-page">
+                            <div class="content">
+                                <h1>Questions1</h1>
                             </div>
- 
-                        </article>
+
+                            
+                            </div>
+                            <div id="questionTitle">${question.title}<div>
+                            <<a href="/questions/by-id/${question.id}">More to the question</a></div>
+                            <div id="questionDescription">${question.description}</div>
+                            <div id="questionAuthor">${question.author}</div>
+
+
+                            <div id="noQuestionsToAnswer" class="hidden">
+                                <p>There are no questions to answer.</p>
+                            </div>
+
+                        </div>
  
                     `
                         questionsDiv.appendChild(questionDiv)
+                        answerpage.appendChild(questionDiv)
+                        console.log("here we are :)")
                     }
                 }
             })
         }
     }).catch(function (error) {
         console.log(JSON.stringify(error))
- 
+
         //hideSpinner()
         console.log("Error connecting")
     })
- 
-}*/
+
+}
 
 function login(accessToken) {
     showLoader()
