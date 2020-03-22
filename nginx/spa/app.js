@@ -1,6 +1,6 @@
 // TODO: Don't write all JS code in the same file.
 
-const urlApi = "http://localhost:8080/api/"
+const urlApi = "http://192.168.99.100:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -54,8 +54,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             return response.blob()
 
-        }).then((account) => {
-            console.log('Success:', account)
+        }).then((body) => {
+            console.log('Success:', body)
+            login(body.access_token)
+            return 
         }).catch((error) => {
             // TODO: Update the view and display error.
             console.log("Error:", error)

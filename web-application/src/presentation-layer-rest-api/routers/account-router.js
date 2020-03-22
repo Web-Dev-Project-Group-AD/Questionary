@@ -17,17 +17,42 @@ module.exports = ({ AccountManager, generateToken }) => {
         const account = { username, email, password, passwordRepeated }
 
         AccountManager.createAccount(account
-        ).then(createdAccount => {
-
-            const isAdmin = false
-            const userId = account
-            console.log("restapi_signup_id_mail: ", account, isAdmin)
+        ).then(returnedId => {
 
             // const token = generateToken.createToken(account, isAdmin)
             //console.log("token123: ", token)
+
+            const claims = {
+                sub: returnedId,
+                email: account.email,
+                username: account.username,
+                admin: false,
+            }
             console.log(username, " signed in123")
-            response.setHeader('Location', '/sign-up/' + userId)
-            response.status(201).json().end()
+
+            const accessToken = jwt.sign(claims, serverSecret)
+            const idToken = jwt.sign(
+                {
+                    sub: returnedId,
+                    email: account.email
+                },
+                serverSecret
+            )
+
+            console.log("id_token: ", idToken)
+            console.log("accessToken: ", accessToken)
+
+            response.setHeader('Location', '/sign-up/')
+            response.status(200).json({
+                access_token: accessToken,
+                id_token: idToken,
+            })
+
+            return
+
+            // console.log(username, " signed in123")
+            // response.setHeader('Location', '/sign-up/' + userId)
+            // response.status(201).json().end()
             // response.status(201).json(token).end()
             // return
 
@@ -39,7 +64,7 @@ module.exports = ({ AccountManager, generateToken }) => {
                 return
             } else {
                 response.status(500).json(error).end()
-                //return
+                return
             }
         })
 
@@ -53,26 +78,12 @@ module.exports = ({ AccountManager, generateToken }) => {
     router.post('/sign-in', function (request, response) {
 
         const { email, password } = request.body
-        console.log("request.body.email_signIn: ", request.body.email)
-
         const account = { email, password }
-        console.log("sign_in_mail_pw: ", email, password)
-
         const grantType = request.body.grant_type
-        console.log("grantType_signIn: ", grantType)
+
 
         AccountManager.signInAccount(account
         ).then((returnedAccount) => {
-
-            console.log("restapi_signup_id_mail: ", returnedAccount.id, returnedAccount.isAdmin)
-
-            const isAdmin = returnedAccount.isAdmin
-            const userId = returnedAccount.id
-            const username = returnedAccount.username
-
-            console.log("signed in_account_isAdmin: ", isAdmin)
-            console.log("signed in_account_username: ", username)
-            console.log("signed in_returnedAccount_account_email: ", returnedAccount.email)
 
             if (grantType != "password") {
                 response.status(400).json({
@@ -110,29 +121,25 @@ module.exports = ({ AccountManager, generateToken }) => {
 
             //console.log("accessToken_afterauthHeade: ", authorizationHeader)
 
-            response.setHeader('Location', '/sign-in/' + userId)
+            response.setHeader('Location', '/sign-in/')
             response.status(200).json({
                 access_token: accessToken,
                 id_token: idToken,
             })
 
-            console.log(email, " signed in hier is great")
             return
 
         }).catch((errorMessage) => {
 
             console.log("signIn_errorMessages: ", errorMessage)
             if (errorMessage == ERROR_MSG_DATABASE_GENERAL) {
-
                 response.status(400).json(errorMessage)
                 return
-
             } else {
                 response.status(500).json(errorMessage)
                 return
             }
         })
-
         return
     })
 
