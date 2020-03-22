@@ -1,7 +1,8 @@
-const express = require('express')
+const express = require("express")
 const jwt = require("jsonwebtoken")
 
 const ERROR_MSG_DATABASE_GENERAL = "Database error."
+const serverSecret = "175342C7638E1D173B45FCC2EC97E"
 
 
 function authorizeRequest(request, response, next) {
@@ -9,13 +10,26 @@ function authorizeRequest(request, response, next) {
     const authorizationHeader = request.get('authorization')
     const accessToken = authorizationHeader.substr("Bearer ".length)
     
-    jwt.verify(accessToken, serverSecret
-    ).then(payload => {
+    try {
+        jwt.verify(accessToken, serverSecret)
         next()
-    }).catch(error => {
-        response.status(401).end()
+
+    } catch(error) {
+        if (error.name == "TokenExpiredError") {
+            response.status(401).json({
+                'status': '401',
+                'error': 'invalid_token',
+                'message': 'JWT expired'
+            })
+        } else {
+            response.status(401).json({
+                'status': '401',
+                'error': 'invalid_token',
+                'message': 'JWT is malformed or invalid'
+            })
+        }
         return
-    })
+    }
 }
 
 
@@ -23,66 +37,14 @@ module.exports = ({ QuestionManager }) => {
 
     const router = express.Router()
 
-    const serverSecret = "175342C7638E1D173B45FCC2EC97E"
-
-    /*router.get("/new-post", (request, response) => {
-        console.log("get new Questions in question router")
-
-        //const userStatus = request.session.userStatus
-
-        const loggedInId = response.locals.id
-
-        console.log("loggedInId:", loggedInId)
-
-        QuestionManager.getAllCategories(
-        ).then(categories => {
-            console.log("createnewQuestion: ", categories)
-            response.status(201).json().end()
-
-            //response.render("questions-new-post.hbs", 
-            //{ userStatus, categories, csrfToken: request.csrfToken() })
-        }).catch(error => {
-            console.log(error)
-            //response.status(500).render("statuscode-500.hbs", { userStatus })
-        })
-    })*/
-
-    router.post("/new-post", (request, response) => {
+    router.post("/new-post", authorizeRequest, (request, response) => {
         console.log("newQuestion_start")
-        let payload = null
 
         const authorizationHeader = request.get('authorization')
         const accessToken = authorizationHeader.substr("Bearer ".length)
 
         console.log("authorizationHeader", authorizationHeader)
         console.log("getAllAccounts_accessToken", accessToken)
-
-
-        //TODO change it when file middleware is working
-        try {
-
-            payload = jwt.verify(accessToken, serverSecret)
-
-        } catch (e) {
-            console.log("error: ", e)
-
-            // No access token provided or the access token was invalid.
-            if (e.name == "TokenExpiredError") {
-                response.status(401).json({
-                    'status': '401',
-                    'error': 'invalid_token',
-                    'message': 'JWT expired'
-                })
-                return
-            } else {
-                response.status(401).json({
-                    'status': '401',
-                    'error': 'invalid_token',
-                    'message': 'JWT is malformed or invalid'
-                })
-                return
-            }
-        }
 
         var question = {
             author: request.body.author,
@@ -95,7 +57,7 @@ module.exports = ({ QuestionManager }) => {
 
         QuestionManager.createQuestion(question
         ).then(questionId => {
-            response.setHeader("Location", "/questions/all")
+            response.setHeader("Location", "/questions/by-id/" + questionId)
             console.log("createdQuestion")
             response.status(201).json().end()
         }).catch(validationErrors => {
@@ -112,22 +74,7 @@ module.exports = ({ QuestionManager }) => {
         })
     })
 
-    router.get("/by-id/:questionId", (request, response) => {
 
-        const questionId = request.params.questionId
-
-        console.log("questionId: ", questionId)
-
-        QuestionManager.getQuestionByIS(getQuestionById
-        ).then(question => {
-            response.setHeader("Location", "/questions/all")
-            response.status(201).json(questions).end()
-            
-        }).catch(error => {
-            console.log(error)
-            response.status(500).json()
-        })
-    })
 
     router.get("/all", (request, response) => {
 
@@ -136,6 +83,62 @@ module.exports = ({ QuestionManager }) => {
             console.log("!!!!QUESTIONS: ", questions)
             response.setHeader("Location", "/questions/all")
             response.status(201).json(questions).end()
+        }).catch(error => {
+            response.status(500).json()
+        })
+    })
+
+    router.get("/by-id/:questionId", (request, response) => {
+
+        const questionId = request.params.questionId
+
+        console.log("questionId: ", questionId)
+
+        QuestionManager.getQuestionByIS(getQuestionById
+        ).then(question => {
+            response.setHeader("Location", "/questions/by-id/" + questionId)
+            response.status(201).json(question).end()
+        }).catch(error => {
+            console.log(error)
+            response.status(500).json()
+        })
+    })
+
+    
+    router.put("/by-id/:questionId", authorizeRequest, (request, response) => {
+        const questionId = request.params.questionId
+
+        const question = { 
+
+            id: questionId, 
+            title: request.body.title, 
+            description: request.body.description, 
+            author: request.body.description
+        }
+
+
+        QuestionManager.updateQuestion(question
+        ).then(returnedId => {
+            console.log("!!!!returnedID: ", returnedId)
+
+            response.setHeader("Location", "/questions/by-id/" + questionId)
+            response.status(201).json(question).end()
+        }).catch(error => {
+            response.status(500).json()
+        })
+    })
+
+    router.delete("/by-id/:questionId", authorizeRequest, (request, response) => {
+        const questionId = request.params.questionId
+        const author = request.body.username
+
+        console.log(author)
+
+        QuestionManager.deleteQuestionById(questionId
+        ).then(() => {
+            
+            response.setHeader("Location", "/questions/all")
+            response.status(201).json(question).end()
         }).catch(error => {
             response.status(500).json()
         })

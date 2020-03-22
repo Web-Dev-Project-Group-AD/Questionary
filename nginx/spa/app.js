@@ -1,5 +1,13 @@
 // TODO: Don't write all JS code in the same file.
 
+// import { REPLServer } from "repl"
+
+//import { jwt } from "../jsonwebtoken"
+
+
+// const jwt = require("jsonwebtoken")
+
+
 const urlApi = "http://192.168.99.100:8080/api/"
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -76,8 +84,11 @@ document.addEventListener("DOMContentLoaded", function () {
             body: "grant_type=password&email=" + email + "&password=" + password
         }).then(function (response) {
             // TODO: Check status code to see if it succeeded. Display errors if it failed.
-
-            return response.json(400)
+            if (response.ok) {
+                return response.json()
+            } else {
+                changeToPage(response.status.toString)
+            }
         }).then(function (body) {
             // TODO: Read out information about the user account from the id_token.
             console.log("signIn_fetch_body.accessToken:", body)
@@ -91,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
 
     })
+
 
     document.querySelector("#new-question-page form").addEventListener("submit", (event) => {
         event.preventDefault()
@@ -129,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 console.log(response)
 
-                changeToPage("/api" + response.headers.get("Location"))
+                goToPage("/api" + response.headers.get("Location"))
                 return
             } else {
 
@@ -167,6 +179,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })
 
+function jwtDecode(t) {
+    let token = {};
+    token.raw = t;
+    token.header = JSON.parse(window.atob(t.split('.')[0]));
+    token.payload = JSON.parse(window.atob(t.split('.')[1]));
+    return (token)
+  }
 
 
 window.addEventListener("popstate", function (event) {
@@ -181,69 +200,6 @@ function goToPage(url) {
 
 }
 
-
-
-function fetchAllAccounts() {
-    console.log("fetchAllAccounts_start")
-
-    fetch(
-        urlApi + "accounts/all", {
-        method: "GET",
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("accessToken")
-        },
-        //body: JSON.stringify(accounts)
-    }
-    ).then(function (response) {
-        console.log("response_getAllAccounts: ", response)
-        console.log("response_getAllAccounts_body: ", response.body)
-        // TODO: Check status code to see if it succeeded. Display errors if it failed.
-        return response.json()
-    }).then(function (accounts) {
-        console.log("accounts_fetchAllAcc: ", accounts)
-        const ul = document.querySelector("#accounts-page ul")
-        ul.innerText = ""
-        const account = ""
-        const li = document.createElement("li")
-        li.innerText = "hier bin ich hoffentlich bald"
-        ul.append(li)
-
-        console.log("ul_accounts: ", ul)
-        console.log("accounts123: ", [accounts])
-        //console.log("accounts123456: ", [response.body])
-        for (account of accounts) {
-            console.log("account: ", accounts.id)
-            const li = document.createElement("li")
-            //const anchor = document.createElement("a")
-            li.innerText = account.username
-            //anchor.setAttribute("href", '/pets/'+pet.id)
-            //li.appendChild(anchor)
-            ul.appendChild(li)
-            console.log("forschleife_here")
-        }
-        console.log("hello whatsup")
-        for (const account of accounts) {
-            console.log("account: ", account.id)
-            console.log("account: ", account.id)
-            const li = document.createElement("li")
-            //const anchor = document.createElement("a")
-            li.innerText = account.username
-            //anchor.innerText = account.username
-            console.log(account.username)
-            //anchor.setAttribute("href", '/api/accounts/' + account.id)
-            //li.appendChild(anchor)
-            ul.append(li)
-            console.log("ul_after: ", ul)
-            console.log("one users shown_getAllAccounts")
-            return
-        }
-        console.log("all users shown_getAllAccounts_end")
-    }).catch(function (error) {
-        console.log("error here iam: ", error)
-        return error
-    })
-
-} 
 
 function fetchUser(id) {
     //TODO look if it works
@@ -282,6 +238,7 @@ function fetchAllQuestions() {
 
         const questionsPage = document.querySelector("#questions-page")
         const questionsDiv =  questionsPage.querySelector("#questions")
+        var errorDiv =  questionsPage.querySelector("#error")
         console.log("questionsDiv: ", questionsDiv)
         console.log("questionsPage before: ", questionsPage)
         if (questionsDiv) {   
@@ -290,26 +247,28 @@ function fetchAllQuestions() {
                 questionDiv.remove()    
             }
         }
+        if (errorDiv) {
+            errorDiv.remove()
+        }
 
         console.log("questionsPage after: ", questionsPage)
 
         if (questions.length > 0) {
-
-            // var questions = []
-            // returnedData.forEach(item => questions.push(item))
-            //console.log(questions)
-
-            // var questionsDiv = document.createElement("div")
-            // questionsDiv.className="questions"
             for (var i = 0; i < questions.length; i++) {
-
                 if (questions[i].title) {
-                
+                    
                     var title = questions[i].title
                     var description = questions[i].description
                     var author =  questions[i].author
                     //console.log(title, description, author)
+                   
+                    //var accessTokenRaw = jwt.decode(localStorage.getItem("accessToken"))
+                    var accessTokenRaw = jwtDecode(localStorage.getItem("accessToken"))
+                    
 
+                    console.log("accessTokenRaw: ", accessTokenRaw)
+                    username = accessTokenRaw.payload.username
+                    console.log("username: ", username)
 
                     var questionDiv = document.createElement("div")
                     questionDiv.innerHTML = `
@@ -330,11 +289,10 @@ function fetchAllQuestions() {
                     questionsDiv.appendChild(questionDiv)
                 }
             }
-            // console.log(questionsDiv)
-            // questionsPage.appendChild(questionsDiv)
         } else {
-            var errorDiv = document.createElement("div")
+            errorDiv = document.createElement("div")
             errorDiv.innerText = "No content."
+            errorDiv.id = "error"
             questionsPage.appendChild(errorDiv)
         }
 
@@ -344,6 +302,33 @@ function fetchAllQuestions() {
     })
 }
 
+function editQuestion(id) {
+    fetch(
+        urlApi + "questions/" + id
+    ).then(response => {
+        if (response.ok) {
+            return response.json()
+        } else {
+            changeToPage(response.status.toString)
+        }
+    }).then(question => {
+        
+        // Implement edit question
+
+    })
+}
+
+function deleteQuestion(id) {
+    fetch(
+        urlApi + "questions/" + id
+    ).then(response => {
+        if (response.ok) {
+            goToPage("/api" + response.headers.get("Location"))
+        } else {
+            goToPage(response.status.toString)
+        }
+    })
+}
 
 
 function changeToPage(url) {
@@ -394,6 +379,25 @@ function changeToPage(url) {
     }
 
 }
+
+function login(accessToken) {
+    console.log("accessToken", accessToken)
+    localStorage.setItem("accessToken", accessToken)     
+    document.body.classList.remove("isLoggedOut")
+    document.body.classList.add("isLoggedIn")
+    goToPage("/")
+    console.log("login function app.js")
+}
+
+function logout() {
+    console.log("logout")
+    localStorage.clear()
+    document.body.classList.remove("isLoggedIn")
+    document.body.classList.add("isLoggedOut")
+    goToPage("/")
+    console.log("logout function app.js")
+}
+
 
 /*function viewQuestionsForUser(questionId) {
     console.log("viewQuestionsForUser_start")
@@ -476,20 +480,66 @@ function changeToPage(url) {
 
 }*/
 
-function login(accessToken) {
-    console.log("accessToken", accessToken)
-    localStorage.setItem("accessToken", accessToken)     
-    document.body.classList.remove("isLoggedOut")
-    document.body.classList.add("isLoggedIn")
-    goToPage("/")
-    console.log("login function app.js")
-}
 
-function logout() {
-    console.log("logout")
-    localStorage.clear()
-    document.body.classList.remove("isLoggedIn")
-    document.body.classList.add("isLoggedOut")
-    goToPage("/")
-    console.log("logout function app.js")
-}
+
+// function fetchAllAccounts() {
+//     console.log("fetchAllAccounts_start")
+
+//     fetch(
+//         urlApi + "accounts/all", {
+//         method: "GET",
+//         headers: {
+//             "Authorization": "Bearer " + localStorage.getItem("accessToken")
+//         },
+//         //body: JSON.stringify(accounts)
+//     }
+//     ).then(function (response) {
+//         console.log("response_getAllAccounts: ", response)
+//         console.log("response_getAllAccounts_body: ", response.body)
+//         // TODO: Check status code to see if it succeeded. Display errors if it failed.
+//         return response.json()
+//     }).then(function (accounts) {
+//         console.log("accounts_fetchAllAcc: ", accounts)
+//         const ul = document.querySelector("#accounts-page ul")
+//         ul.innerText = ""
+//         const account = ""
+//         const li = document.createElement("li")
+//         li.innerText = "hier bin ich hoffentlich bald"
+//         ul.append(li)
+
+//         console.log("ul_accounts: ", ul)
+//         console.log("accounts123: ", [accounts])
+//         //console.log("accounts123456: ", [response.body])
+//         for (account of accounts) {
+//             console.log("account: ", accounts.id)
+//             const li = document.createElement("li")
+//             //const anchor = document.createElement("a")
+//             li.innerText = account.username
+//             //anchor.setAttribute("href", '/pets/'+pet.id)
+//             //li.appendChild(anchor)
+//             ul.appendChild(li)
+//             console.log("forschleife_here")
+//         }
+//         console.log("hello whatsup")
+//         for (const account of accounts) {
+//             console.log("account: ", account.id)
+//             console.log("account: ", account.id)
+//             const li = document.createElement("li")
+//             //const anchor = document.createElement("a")
+//             li.innerText = account.username
+//             //anchor.innerText = account.username
+//             console.log(account.username)
+//             //anchor.setAttribute("href", '/api/accounts/' + account.id)
+//             //li.appendChild(anchor)
+//             ul.append(li)
+//             console.log("ul_after: ", ul)
+//             console.log("one users shown_getAllAccounts")
+//             return
+//         }
+//         console.log("all users shown_getAllAccounts_end")
+//     }).catch(function (error) {
+//         console.log("error here iam: ", error)
+//         return error
+//     })
+
+// } 
