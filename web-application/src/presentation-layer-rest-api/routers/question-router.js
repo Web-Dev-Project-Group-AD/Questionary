@@ -114,7 +114,6 @@ module.exports = ({ QuestionManager }) => {
         const questionId = request.params.questionId
         const username = parseTokenFromRequest(request).username
 
-
         const question = { 
 
             id: request.body.id, 
@@ -122,14 +121,8 @@ module.exports = ({ QuestionManager }) => {
             description: request.body.description, 
             author: username
         }
-
-        console.log("edit question serverside: ", question)
-
-
         QuestionManager.updateQuestion(question
         ).then(returnedId => {
-            console.log("!!!!returnedID: ", returnedId)
-
             response.setHeader("Location", "/questions/by-id/" + questionId)
             response.status(201).json(question).end()
         }).catch(error => {
@@ -139,13 +132,10 @@ module.exports = ({ QuestionManager }) => {
 
     router.delete("/by-id/:questionId", authorizeRequest, (request, response) => {
         const questionId = request.params.questionId
-        const author = request.body.username
+        const author = parseTokenFromRequest(request).username
 
-        console.log(author)
-
-        QuestionManager.deleteQuestionById(questionId
+        QuestionManager.deleteQuestionById(author, questionId
         ).then(() => {
-            
             response.setHeader("Location", "/questions/all")
             response.status(201).json(question).end()
         }).catch(error => {

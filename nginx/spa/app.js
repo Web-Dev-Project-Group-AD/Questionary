@@ -461,38 +461,22 @@ function changeToPage(url) {
         fetchUser(id)
     } else if (new RegExp("^/api/questions/by-id/[0-9]+$").test(url)) {
         document.getElementById("new-question-page").classList.add("current-page")
-        console.log("new_question_page")
         const id = url.split("/")[2]
-        console.log("id", id)
         viewQuestionsForUser(id)
-        console.log("question_done")
-
-    }
-                            //http://192.168.99.100:8888/api/questions/by-id/1/edit/
-                           // ^\/api\/questions\/by-id\/[0-9]\/edit/$
-    // } else if (new RegExp("^/api/questions/edit/[0-9]+$").test(url)) {
-    //     console.log("working!")
-    //     document.getElementById("edit-question-page").classList.add("current-page")
-    
-    else if (url.includes("edit")) {
-        console.log("working!")
+    } else if (url.includes("edit")) {
         const id = url.split("/")[1]
-
         console.log("iD in route:", id)
         loadEditQuestionForm(id)
-    }
-    
-
-     else if (url == "/api/accounts/sign-up") {
+    } else if (url.includes("delete")) {
+        const id = url.split("/")[1]
+        deleteQuestion(id)
+    } else if (url == "/api/accounts/sign-up") {
         document.getElementById("sign-up-page").classList.add("current-page")
     } else if (url == "/api/questions/new-post") {
         document.getElementById("new-question-page").classList.add("current-page")
     } else if (url == "/api/questions/all") {
-
         document.getElementById("questions-page").classList.add("current-page")
         fetchAllQuestions() 
-
-
     } else if (url == "/api/questions/by-user/[0-9]+$") {
         document.getElementById("question-user-page").classList.add("current-page")
     } else if (url == "/api/accounts/sign-out") {
